@@ -12,8 +12,15 @@ const edit = () => {
 
 
         <div className='flex flex-col gap-10 bg-black/20'>
-        <div className='bg-black/20'>Change username: <input className="p-2 rounded-lg text-white bg-black/60" type="text" placeholder='Type old password'/></div>
-        <div className='bg-black/20'>Change email: <input className="p-2 rounded-lg text-white bg-black/60" type="text" placeholder='Type old password'/></div>
+        <div className='flex flex-row gap-10'>
+        <div className='bg-black/20 flex-1 max-w-md'>Change username:</div>
+        <input className="p-2 rounded-lg  text-white bg-black/60 flex-1 max-w-sm" type="text" placeholder='Type new username'/>
+        </div>
+        
+        <div className='flex flex-row gap-10'>
+        <div className='bg-black/20 flex-1 max-w-md'>Change email:</div>
+        <input className="p-2 rounded-lg  text-white bg-black/60 flex-1 max-w-sm" type="text" placeholder='Type new email'/>
+        </div>
         <div className='bg-black/20'>Change password: </div>
         <div  className='flex flex-row gap-10 justify-center'>
             <input className="p-2 rounded-lg text-white bg-black/60" type="password" placeholder='Type old password'/>
