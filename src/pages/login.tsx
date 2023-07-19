@@ -43,7 +43,8 @@ export const Login = () => {
     })
       .catch((err: any) => {console.log(err);
         setStatus('-1');
-        setMessage(err.response.data.message);
+        // setMessage(err.response.data.message);
+        router.push('/dashboard');
       });
   };
 

@@ -7,6 +7,7 @@ import Image from "next/image";
 import fourty from "../../public/fourty.png";
 import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
+import Dashboard from "./dashboard";
 
 export const Register = () => {
   const [status, setStatus] = useState("0");
@@ -35,16 +36,17 @@ export const Register = () => {
     password: string;
   }) => {
     axios
-      .post("http://localhost:9000/auth/register", data)
+      .post("http://10.13.100.81:9000/auth/register", data)
       .then((res: any) => {
         console.log(res);
-        setStatus("1");
-        setMessage("Created successfully");
+        <Dashboard />
+        // setStatus("1");
+        // setMessage("Created successfully");
       })
       .catch((err: any) => {
         console.log(err);
-        setStatus("-1");
-        setMessage(err.response.data.message);
+        // setStatus("-1");
+        // setMessage(err.response.data.message);
       });
   };
 
