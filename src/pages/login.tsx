@@ -1,5 +1,5 @@
 // Login.tsx
-import React from "react";
+import React, { useContext } from "react";
 import styles from "../styles/login.module.css";
 import Link from "next/link";
 import { useState } from "react";
@@ -9,10 +9,13 @@ import fourty from "../../public/fourty.png";
 import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
 import { useRouter } from 'next/router';
+import { UserContext } from ".";
 
 export const Login = () => {
 
   const router = useRouter();
+  const { token, setToken } = useContext(UserContext);
+  let tok = "";
 
   const [status, setStatus] = useState("0");
   const [message, setMessage] = useState("");
@@ -38,7 +41,11 @@ export const Login = () => {
     axios
       .post("http://localhost:9000/auth/login", data)
       .then((res: any) => {
-        console.log(res);
+        tok = res.data.access_token;
+        localStorage.setItem("token", tok);
+        console.log(localStorage.getItem("token"));
+        setToken(tok);
+        console.log("my saved token: ["+token+"]");
       router.push('/dashboard');
     })
       .catch((err: any) => {console.log(err);

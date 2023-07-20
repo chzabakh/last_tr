@@ -18,7 +18,8 @@ const FindAFriend = () => {
             onChange={handleChange}
             value={input}
           />
-          <button>
+          <button
+          onClick={() => {}}>
             <svg
               className="h-8 w-8 text-white m-1 p-1"
               viewBox="0 0 24 24"
