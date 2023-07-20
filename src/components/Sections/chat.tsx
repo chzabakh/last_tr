@@ -6,9 +6,12 @@ import Messages from "./messages";
 
 const Chat = () => {
   const [item, setItem] = useState("6");
+  const [dm, setDm] = useState("0");
 
-  const updateItem = (newValue: string) => {
+
+  const updateItem = (newValue: string, newDm: string) => {
     setItem(newValue);
+    setDm(newDm);
   }
 
   return (
@@ -54,7 +57,7 @@ const Chat = () => {
         ) : null}
         {item == "2" || item == "6" ? <FindAFriend /> : null}
         {/* {item == "7" ? <Dms/> : null} */}
-        {item == "7" ? <Messages updateItem={updateItem} /> : null}
+        {item == "7" ? <Messages dm={dm} updateItem={updateItem} /> : null}
         {item === "8" ? <Channels /> : null}
       </div>
     </>

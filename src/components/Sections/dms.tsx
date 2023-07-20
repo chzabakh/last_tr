@@ -1,9 +1,12 @@
 import Image from "next/image";
 import { useState } from "react";
 
+interface DmProps {
+  dm: string;
+  updateItem: (newValue: string, newDm: string) => void;
+}
 
-
-const Dms = () => {
+const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
   const [input, setInput] = useState("");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInput(e.target.value);
@@ -28,6 +31,7 @@ const Dms = () => {
             </button>
             <button
               className="hover:text-[#D6B3F1] mx-auto m-0 p-0 w-16"
+              onClick={() => {updateItem("7", "0");}}
             >
               &larr; Back
             </button>
@@ -36,7 +40,7 @@ const Dms = () => {
       </div>
       <div className="border border-opacity-30 border-violet-400 h-full my-0 w-[1px]"></div>
         <div className="flex flex-col p-0 m-0 justify-center w-full h-full pt-5">
-          <div className="mb-32 overflow-auto ">
+          <div className="mb-16 overflow-auto ">
             <div className="chat chat-start">
               <div className="chat-image avatar">
                 <div className="w-10 rounded-full">
