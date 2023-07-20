@@ -7,6 +7,10 @@ import Messages from "./messages";
 const Chat = () => {
   const [item, setItem] = useState("6");
 
+  const updateItem = (newValue: string) => {
+    setItem(newValue);
+  }
+
   return (
     <>
       <div className="min-h-[500px] items-center justify-center my-20 h-[70%] gap-3 flex flex-row w-[85%] mx-[2rem] border-2  border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
@@ -45,9 +49,12 @@ const Chat = () => {
             Channels
           </button>
         </div>
+        {item == "0" ? (
+          <div className="overflow-y-auto overflow-x-hidden flex flex-col border-2 h-full w-[77%] border-opacity-30 border-green-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">empty</div>
+        ) : null}
         {item == "2" || item == "6" ? <FindAFriend /> : null}
         {/* {item == "7" ? <Dms/> : null} */}
-        {item == "7" ? <Messages /> : null}
+        {item == "7" ? <Messages updateItem={updateItem} /> : null}
         {item === "8" ? <Channels /> : null}
       </div>
     </>
