@@ -58,6 +58,7 @@ const CreateChannel = () => {
                 {active && active === "public" && <PublicChannel />}
                 {active && active === "private" && <PrivateChannel />}
                 {active && active === "protected" && <ProtectedChannel />}
+                {!active && <PublicChannel />}
                 </div>
             </div>
         </div>
