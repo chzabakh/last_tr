@@ -5,7 +5,7 @@ import PrivateChannel from '../channels/privateChannel';
 import BrowseChannel from "./browseChannel";
 import ProtectedChannel from '../channels/protectedChannel';
 import  Channels  from './channels';
-
+import Description from '../channels/description';
 const CreateChannel = () => {
 
     const [active, setActive] = useState("null");
@@ -33,7 +33,7 @@ const CreateChannel = () => {
   return (
     <>
         {
-            back === true ? <Channels /> : (
+            back  ? <Channels /> : (
 
                 <>
                 {
@@ -68,7 +68,7 @@ const CreateChannel = () => {
                         {active && active === "public" && <PublicChannel />}
                         {active && active === "private" && <PrivateChannel />}
                         {active && active === "protected" && <ProtectedChannel />}
-                        {!active && <PublicChannel />}
+                        {active === "null" && <Description />}
                         </div>
                     </div>
                 </div>
