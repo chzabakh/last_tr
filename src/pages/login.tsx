@@ -42,9 +42,8 @@ export const Login = () => {
       const res = await axios.post("http://localhost:9000/auth/login", data);
       const tok = res.data.access_token;
       localStorage.setItem("token", tok);
-      console.log(localStorage.getItem("token"));
+      console.log("local storage: "+localStorage.getItem("token"));
       login(tok);
-      console.log("my saved token: [" + accessToken + "]");
       router.push('/dashboard');
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -58,23 +57,6 @@ export const Login = () => {
       }
     }
   };
-
-  // const postData = async (data: { email: string; password: string }) => {
-  //   axios
-  //     .post("http://localhost:9000/auth/login", data)
-  //     .then((res: any) => {
-  //       tok = res.data.access_token;
-  //       localStorage.setItem("token", tok);
-  //       console.log(localStorage.getItem("token"));
-  //       setToken(tok);
-  //       console.log("my saved token: ["+token+"]");
-  //     router.push('/dashboard');
-  //   })
-  //     .catch((err: any) => {console.log(err);
-  //       setStatus('-1');
-  //       setMessage(err.response.data.message);
-  //     });
-  // };
 
   return (
     <Layout>

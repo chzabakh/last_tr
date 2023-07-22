@@ -1,11 +1,22 @@
+import { useAuth } from "@/pages/auth_context";
 import axios, { AxiosError } from "axios";
 import Image from "next/image";
 import { useState } from "react";
 
+type Friend = {
+  avatarUrl: string;
+  id: string;
+  nickname: string;
+  email: string;
+}
+
 const FindAFriend = () => {
   const [item, setItem] = useState("6");
   const [input, setInput] = useState("");
+  const [friend, setFriend] = useState<Friend>({avatarUrl: "pnull", id: "null", nickname: "null", email: "null"});
+  const { login, accessToken } = useAuth();
 
+  console.log("please work [" + accessToken + "]");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInput(e.target.value);
   };
@@ -13,14 +24,16 @@ const FindAFriend = () => {
   const getUser = async (username: string) => {
     try {
       const res = await axios.get(
-        `http://localhost:9000/users/${username}/profile`,
+        `http://localhost:9000/users/${input}/profile`,
         {
           headers: {
-            Authorization: localStorage.getItem("token"),
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
       console.log(res);
+      setFriend(res.data);
+      console.log(friend.avatarUrl);
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
@@ -36,6 +49,44 @@ const FindAFriend = () => {
   ) => {
     e.preventDefault();
     await getUser(input);
+  };
+
+  const addUser = async (username: string) => {
+    try {
+      const me = await axios.get(
+        `http://localhost:9000/users/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const add = await axios.post(
+        `http://localhost:9000/users/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(me.data.nickname);
+      // setFriend(res.data);
+      // console.log(friend.avatarUrl);
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err.response?.data.message);
+      } else {
+        console.log("Unexpected error", err);
+      }
+    }
+  };
+
+  const handleAdd = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    input: string
+  ) => {
+    e.preventDefault();
+    await addUser(input);
   };
 
   return (
@@ -64,27 +115,31 @@ const FindAFriend = () => {
             </svg>
           </button>
         </div>
-        <div className="flex flex-col border-2  border-opacity-30 mx-auto w-[70%] min-h-[300px] h-[70%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-          <Image
-            className="object-cover mx-auto rounded-[20px]"
-            src={"/ah.jpg"}
-            alt="pdp"
-            height={80}
-            width={80}
-          />
-          <p className="font-serif text-center py-5 text-xl">adolfy</p>
-          <div className="w-full  absolute bottom-10 flex justify-evenly left-0">
-            <button className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-              Add as a friend
-            </button>
-            <button
-              onClick={() => setItem("9")}
-              className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md py-4 rounded-[30px]"
-            >
-              See Profile
-            </button>
+        {friend.id != "null" ? (
+          <div className="flex flex-col border-2  border-opacity-30 mx-auto w-[70%] min-h-[300px] h-[70%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+            <Image
+              className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
+              src={`/avatars/${friend.avatarUrl}`}
+              alt="pdp"
+              height={80}
+              width={80}
+            />
+            <p className="font-serif text-center py-5 text-xl">{friend.nickname}</p>
+            <div className="w-full  absolute bottom-10 flex justify-evenly left-0">
+              <button
+              onClick={(e) => handleAdd(e, friend.nickname)} 
+              className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+                Add friend
+              </button>
+              <button
+                onClick={() => setItem("9")}
+                className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md py-4 rounded-[30px]"
+              >
+                See Profile
+              </button>
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
       {item == "9" ? (
         <>
