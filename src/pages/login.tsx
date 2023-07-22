@@ -3,19 +3,17 @@ import React, { useContext } from "react";
 import styles from "../styles/login.module.css";
 import Link from "next/link";
 import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Image from "next/image";
 import fourty from "../../public/fourty.png";
 import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
 import { useRouter } from 'next/router';
-import { UserContext } from ".";
+import { useAuth } from "./auth_context";
 
 export const Login = () => {
 
   const router = useRouter();
-  const { token, setToken } = useContext(UserContext);
-  let tok = "";
 
   const [status, setStatus] = useState("0");
   const [message, setMessage] = useState("");
@@ -25,6 +23,8 @@ export const Login = () => {
     password: "",
   });
 
+  const {login, accessToken} = useAuth();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
       ...data,
@@ -32,27 +32,49 @@ export const Login = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    postData(data);
+    await postData(data);
   };
 
-  const postData = (data: { email: string; password: string }) => {
-    axios
-      .post("http://localhost:9000/auth/login", data)
-      .then((res: any) => {
-        tok = res.data.access_token;
-        localStorage.setItem("token", tok);
-        console.log(localStorage.getItem("token"));
-        setToken(tok);
-        console.log("my saved token: ["+token+"]");
+  const postData = async (data: { email: string; password: string }) => {
+    try {
+      const res = await axios.post("http://localhost:9000/auth/login", data);
+      const tok = res.data.access_token;
+      localStorage.setItem("token", tok);
+      console.log(localStorage.getItem("token"));
+      login(tok);
+      console.log("my saved token: [" + accessToken + "]");
       router.push('/dashboard');
-    })
-      .catch((err: any) => {console.log(err);
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err.response?.data.message);
+
         setStatus('-1');
-        setMessage(err.response.data.message);
-      });
+        setMessage(err.response?.data.message);
+
+      } else {
+        console.log('Unexpected error', err);
+      }
+    }
   };
+
+  // const postData = async (data: { email: string; password: string }) => {
+  //   axios
+  //     .post("http://localhost:9000/auth/login", data)
+  //     .then((res: any) => {
+  //       tok = res.data.access_token;
+  //       localStorage.setItem("token", tok);
+  //       console.log(localStorage.getItem("token"));
+  //       setToken(tok);
+  //       console.log("my saved token: ["+token+"]");
+  //     router.push('/dashboard');
+  //   })
+  //     .catch((err: any) => {console.log(err);
+  //       setStatus('-1');
+  //       setMessage(err.response.data.message);
+  //     });
+  // };
 
   return (
     <Layout>

@@ -1,12 +1,43 @@
+import axios, { AxiosError } from "axios";
 import Image from "next/image";
 import { useState } from "react";
 
 const FindAFriend = () => {
-    const [item, setItem] = useState("6");
+  const [item, setItem] = useState("6");
   const [input, setInput] = useState("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInput(e.target.value);
   };
+
+  const getUser = async (username: string) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:9000/users/${username}/profile`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      );
+      console.log(res);
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err.response?.data.message);
+      } else {
+        console.log("Unexpected error", err);
+      }
+    }
+  };
+
+  const handleSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    input: string
+  ) => {
+    e.preventDefault();
+    await getUser(input);
+  };
+
   return (
     <>
       <div className="flex flex-col gap-10 border-2  border-opacity-30 flex-auto h-full  w-[77%] border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
@@ -18,8 +49,7 @@ const FindAFriend = () => {
             onChange={handleChange}
             value={input}
           />
-          <button
-          onClick={() => {}}>
+          <button onClick={(e) => handleSubmit(e, input)}>
             <svg
               className="h-8 w-8 text-white m-1 p-1"
               viewBox="0 0 24 24"
