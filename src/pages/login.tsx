@@ -44,7 +44,7 @@ export const Login = () => {
         const res: AxiosResponse = await axios.post("http://localhost:9000/auth/login", data);
        if(res.data)
         {
-          alert(JSON.stringify(res.data.access_token÷))
+          alert(JSON.stringify(res.data.access_token))
           localStorage.setItem("token", res.data.access_token);
           // const hey = localStorage.getItem("token");
           router.push("/dashboard");
