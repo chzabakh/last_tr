@@ -3,19 +3,21 @@ import React from "react";
 import styles from "../styles/login.module.css";
 import Link from "next/link";
 import { useState } from "react";
-import axios from "axios";
 import Image from "next/image";
 import fourty from "../../public/fourty.png";
 import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
 import { useRouter } from 'next/router';
+import axios, { AxiosError, AxiosResponse } from "axios";
+
+
+
 
 export const Login = () => {
-
   const router = useRouter();
-
+  const [message, setMessage] = useState([""]);
   const [status, setStatus] = useState("0");
-  const [message, setMessage] = useState("");
+
 
   const [data, setData] = useState({
     email: "",
@@ -29,23 +31,38 @@ export const Login = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     postData(data);
   };
 
-  const postData = (data: { email: string; password: string }) => {
-    axios
-      .post("http://localhost:9000/auth/login", data)
-      .then((res: any) => {
-        console.log(res);
-      router.push('/dashboard');
-    })
-      .catch((err: any) => {console.log(err);
-        setStatus('-1');
-        // setMessage(err.response.data.message);
-        router.push('/dashboard');
-      });
+  const postData = async (data: {
+    email: string;
+    password: string;
+  }) => {
+      try{
+        const res: AxiosResponse = await axios.post("http://localhost:9000/auth/login", data);
+       if(res.data)
+        {
+          alert(JSON.stringify(res.data.access_token÷))
+          localStorage.setItem("token", res.data.access_token);
+          // const hey = localStorage.getItem("token");
+          router.push("/dashboard");
+        }
+      }
+      catch(err : any)
+      {
+          if(axios.isAxiosError(err) && err.response)
+          {
+              const error = err.response.data.message;
+              // alert(err.response.data.message)
+              setMessage(error);
+          }
+          else
+          {
+            alert(err.message);
+          }
+      }
   };
 
   return (
@@ -87,7 +104,7 @@ export const Login = () => {
               onClick={() => setStatus('0')}
               required
             />
-            {status === '-1' ? <p>{message}</p> : null}
+            {message.length ? <p>{message}</p> : null}
             <button type="submit" className={styles.logIn}>Login</button>
           </div>
           <Link href="register">You do not have an account ? Sign Up.</Link>
