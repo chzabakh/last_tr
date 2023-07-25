@@ -13,6 +13,10 @@ const Edit = () => {
     const [Username, setUsername] = useState('');
     const [isAvatarChanged, setIsAvatarChanged] = useState(false);
     const [isUsernameChanged, setIsUsernameChanged] = useState(false);
+    const [pass, setpass] = useState('')
+    const [isPassChanged, setIsPassChanged] = useState(false)
+
+
 
     useEffect(() => {
       getAvatar();
@@ -54,6 +58,13 @@ const Edit = () => {
       setIsUsernameChanged(true)
 
     }
+
+    function handlePassChange(e: ChangeEvent<HTMLInputElement>)
+    {
+        setpass(e.target.value)
+        setIsPassChanged(true)
+    }
+
     async function getAvatar()
     {
       try
@@ -94,25 +105,46 @@ const Edit = () => {
     async function handleSaveChanges() {
       try {
         if (isAvatarChanged && Avatar) {
-          const data = new FormData();
-          data.append('avatarPic', Avatar);
           const token = localStorage.getItem('token');
           const headers = {
-            'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,
           };
-          await axios.patch('http://localhost:9000/users/upload/avatar', data, { headers });
-          alert('Avatar updated!');
+        
+          const data = new FormData(); 
+          data.append('avatar', Avatar);
+        
+          try {
+            await axios.patch('http://localhost:9000/users/upload/avatar', data, {
+              headers: {
+                ...headers,
+              },
+            });
+
+            alert('Avatar updated!');
+          } catch (error) {
+            console.error('Error updating avatar:', error);
+            alert('Failed to update avatar. Please try again.');
+          }
         }
+        
     
         if (isUsernameChanged && Username) {
           const Token = localStorage.getItem('token');
           const headers = { Authorization: `Bearer ${Token}` };
           const data = { nickname: Username };
-          await axios.patch('http://localhost:9000/users/me/settings/change-username', data, { headers });
+          const res = await axios.patch('http://localhost:9000/users/me/settings/change-username', data, { headers });
           alert('Username changed!');
         }
-    
+
+        if(pass && isPassChanged)
+        {
+          const Token = localStorage.getItem('token');
+          const headers = { Authorization: `Bearer ${Token}` };
+          const data = { password: pass };
+          await axios.patch('http://localhost:9000/users/me/settings/new-password', data, { headers });
+          alert('Password changed!');
+
+        }
         if ((isAvatarChanged && Avatar) || (isUsernameChanged && Username)) {
           window.location.reload();
         } else {
@@ -134,6 +166,7 @@ const Edit = () => {
           <div className="bg-black/20">Change the Avatar:</div>
           <Image src={Preview} alt="" width={200} height={200}/>
           <input
+            key="avatar"
             type="file"
             accept=".jpg, .jpeg, .png"
             onChange={(e) =>
@@ -146,17 +179,17 @@ const Edit = () => {
           <div className='flex flex-col gap-10 bg-black/20'>
           <div className='flex flex-row gap-10'>
           <div className='bg-black/20 flex-1 max-w-md'>Change username:</div>
-          <input className="p-2 rounded-lg  text-white bg-black/60 flex-1 max-w-sm" value={Username} type="text" placeholder='Type new username' onChange={handleNickChange}/>
+          <input className="p-2 rounded-lg  text-white bg-black/60 flex-1 max-w-sm" value={Username} type="text" placeholder='Type new username' onChange={handleNickChange} />
           </div>
-          {/* <div className='flex flex-row gap-10'>
+          <div className='flex flex-row gap-10'>
           <div className='bg-black/20 flex-1 max-w-md'>Change email:</div>
           <input className="p-2 rounded-lg  text-white bg-black/60 flex-1 max-w-sm" type="text" placeholder='Type new email'/>
           </div>
           <div className='bg-black/20'>Change password: </div>
           <div  className='flex flex-row gap-10 justify-center'>
-              <input className="p-2 rounded-lg text-white bg-black/60" type="password" placeholder='Type old password'/>
-              <input  className="p-2 rounded-lg text-white bg-black/60" type="password" placeholder='Type new password'/>
-          </div> */}
+              {/* <input className="p-2 rounded-lg text-white bg-black/60" type="password" placeholder='Type old password'/> */}
+              <input  className="p-2 rounded-lg text-white bg-black/60" type="password" placeholder='Type new password' onChange={handlePassChange}/>
+          </div>
           </div>
   
   
