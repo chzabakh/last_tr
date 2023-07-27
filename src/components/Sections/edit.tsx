@@ -4,6 +4,7 @@ import TwoFac from './TwoFac'
 import { useState, ChangeEvent} from 'react';
 import Image from 'next/image';
 import axios from 'axios';
+import { League_Script } from 'next/font/google';
 
 const Edit = () => {
 
@@ -14,14 +15,22 @@ const Edit = () => {
     const [isAvatarChanged, setIsAvatarChanged] = useState(false);
     const [isUsernameChanged, setIsUsernameChanged] = useState(false);
     const [pass, setpass] = useState('')
+    const [oldpass, setoldpass] = useState('')
     const [isPassChanged, setIsPassChanged] = useState(false)
+    const [isOldPassChanged, setIsOldPassChanged] = useState(false)
+    const [error, seterror] = useState("");
 
-
-
+    
     useEffect(() => {
       getAvatar();
-      getNick();
-    }, []);
+     
+    }, [Preview]);
+
+    // useEffect(() => {
+    //   getNick();
+     
+    // }, [Username]);
+    
     // Function to handle the button click and show the <TwoFac> component
 
 
@@ -29,16 +38,6 @@ const Edit = () => {
       setShowTwoFac(true);
     }
 
-    
-    function handleAvatarPreview(e: ChangeEvent<HTMLInputElement>)
-    {
-      const file = e.target.files?.[0];
-      if(file)
-      {
-        const previewUrl = URL.createObjectURL(file);
-        setPreview(previewUrl);
-      }
-    }
     
     function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
       const file = e.target.files?.[0];
@@ -65,6 +64,14 @@ const Edit = () => {
         setIsPassChanged(true)
     }
 
+
+    function handleOldPassChange(e: ChangeEvent<HTMLInputElement>)
+    {
+        setoldpass(e.target.value)
+        setIsOldPassChanged(true)
+    }
+
+
     async function getAvatar()
     {
       try
@@ -74,6 +81,7 @@ const Edit = () => {
           const res = await axios.get('http://localhost:9000/users/me', {headers}); 
           const avatar = res.data.avatarPic;
           console.log(res.data)
+          console.log(res.data.avatarPic)
           setPreview(avatar);
 
       }
@@ -121,35 +129,75 @@ const Edit = () => {
             });
 
             alert('Avatar updated!');
-          } catch (error) {
-            console.error('Error updating avatar:', error);
-            alert('Failed to update avatar. Please try again.');
+          } 
+          catch(err : any)
+          {
+              if(axios.isAxiosError(err) && err.response)
+              {
+                  const error = err.response.data.message;
+                  seterror(error);
+              }
+              else
+              {
+                alert(err.message);
+              }
           }
         }
         
     
         if (isUsernameChanged && Username) {
-          const Token = localStorage.getItem('token');
-          const headers = { Authorization: `Bearer ${Token}` };
-          const data = { nickname: Username };
-          const res = await axios.patch('http://localhost:9000/users/me/settings/change-username', data, { headers });
-          alert('Username changed!');
+
+          try{
+
+              const Token = localStorage.getItem('token');
+              const headers = { Authorization: `Bearer ${Token}` };
+              const data = { nickname: Username };
+              await axios.patch('http://localhost:9000/users/me/settings/change-username', data, { headers });
+              alert('Username changed!');
+          }
+          catch(err : any)
+          {
+              if(axios.isAxiosError(err) && err.response)
+              {
+                  const error = err.response.data.message;
+                  seterror(error);
+              }
+              else
+              {
+                alert(err.message);
+              }
+          }
         }
 
-        if(pass && isPassChanged)
+        if((pass && oldpass) && isPassChanged && isOldPassChanged)
         {
-          const Token = localStorage.getItem('token');
-          const headers = { Authorization: `Bearer ${Token}` };
-          const data = { password: pass };
-          await axios.patch('http://localhost:9000/users/me/settings/new-password', data, { headers });
-          alert('Password changed!');
+
+          try{
+
+              const Token = localStorage.getItem('token');
+              const headers = { Authorization: `Bearer ${Token}` };
+              const data = {
+                oldPassword: oldpass,
+                newPassword: pass,
+              };
+              await axios.patch('http://localhost:9000/users/me/settings/new-password', data, { headers });
+              alert('Password changed!');
+          }
+          catch(err : any)
+          {
+              if(axios.isAxiosError(err) && err.response)
+              {
+                  const error = err.message;
+                  seterror(error);
+              }
+              else
+              {
+                alert(err.message);
+              }
+          }
 
         }
-        if ((isAvatarChanged && Avatar) || (isUsernameChanged && Username)) {
-          window.location.reload();
-        } else {
-          alert('No changes to save.');
-        }
+
       } catch (err) {
         alert(err);
       }
@@ -172,7 +220,6 @@ const Edit = () => {
             onChange={(e) =>
             {
               handleAvatarChange(e);
-              handleAvatarPreview(e);
             }}
           />
           </div>
@@ -187,7 +234,7 @@ const Edit = () => {
           </div>
           <div className='bg-black/20'>Change password: </div>
           <div  className='flex flex-row gap-10 justify-center'>
-              {/* <input className="p-2 rounded-lg text-white bg-black/60" type="password" placeholder='Type old password'/> */}
+              <input className="p-2 rounded-lg text-white bg-black/60" type="password" placeholder='Type old password'  onChange={handleOldPassChange}/>
               <input  className="p-2 rounded-lg text-white bg-black/60" type="password" placeholder='Type new password' onChange={handlePassChange}/>
           </div>
           </div>
@@ -198,6 +245,7 @@ const Edit = () => {
           <div className='flex justify-between'>
               <button className='bg-black p-3 rounded-2xl' onClick={handleAuthClick}> Activate auth</button>
               <button className='bg-black p-3 rounded-2xl' onClick={handleSaveChanges} >Save changes</button>
+              {error && <p>{error}</p> }
           </div>
           </div>
   
