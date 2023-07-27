@@ -77,7 +77,7 @@ export const Login = () => {
             <h1 className={styles.title}>Log In</h1>
             <label className={styles.label}>Email:</label>
             <input
-              type="email"
+              // type="email"
               placeholder="abc@xyz.com"
               className={styles.input}
               name="email"

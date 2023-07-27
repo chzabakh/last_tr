@@ -1,7 +1,7 @@
 import { useAuth } from "@/pages/auth_context";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Friend = {
   avatarUrl: string;
@@ -9,6 +9,21 @@ type Friend = {
   nickname: string;
   email: string;
 };
+
+interface Sender {
+  nickname: string;
+  avatarUrl: string;
+}
+
+interface Invitation {
+  id: number;
+  sender: Sender;
+  createdAt: string;
+  updatedAt: string;
+  senderID: number;
+  recipientId: number;
+  friendRequestStatus: string;
+}
 
 const FindAFriend = () => {
   const [item, setItem] = useState("6");
@@ -20,23 +35,20 @@ const FindAFriend = () => {
     email: "null",
   });
   const { login, accessToken } = useAuth();
-  const config = {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-    recipientUserName: "player2",
-  };
+  const [invites, setInvites] = useState<Invitation[]>([]);
 
-  console.log("please work [" + accessToken + "]");
+  console.log(invites);
+
+  // console.log("please work [" + accessToken + "]");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInput(e.target.value);
   };
 
-  const getUser = async (username: string) => {
+  const getUser = async (myinput: string) => {
     try {
-      console.log("input: [" + input + "]");
+      console.log("input: [" + myinput + "]");
       const res = await axios.get(
-        `http://localhost:9000/users/${input}/profile`,
+        `http://localhost:9000/users/${myinput}/profile`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -47,7 +59,7 @@ const FindAFriend = () => {
       if (res.data == "") {
         setFriend({
           avatarUrl: "null",
-          id: "null",
+          id: "notfound",
           nickname: "null",
           email: "null",
         });
@@ -57,55 +69,42 @@ const FindAFriend = () => {
       }
     } catch (err) {
       if (err instanceof AxiosError) {
-        console.log("53" + err.response?.data.message);
+        console.log(err.response?.data.message);
       } else {
-        console.log("55" + "Unexpected error", err);
+        console.log("Unexpected error", err);
       }
     }
   };
 
   const handleSubmit = async (
     e: React.MouseEvent<HTMLButtonElement>,
-    input: string
+    myinput: string
   ) => {
     e.preventDefault();
-    await getUser(input);
+    await getUser(myinput);
   };
 
-  const addUser = async (username: string) => {
+  const addUser = async () => {
     try {
-
-
-      // const me = await axios
-      //   .get(`http://localhost:9000/users/me`, {
-      //     headers: {
-      //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-      //     },
-      //   })
-      //   .catch((err) => {
-      //     console.log("shit", err.message);
-      //   });
-      // console.log("hellllllll", me?.data.nickname);
-
+      const me = await axios
+        .get(`http://localhost:9000/users/me`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        .catch((err) => {});
 
       const sendFriendReq = await axios.post(
-        `http://localhost:9000/users/player1/send-friend-request`,
+        `http://localhost:9000/users/${me?.data.nickname}/send-friend-request`,
         {
-          config,
+          recipientUserName: `${input}`,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
       );
-      // const add = await axios.post(
-      //   `http://localhost:9000/users/me`,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-      //     },
-      //   }
-      // );
-      // console.log(me.data.nickname);
-
-      // setFriend(res.data);
-      // console.log(friend.avatarUrl);
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log("89" + err.response?.data.message);
@@ -115,17 +114,66 @@ const FindAFriend = () => {
     }
   };
 
-  const handleAdd = async (
+  const handleAdd = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await addUser();
+  };
+
+  const blockUser = async () => {
+    try {
+      const block = await axios.post(
+        `http://localhost:9000/users/${input}/block-user`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err.response?.data.message);
+      } else {
+        console.log("Unexpected error", err);
+      }
+    }
+  };
+
+  const handleBlock = async (
     e: React.MouseEvent<HTMLButtonElement>,
     input: string
   ) => {
     e.preventDefault();
-    await addUser(input);
+    await blockUser();
   };
+
+  useEffect(() => {
+    const invitations = async () => {
+      try {
+        const res: AxiosResponse<Invitation[]> = await axios.get(
+          `http://localhost:9000/users/friend-request-list`,
+
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setInvites(res.data);
+        console.log("ww", res.data);
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          console.log(err.response?.data.message);
+        } else {
+          console.log("Unexpected error", err);
+        }
+      }
+    };
+    invitations();
+  }, []);
 
   return (
     <>
-      <div className="flex flex-col gap-10 border-2  border-opacity-30 flex-auto h-full  w-[77%] border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+      <div className="overflow-auto flex flex-col gap-10 border-2  border-opacity-30 flex-auto h-full  w-[77%] border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
         <div className="flex border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md spx-5 rounded-[30px]">
           <input
             className="w-full bg-transparent pl-3 focus:outline-none"
@@ -164,7 +212,7 @@ const FindAFriend = () => {
             </p>
             <div className="w-full  absolute bottom-10 flex justify-evenly left-0">
               <button
-                onClick={(e) => handleAdd(e, friend.nickname)}
+                onClick={(e) => handleAdd(e)}
                 className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
               >
                 Add friend
@@ -178,10 +226,31 @@ const FindAFriend = () => {
             </div>
           </div>
         ) : (
-          <div>
-            {" "}
-            <p>User not found</p>
-          </div>
+          <>
+            <div>
+              <p className="mb-10">Received invites: </p>
+              {invites.map((invitation) => (
+                <div
+                  className="flex items-center h-16 my-auto border"
+                  key={invitation.senderID}
+                >
+                  {/* {invitation.senderID} */}
+                  {invitation.sender.nickname}
+                  {/* {getUser()} */}
+
+                    <div className="w-50 rounded-full">
+                      <Image
+                        alt="friendReqPic"
+                        height={20}
+                        width={20}
+                        src={`/avatars/${invitation.sender.avatarUrl}`}
+                      />
+                  </div>
+                </div>
+              ))}
+            </div>
+            {console.log(invites.length)}
+          </>
         )}
       </div>
       {item == "9" ? (
@@ -197,7 +266,10 @@ const FindAFriend = () => {
               />
               <p className="font-serif text-center py-5 text-xs">adolfy</p>
               <div className="gap-5 w-full flex flex-col">
-                <button className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+                <button
+                  onClick={(e) => handleBlock(e, input)}
+                  className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                >
                   Block user
                 </button>
                 <button
@@ -216,8 +288,8 @@ const FindAFriend = () => {
             </div>
             <div className="py-20 pl-40 w-[60%] flex flex-col gap-10">
               <p>Number of matches:</p>
-              <p>Wins:</p>
-              <p>Loses:</p>
+              <p>Win:</p>
+              <p>Loss:</p>
             </div>
           </div>
         </>

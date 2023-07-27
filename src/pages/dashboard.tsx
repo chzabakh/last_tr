@@ -3,17 +3,64 @@ import Chat from "@/components/Sections/chat";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAuth } from "./auth_context";
+import { useRouter } from "next/router";
+import axios, { AxiosError } from "axios";
+import Edit from "@/components/Sections/edit";
+
+type Me = {
+  TwofaAutEnabled: boolean;
+  avatarUrl: string;
+  createdAt: string;
+  email: string;
+  friendStatus: string;
+  id: number;
+  nickname: string;
+  provider: string;
+  state: string;
+  updatedAt: string;
+};
 
 const Dashboard = () => {
   const [item, setItem] = useState("1");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [me, setMe] = useState<Me>({
+    TwofaAutEnabled: false,
+    avatarUrl: "none",
+    createdAt: "none",
+    email: "none",
+    friendStatus: "none",
+    id: -1,
+    nickname: "none",
+    provider: "none",
+    state: "none",
+    updatedAt: "none",
+  });
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = (): void => {
       setWindowWidth(window.innerWidth);
     };
 
+    const getMe = async () => {
+      try {
+        const res = await axios.get(`http://localhost:9000/users/me`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setMe(res.data);
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          console.log(err.response?.data.message);
+        } else {
+          console.log("Unexpected error", err);
+        }
+      }
+    };
+
     window.addEventListener("resize", handleResize);
+    getMe();
 
     return (): void => {
       window.removeEventListener("resize", handleResize);
@@ -23,7 +70,7 @@ const Dashboard = () => {
   // const { accessToken } = useAuth();
 
   // console.log(accessToken);
-
+  console.log("hello this is me", me);
   return (
     <>
       <div className="flex flex-row h-full">
@@ -32,12 +79,14 @@ const Dashboard = () => {
             <div>
               <Image
                 className="object-cover flex-auto mx-auto rounded-[30px]"
-                src={"/ah.jpg"}
+                src={`/avatars/${me.avatarUrl}`}
                 alt="pdp"
                 height={200}
                 width={200}
               />
-              <p className="font-serif text-center py-5 text-xl">adolfy</p>
+              <p className="font-serif text-center py-5 text-xl">
+                {me.nickname}
+              </p>
             </div>
             <div className="w-full flex flex-col pt-[2rem]">
               <button
@@ -100,12 +149,28 @@ const Dashboard = () => {
               >
                 Edit Profile
               </button>
+              <button
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  router.push("/login");
+                }}
+                className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                  item === "6" ? "text-[#D6B3F1] bg-white" : ""
+                }
+              
+              ${item !== "6" ? "hover:bg-white/30" : ""}
+
+              `}
+              >
+                Logout
+              </button>
             </div>
           </div>
         ) : null}
         <div className="h-screen w-full md:w-[90%] flex mx-auto ">
           {item === "1" ? <Leaderboard /> : null}
           {item === "2" ? <Chat /> : null}
+          {item == "5" ? <Edit /> : null}
         </div>
       </div>
     </>
