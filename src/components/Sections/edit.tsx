@@ -21,10 +21,10 @@ const Edit = () => {
     const [error, seterror] = useState("");
 
     
-    useEffect(() => {
-      getAvatar();
+    // useEffect(() => {
+    //   getAvatar();
      
-    }, [Preview]);
+    // }, [Preview]);
 
     // useEffect(() => {
     //   getNick();
@@ -80,6 +80,7 @@ const Edit = () => {
           const headers = {Authorization: `Bearer ${Token}`}
           const res = await axios.get('http://localhost:9000/users/me', {headers}); 
           const avatar = res.data.avatarPic;
+          //p1.png
           console.log(res.data)
           console.log(res.data.avatarPic)
           setPreview(avatar);
@@ -134,7 +135,7 @@ const Edit = () => {
           {
               if(axios.isAxiosError(err) && err.response)
               {
-                  const error = err.response.data.message;
+                  const error = err.message;
                   seterror(error);
               }
               else
@@ -159,7 +160,7 @@ const Edit = () => {
           {
               if(axios.isAxiosError(err) && err.response)
               {
-                  const error = err.response.data.message;
+                  const error = err.message;
                   seterror(error);
               }
               else
