@@ -1,5 +1,5 @@
 // Login.tsx
-import React from "react";
+import React, { useContext } from "react";
 import styles from "../styles/login.module.css";
 import Link from "next/link";
 import { useState } from "react";
@@ -9,7 +9,6 @@ import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
 import { useRouter } from 'next/router';
 import axios, { AxiosError, AxiosResponse } from "axios";
-
 
 
 
@@ -24,6 +23,8 @@ export const Login = () => {
     password: "",
   });
 
+  const {login, accessToken} = useAuth();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
       ...data,
@@ -33,7 +34,7 @@ export const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    postData(data);
+    await postData(data);
   };
 
   const postData = async (data: {
