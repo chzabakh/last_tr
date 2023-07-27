@@ -1,5 +1,7 @@
 import Leaderboard from "@/components/Sections/leaderboard";
 import Chat from "@/components/Sections/chat";
+import Edit from "@/components/Sections/edit";
+
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAuth } from "./auth_context";
@@ -106,6 +108,7 @@ const Dashboard = () => {
         <div className="h-screen w-full md:w-[90%] flex mx-auto ">
           {item === "1" ? <Leaderboard /> : null}
           {item === "2" ? <Chat /> : null}
+          {item == "5" ? <Edit /> : null}
         </div>
       </div>
     </>

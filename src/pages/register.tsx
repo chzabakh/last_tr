@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "../styles/register.module.css";
 import Link from "next/link";
 import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import Image from "next/image";
 import fourty from "../../public/fourty.png";
 import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
+import Dashboard from "./dashboard";
+import { useRouter } from "next/router";
+
 
 export const Register = () => {
-  const [status, setStatus] = useState("0");
-  const [message, setMessage] = useState("");
+
+  const [message, setMessage] = useState([""]);
   const [data, setData] = useState({
     nickname: "",
     email: "",
@@ -24,28 +27,40 @@ export const Register = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     postData(data);
   };
 
-  const postData = (data: {
+  const router = useRouter(); 
+
+  const postData = async (data: {
     nickname: string;
     email: string;
     password: string;
   }) => {
-    axios
-      .post("http://localhost:9000/auth/register", data)
-      .then((res: any) => {
-        console.log(res);
-        setStatus("1");
-        setMessage("Created successfully");
-      })
-      .catch((err: any) => {
-        console.log(err);
-        setStatus("-1");
-        setMessage(err.response.data.message);
-      });
+      try{
+        const res: AxiosResponse = await axios.post("http://localhost:9000/auth/register", data);
+       if(res.data)
+        {
+          localStorage.setItem("token", res.data.access_token);
+          // const hey = localStorage.getItem("token");
+          router.push("/login");
+        }
+      }
+      catch(err : any)
+      {
+          if(axios.isAxiosError(err) && err.response)
+          {
+              const error = err.response.data.message;
+              // console.log(err.response.data)
+              setMessage(error);
+          }
+          else
+          {
+            alert(err.message);
+          }
+      }
   };
 
   return (
@@ -97,8 +112,7 @@ export const Register = () => {
               required
             />
 
-            {status === "1" ? <p>{message}</p> : null}
-            {status === "-1" ? <p>{message}</p> : null}
+            {message.length ? <p>{message}</p> : null}
 
             <button type="submit" className={styles.logIn}>
               Register
