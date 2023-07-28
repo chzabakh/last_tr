@@ -38,10 +38,6 @@ const Dashboard = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const handleResize = (): void => {
-      setWindowWidth(window.innerWidth);
-    };
-
     const getMe = async () => {
       try {
         const res = await axios.get(`http://localhost:9000/users/me`, {
@@ -59,8 +55,17 @@ const Dashboard = () => {
       }
     };
 
-    window.addEventListener("resize", handleResize);
     getMe();
+
+    return (): void => {};
+  }, []);
+
+  useEffect(() => {
+    const handleResize = (): void => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
 
     return (): void => {
       window.removeEventListener("resize", handleResize);
@@ -70,20 +75,22 @@ const Dashboard = () => {
   // const { accessToken } = useAuth();
 
   // console.log(accessToken);
-  console.log("hello this is me", me);
   return (
     <>
       <div className="flex flex-row h-full">
         {windowWidth > 768 ? (
           <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
-            <div>
+            <div>{
+              me.avatarUrl != "none" ?
               <Image
-                className="object-cover flex-auto mx-auto rounded-[30px]"
-                src={`/avatars/${me.avatarUrl}`}
-                alt="pdp"
-                height={200}
-                width={200}
+              className="object-cover flex-auto mx-auto rounded-[30px]"
+              src={`/${me.avatarUrl}`}
+              alt={me.avatarUrl}
+              height={200}
+              width={200}
               />
+              : null
+            }
               <p className="font-serif text-center py-5 text-xl">
                 {me.nickname}
               </p>
@@ -135,7 +142,7 @@ const Dashboard = () => {
 
               `}
               >
-                Match
+                Match history
               </button>
               <button
                 onClick={() => setItem("5")}
