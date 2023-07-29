@@ -31,7 +31,7 @@ const Dmpreview: React.FC<MessageProps> = ({ dm, updateItem }) => {
         >
           <div className="chat-image avatar">
             <div className="w-10 rounded-full">
-              <Image src="/zuck.jpg" width={10} height={10} alt="friend" />
+              <Image src="/jjjj.png" width={100} height={100} alt="friend" />
             </div>
           </div>
           <p>ZAsfsdfsdfsdfswewewewewewep</p>

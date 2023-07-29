@@ -11,7 +11,7 @@ import SmallButton from "@/components/Button/smallButton";
 export default function Homepage() {
   return (
     <Layout>
-      <div className={styles.container} id="home">
+      <div className="flex items-center justify-center mx-0 my-[50px]">
         <div className={styles.item1}>
           <TypeAnimation
             sequence={[
@@ -30,7 +30,7 @@ export default function Homepage() {
             into the fun of Pong Game! Join us now and dive into the fun of Pong
             Game! Join us now and dive into the fun of Pong Game!
           </p>
-          <SmallButton url="login" text="Play now"/>
+          <SmallButton url="login" text="Play now" />
         </div>
         <div className={styles.item2}>
           <Image alt="" src={bg} className={styles.img} />

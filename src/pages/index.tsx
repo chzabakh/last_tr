@@ -7,9 +7,9 @@ const sourceCodePro = Source_Code_Pro({ subsets: ["latin"] });
 export default function Home() {
   return (
     <>
-    <div className="container">
+    <div className="containera">
       <Homepage />
-    </div>ß
+    </div>
     </>
   );
 }

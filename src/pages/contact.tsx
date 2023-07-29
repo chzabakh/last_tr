@@ -12,19 +12,21 @@ const Contact = () => {
   console.log(accessToken, "Hello world");
 
   return (
-    <Layout>
-      <div className={styles.container}>
-        <div>
-          <Image alt="" src={bg} className={styles.imge} />
+    <div className="containera">
+      <Layout>
+        <div className={styles.container}>
+          <div>
+            <Image alt="" src={bg} className={styles.imge} />
+          </div>
+          <form className={styles.form}>
+            <input placeholder="Name" className={styles.input} type="text" />
+            <input placeholder="Email" className={styles.input} type="text" />
+            <textarea placeholder="Your message" className={styles.text} />
+            <SmallButton url="send" text="Send" />
+          </form>
         </div>
-        <form className={styles.form}>
-          <input placeholder="Name" className={styles.input} type="text" />
-          <input placeholder="Email" className={styles.input} type="text" />
-          <textarea placeholder="Your message" className={styles.text} />
-          <SmallButton url="send" text="Send" />
-        </form>
-      </div>
-    </Layout>
+      </Layout>
+    </div>
   );
 };
 

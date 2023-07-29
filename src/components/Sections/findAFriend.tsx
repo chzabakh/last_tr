@@ -2,6 +2,7 @@ import { useAuth } from "@/pages/auth_context";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import ConfirmationButtons from "../Button/confirmationButtons";
 
 type Friend = {
   avatarUrl: string;
@@ -24,6 +25,7 @@ interface Invitation {
   recipientId: number;
   friendRequestStatus: string;
 }
+
 
 const FindAFriend = () => {
   const [item, setItem] = useState("6");
@@ -171,6 +173,70 @@ const FindAFriend = () => {
     invitations();
   }, []);
 
+
+  const handleRemoveObject = (senderId: number) => {
+    const newInvites = invites.filter(item => item.senderID !== senderId); // Filter out the object with the specified ID
+    setInvites(newInvites); // Update the state with the new array
+  };
+
+  const accDen = async (nickname: string, senderId: number, action: string) => {
+    console.log(action);
+    console.log("as",invites);
+   console.log(senderId);
+    handleRemoveObject(senderId);
+    const me = await axios
+          .get(`http://localhost:9000/users/me`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          })
+          .catch((err) => {});
+    if (action === "accept")
+    {
+  
+      try {
+        const acceptFriend = await axios.post(
+          `http://localhost:9000/users/${me?.data.nickname}/friend-request/${nickname}/accept`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+          );
+        } catch (err) {
+          if (err instanceof AxiosError) {
+            console.log(err.response?.data.message);
+          } else {
+            console.log("Unexpected error", err);
+          }
+        }
+      }
+      else if (action === "decline")
+      {
+        try {
+          const denyFriend = await axios.post(
+            `http://localhost:9000/users/${nickname}/reject`,
+            {
+              
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+            );
+          } catch (err) {
+            if (err instanceof AxiosError) {
+              console.log(err.response?.data.message);
+            } else {
+              console.log("Unexpected error", err);
+            }
+          }
+      }
+  };
+  
+  const handleFrReq = async (nickname:string, senderId: number, action: string) => {
+    await accDen(nickname, senderId, action);
+  };
+
   return (
     <>
       <div className="overflow-auto flex flex-col gap-10 border-2  border-opacity-30 flex-auto h-full  w-[77%] border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
@@ -201,8 +267,8 @@ const FindAFriend = () => {
           <div className="flex flex-col border-2  border-opacity-30 mx-auto w-[70%] min-h-[300px] h-[70%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
             <Image
               className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
-              // src={`/avatars/player2.png`}
-              src={`/avatars/${friend.avatarUrl}`}
+              // src={`/player2.png`}
+              src={`/${friend.avatarUrl}`}
               alt="pdp"
               height={80}
               width={80}
@@ -231,25 +297,84 @@ const FindAFriend = () => {
               <p className="mb-10">Received invites: </p>
               {invites.map((invitation) => (
                 <div
-                  className="flex items-center h-16 my-auto border"
+                  className="flex items-center h-16 my-auto fborder"
                   key={invitation.senderID}
                 >
                   {/* {invitation.senderID} */}
-                  {invitation.sender.nickname}
                   {/* {getUser()} */}
 
-                    <div className="w-50 rounded-full">
+                  <div className="chat-image avatar my-auto mx-3">
+                    <div className="w-14 rounded-full">
                       <Image
                         alt="friendReqPic"
-                        height={20}
-                        width={20}
-                        src={`/avatars/${invitation.sender.avatarUrl}`}
+                        height={40}
+                        width={40}
+                        src={`/${invitation.sender.avatarUrl}`}
                       />
+                    </div>
                   </div>
+                  <p className="mx-3 text-xl">{invitation.sender.nickname}</p>
+
+
+
+
+
+                  {/* <ConfirmationButtons user={invitation.sender.nickname} /> */}
+
+
+
+
+
+
+                  <div>
+      <button
+        onClick={() => {
+          handleFrReq(invitation.sender.nickname, invitation.senderID, "accept");
+        }}
+        className="btn btn-check mx-2 w-9 h-9"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5 text-white"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M6.293 11.293a1 1 0 011.414 0L10 12.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </button>
+      <button
+        onClick={() => {
+          handleFrReq(invitation.sender.nickname, invitation.senderID, "decline");
+        }}
+        className="btn btn-decline mx-2 w-9 h-9"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5 text-white"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
+
+
+
+
+
+
                 </div>
               ))}
             </div>
-            {console.log(invites.length)}
           </>
         )}
       </div>
