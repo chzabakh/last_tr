@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect } from 'react'
-import TwoFac from './twoFac'
+import TwoFac from './TwoFac'
 import { useState, ChangeEvent} from 'react';
 import Image from 'next/image';
 import axios from 'axios';
@@ -78,8 +78,8 @@ const Edit = () => {
       {
           const Token = localStorage.getItem('token');
           const headers = {Authorization: `Bearer ${Token}`}
-          const res = await axios.get('http://localhost:9000/users/me', {headers}); 
-          const avatar = res.data.avatarPic;
+          const res = await axios.get('http://localhost:9000/users/me/${Preview}', {headers}); 
+          const avatar = res.data.avatarUrl;
           //p1.png
           console.log(res.data)
           console.log(res.data.avatarPic)
@@ -178,8 +178,8 @@ const Edit = () => {
               const Token = localStorage.getItem('token');
               const headers = { Authorization: `Bearer ${Token}` };
               const data = {
-                oldPassword: oldpass,
-                newPassword: pass,
+                password: oldpass,
+                new_password: pass,
               };
               await axios.patch('http://localhost:9000/users/me/settings/new-password', data, { headers });
               alert('Password changed!');
@@ -209,34 +209,37 @@ const Edit = () => {
     <>
     {
       !showTwoFac ? (
-        <div className="my-20 h-[70%] gap-3 justify-center flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-        <div className="border-2 flex overflow-scroll flex-col justify-between gap-10  h-[90%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-          <div className='flex flex-col gap-10 bg-black/20'>
-          <div className="bg-black/20">Change the Avatar:</div>
-          <Image src={Preview} alt="" width={200} height={200}/>
-          <input
-            key="avatar"
-            type="file"
-            accept=".jpg, .jpeg, .png"
-            onChange={(e) =>
-            {
-              handleAvatarChange(e);
-            }}
-          />
+        <div className="my-20 h-[80%] gap-3 justify-center flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+        <div className="border-2 flex overflow-scroll flex-col justify-between  h-[97%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+          <div className='flex'>
+              <div className="flex-1 w-[50%]">Change the Avatar:</div>
+            <div className='w-[50%]'>
+              <Image src={Preview} alt="" width={200} height={200} className="border-2 self-center"/>
+              <input
+                key="avatar"
+                type="file"
+                accept=".jpg, .jpeg, .png"
+                className='my-5 bg-black/20'
+                onChange={(e) =>
+                {
+                  handleAvatarChange(e);
+                }}
+              />
+            </div>
           </div>
-          <div className='flex flex-col gap-10 bg-black/20'>
-          <div className='flex flex-row gap-10'>
-          <div className='bg-black/20 flex-1 max-w-md'>Change username:</div>
-          <input className="p-2 rounded-lg  text-white bg-black/60 flex-1 max-w-sm" value={Username} type="text" placeholder='Type new username' onChange={handleNickChange} />
+          <div className='flex flex-col gap-10 '>
+          <div className='flex  w-full flex-row '>
+          <div className='w-[50%]'>Change username:</div>
+          <input className="p-2 rounded-lg w-[50%] text-white bg-black/20" value={Username} type="text" placeholder='Type new username' onChange={handleNickChange} />
           </div>
-          <div className='flex flex-row gap-10'>
-          <div className='bg-black/20 flex-1 max-w-md'>Change email:</div>
-          <input className="p-2 rounded-lg  text-white bg-black/60 flex-1 max-w-sm" type="text" placeholder='Type new email'/>
+          <div className='flex w-full flex-row '>
+          <div className='  w-[50%]'>Change email:</div>
+          <input className="p-2 rounded-lg w-[50%] text-white bg-black/20" type="text" placeholder='Type new email'/>
           </div>
-          <div className='bg-black/20'>Change password: </div>
-          <div  className='flex flex-row gap-10 justify-center'>
-              <input className="p-2 rounded-lg text-white bg-black/60" type="password" placeholder='Type old password'  onChange={handleOldPassChange}/>
-              <input  className="p-2 rounded-lg text-white bg-black/60" type="password" placeholder='Type new password' onChange={handlePassChange}/>
+          <div className=''>Change password: </div>
+          <div  className='flex flex-row justify-center flex-wrap'>
+              <input className="p-2 rounded-lg text-white m-4 bg-black/20" type="password" placeholder='Type old password'  onChange={handleOldPassChange}/>
+              <input  className="p-2 rounded-lg text-white m-4 bg-black/20 mb-5" type="password" placeholder='Type new password' onChange={handlePassChange}/>
           </div>
           </div>
   
@@ -244,8 +247,8 @@ const Edit = () => {
           <div className='flex flex-col justify-between'>
          
           <div className='flex justify-between'>
-              <button className='bg-black p-3 rounded-2xl' onClick={handleAuthClick}> Activate auth</button>
-              <button className='bg-black p-3 rounded-2xl' onClick={handleSaveChanges} >Save changes</button>
+              <button className='border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl ' onClick={handleAuthClick}> Activate auth</button>
+              <button className='border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white  p-3 rounded-2xl' onClick={handleSaveChanges} >Save changes</button>
               {error && <p>{error}</p> }
           </div>
           </div>
