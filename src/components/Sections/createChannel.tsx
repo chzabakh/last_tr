@@ -32,17 +32,17 @@ const CreateChannel = () => {
       ) : (
         <>
           {
-            <div className="flex p-3 flex-col px-20 border-2 items-center gap-2 h-full  w-[77%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
+            <div className="flex p-1 h-[90%] flex-col  px-2 border-2 items-center gap-2 w-[90%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
               <button
-                className="bg-black/20 self-start w-[100px] border-4 rounded-full"
+                className="self-start hover:border-[#2dd4bf] hover:transition  w-[100px] border-[3px] border-opacity-40 border-violet-400 rounded-full"
                 onClick={handleback}
               >
                 Back
               </button>
-              <h1 className="self-start my-10">Create a channel:</h1>
-              <div className="bg-black/20 w-full  h-[70%]  flex justify-between items-center px-5">
+              <h1 className="self-start my-1">Create a channel:</h1>
+              <div className="w-full h-[78%]  flex justify-between items-center px-1">
                 <div className="flex flex-col justify-between gap-10">
-                  <div>Select type of channel:</div>
+                  <div className="text-xs">Select type of channel:</div>
                   <div className="flex flex-col gap-1 flex-1">
                     <div>
                       <input
@@ -95,11 +95,11 @@ const CreateChannel = () => {
                     </div>
                   </div>
                 </div>
-                <div className="bg-black/20 p-5 flex flex-col h-[70%] gap-10  w-[50%]">
-                  <div>
+                <div className="border-[3px] border-opacity-50 border-violet-400 rounded-xl p-3 flex justify-center flex-col h-[90%] w-[60%]">
+                  <div className="self-start text-md">
                     <h1>Channel Information:</h1>
                   </div>
-                  <div className="bg-black/20 p-5 h-full flex flex-col justify-evenly">
+                  <div className=" p-5 h-full flex flex-col justify-evenly">
                     {active && active === "public" && <PublicChannel />}
                     {active && active === "private" && <PrivateChannel />}
                     {active && active === "protected" && <ProtectedChannel />}
