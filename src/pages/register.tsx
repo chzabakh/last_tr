@@ -62,7 +62,7 @@ export const Register = () => {
           </button>
           <div className={styles.or}>Or</div>
         </div>
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={styles.formy} onSubmit={handleSubmit}>
           <div className={styles.infos}>
             <h1 className={styles.title}>Sign Up</h1>
             <label className={styles.label}>username:</label>

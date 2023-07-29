@@ -64,15 +64,15 @@ export const Login = () => {
         <div className={styles.auth}>
           <button className={styles.button}>
             <Image className={styles.logo} alt="" src={fourty} />
-            <div>Login with Intra</div>
+            <p className="text-xs sm:text-xl">Login with Intra</p>
           </button>
           <button className={styles.button}>
             <Image className={styles.logoTwo} alt="" src={gog} />
-            Login with Google
+           <p className="text-xs sm:text-xl">Login with Google</p>
           </button>
           <div className={styles.or}>Or</div>
         </div>
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={styles.formy} onSubmit={handleSubmit}>
           <div className={styles.infos}>
             <h1 className={styles.title}>Log In</h1>
             <label className={styles.label}>Email:</label>
