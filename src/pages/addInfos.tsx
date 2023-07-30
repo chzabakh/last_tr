@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
+
+
 const addInfos = () => {
+
+    const [Avatar, setAvatar] = useState<File | null>(null);
   return (
     <>
     <div className="my-20 h-[35rem] gap-3 flex justify-center items-center flex-col w-[50%]  mx-auto  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
@@ -32,4 +36,6 @@ const addInfos = () => {
   )
 }
 
-export default addInfos
+export default addInfos;
+
+
