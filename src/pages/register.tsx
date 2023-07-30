@@ -7,8 +7,12 @@ import Image from "next/image";
 import fourty from "../../public/fourty.png";
 import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
+import { Route } from "react-router-dom";
+import { useRouter } from "next/router";
 
 export const Register = () => {
+
+  const router = useRouter();
   const [status, setStatus] = useState("0");
   const [message, setMessage] = useState("");
   const [data, setData] = useState({
@@ -40,6 +44,8 @@ export const Register = () => {
         console.log(res);
         setStatus("1");
         setMessage("Created successfully");
+        router.push('/login')
+        
       })
       .catch((err: any) => {
         console.log(err);

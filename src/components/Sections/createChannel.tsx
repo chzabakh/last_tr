@@ -95,7 +95,7 @@ const CreateChannel = () => {
                     </div>
                   </div>
                 </div>
-                <div className="border-[3px] border-opacity-50 border-violet-400 rounded-xl p-3 flex justify-center flex-col h-[90%] w-[60%]">
+                <div className="border-[3px] border-opacity-50 border-violet-400 rounded-xl p-3 flex justify-center flex-col h-[100%] w-[70%]">
                   <div className="self-start text-md">
                     <h1>Channel Information:</h1>
                   </div>

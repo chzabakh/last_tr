@@ -1,17 +1,86 @@
-import React from 'react'
+import axios from 'axios';
+import React, { ChangeEvent, useState } from 'react'
+import Select ,  { ActionMeta, MultiValue } from "react-select";
+
+const customStyles = {
+  control: (provided: any) => ({
+    ...provided,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    outline: 'none',
+    color: 'white',
+    border: 'none',
+    boxShadow: '#800080',
+    borderRadius: '29px',
+    background: 'transparent', 
+  }),
+  option: (provided: any) => ({
+    ...provided,
+    color: 'rgba(0, 0, 0, 43)',
+    backgroundColor: 'white'
+  }),
+  multiValueLabel: (provided: any) => ({
+    ...provided,
+    color: 'black',
+    opacity: '60%'
+  }),
+};
+
+interface Friend {
+  value: number;
+  label: string;
+}
+
 
 const PrivateChannel = () => {
+  const [roomName, setChannelName] = useState("");
+  const [selectedOptions, setSelectedOptions] = useState<Friend[] | null>(null);
+
+
+  function handleName(e : ChangeEvent<HTMLInputElement>)
+  {
+    setChannelName(e.target.value);
+  }
+
+  const friends: Friend[] = [
+    { value: 1, label: 'oumaima' },
+    { value: 2, label: 'oum' },
+    { value: 3, label: 'oumma' },
+    { value: 4, label: 'oum' },
+    { value: 5, label: 'ouima' },
+    { value: 6, label: 'oum' },
+    { value: 7, label: 'oumaima' },
+    { value: 8, label: 'oum' },
+    { value: 9, label: 'omaima' },
+    { value: 10, label: 'oum' },
+    { value: 11, label: 'oumaima' },
+    { value: 12, label: 'om' },
+
+  ];
+
+  function setHandle(selected: MultiValue<Friend>, actionMeta: ActionMeta<Friend>)
+  {
+    setSelectedOptions(selected as Friend[])
+  }
+
   return (
     <>
-     <label htmlFor="channelname" className="block mb-2 text-sm font-medium text-white dark:text-white">Channel name:</label>
-    <input type="text" id="first_name" className="focus:border-none outline-none  border-gray-300 text-white/60 text-sm rounded-lg p-3 w-full bg-black/40" placeholder="Enter name..." required></input>
-    <label htmlFor="friendstoinvite" className="block mb-2 text-sm font-medium text-white dark:text-white">Select friends to invite:</label>
-    <input type="text" id="first_name" className="focus:border-none outline-none  border-gray-300 text-white/60 text-sm rounded-lg p-3 w-full bg-black/40" placeholder="I want to invite..." required></input>
+     
+    <label htmlFor="channelname" className="block mb-2 text-sm font-medium text-white dark:text-white">Channel name:</label>
+
+
+    <input type="text" id="first_name" className="focus:border-none outline-none  border-gray-300 text-white/60 text-sm rounded-lg p-3 w-full bg-black/40" onChange={handleName} placeholder="Enter name..." required></input>
+
+
+    <label htmlFor="friendstoinvite" className="block mb-2 text-sm font-medium text-white dark:text-white" >Select friends to invite:</label>
+
+
+    <Select options={friends} onChange={setHandle} isMulti className='text-black bg-black/40' styles={customStyles}/>
+
     <button className="border-opacity-40 border-violet-400 hover:border-[#2dd4bf]
-  border-[3px] p-2 rounded-full w-[150px] self-center text-xs mt-3">Create Channel</button>
+  border-[3px] p-2 rounded-full w-[150px] self-center text-xs mt-3" >Create Channel</button>
     </>
 
   )
 }
 
-export default PrivateChannel
+export default PrivateChannel;
