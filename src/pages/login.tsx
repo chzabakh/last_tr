@@ -70,7 +70,8 @@ export const Login = () => {
     } else {
       window.addEventListener('message', (event) => {
         if (event.source === newWindow && event.data.authenticated) {
-          axios.get('http://localhost:9000/auth/42/login')
+          
+          axios.post('http://localhost:9000/auth/42/login')
             .then((response) => {
               if(response)
               {
