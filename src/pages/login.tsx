@@ -8,12 +8,13 @@ import Image from "next/image";
 import fourty from "../../public/fourty.png";
 import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { useAuth } from "./auth_context";
 
 export const Login = () => {
 
   const router = useRouter();
+
   const [loginStatus, setLoginStatus] = useState('');
   const [status, setStatus] = useState("0");
   const [message, setMessage] = useState("");
@@ -59,31 +60,47 @@ export const Login = () => {
   };
 
   
-  async function handleLoginClick() {
-    try {
-      const loginUrl = 'http://localhost:9000/auth/42/callback';
-      
-      // Open a new window and navigate to the login page URL
-      const newWindow = window.open(loginUrl, '_blank');
+
+  function openNewWindow() {
+    // Open a new window and navigate to the login page URL
+    const loginUrl: string = 'http://localhost:9000/auth/42/callback';
+    const newWindow = window.open(loginUrl, '_blank');
   
-      // If the new window is blocked by the browser's pop-up blocker, alert the user
-      if (!newWindow) {
-        alert('Pop-up blocked. Please allow pop-ups for this site and try again.');
-      }
-    } catch (error) {
-      setLoginStatus('An error occurred during login.');
-      alert('error');
+    // If the new window is blocked by the browser's pop-up blocker, alert the user
+    if (!newWindow) {
+      alert('Pop-up blocked. Please allow pop-ups for this site and try again.');
+    } else {
+      // Add event listener to listen for messages from the child window
+      window.addEventListener('message', (event) => {
+        // Check if the message is from the child window and contains the required data
+        if (event.source === newWindow && event.data.authenticated) {
+          // Make a request to the backend to check authentication status or access tokens
+          axios.get('http://localhost:9000/auth/42/login')
+            .then((response) => {
+              // Handle the response from the backend
+              if(response)
+              {
+                router.push('/dashboard')
+                alert('yeey')
+
+              }
+              console.log(response.data);
+            })
+            .catch((error) => {
+              // Handle error
+              console.log(error);
+            });
+        }
+      });
     }
   }
-  
-  
-  
+
 
   return (
     <Layout>
       <div className={styles.container}>
         <div className={styles.auth}>
-          <button className={styles.button} onClick={handleLoginClick}>
+          <button className={styles.button} onClick={() => openNewWindow()}>
             <Image className={styles.logo} alt="" src={fourty} />
             <p className="text-xs sm:text-xl">Login with Intra</p>
           </button>
