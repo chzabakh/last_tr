@@ -10,6 +10,7 @@ import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
 import Router, { useRouter } from 'next/router';
 import { useAuth } from "./auth_context";
+import addInfos from "./addInfos";
 
 export const Login = () => {
 
@@ -45,7 +46,12 @@ export const Login = () => {
       localStorage.setItem("token", tok);
       console.log("local storage: "+localStorage.getItem("token"));
       login(tok);
-      router.push('/dashboard');
+
+      //check if the infos are set with the added value in response
+      //let us pretend that is actually not set
+
+      router.push('/addInfos');
+      // router.push('/dashboard');
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
