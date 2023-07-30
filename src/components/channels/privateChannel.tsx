@@ -77,7 +77,7 @@ const PrivateChannel = () => {
     <Select options={friends} onChange={setHandle} isMulti className='text-black bg-black/40' styles={customStyles}/>
 
     <button className="border-opacity-40 border-violet-400 hover:border-[#2dd4bf]
-  border-[3px] p-2 rounded-full w-[150px] self-center text-xs mt-3" >Create Channel</button>
+     border-[3px] p-2 rounded-full w-[150px] self-center text-xs mt-3" >Create Channel</button>
     </>
 
   )

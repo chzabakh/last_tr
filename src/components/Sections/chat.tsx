@@ -3,6 +3,7 @@ import FindAFriend from "./findAFriend";
 import Channels from "@/components/Sections/channels";
 import Dms from "./dms";
 import Messages from "./messages";
+import Friends from "./friends";
 
 const Chat = () => {
   const [item, setItem] = useState("6");
@@ -41,6 +42,17 @@ const Chat = () => {
             Direct messages
           </button>
           <button
+            onClick={() => setItem("9")}
+            className={`p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
+              item === "9" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
+            }
+              
+
+              `}
+          >
+            Friends
+          </button>
+          <button
             onClick={() => setItem("8")}
             className={`p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
               item === "8" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
@@ -59,6 +71,7 @@ const Chat = () => {
         {/* {item == "7" ? <Dms/> : null} */}
         {item == "7" ? <Messages dm={dm} updateItem={updateItem} /> : null}
         {item === "8" ? <Channels /> : null}
+        {item === "9" ? <Friends /> : null}
       </div>
     </>
   );
