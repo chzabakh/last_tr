@@ -175,31 +175,26 @@ const FindAFriend = () => {
   const handleRemoveObject = (senderId: number) => {
     const newInvites = invites.filter((item) => item.senderID !== senderId); // Filter out the object with the specified ID
     setInvites(newInvites); // Update the state with the new array
+    friendsList();
   };
 
   const accDen = async (nickname: string, senderId: number, action: string) => {
     console.log(action);
     console.log("as", invites);
     console.log(senderId);
-    handleRemoveObject(senderId);
-    const me = await axios
-      .get(`http://localhost:9000/users/me`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .catch((err) => {});
     if (action === "accept") {
       try {
         const acceptFriend = await axios.post(
           `http://localhost:9000/users/friend-request/${nickname}/accept`,
+          {},
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );
-        console.log(acceptFriend);
+        // console.log(acceptFriend);
+        handleRemoveObject(senderId);
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -211,12 +206,14 @@ const FindAFriend = () => {
       try {
         const denyFriend = await axios.post(
           `http://localhost:9000/users/${nickname}/reject`,
+          {},
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );
+        handleRemoveObject(senderId);
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -233,6 +230,33 @@ const FindAFriend = () => {
     action: string
   ) => {
     await accDen(nickname, senderId, action);
+  };
+
+  const friendsList = async () => {
+    try {
+      const me = await axios
+        .get(`http://localhost:9000/users/me`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        .catch((err) => {});
+
+      const sendFriendReq = await axios.get(
+        `/users/${me?.data.nickname}/friendlist`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log("89" + err.response?.data.message);
+      } else {
+        console.log("91" + "Unexpected error", err);
+      }
+    }
   };
 
   return (
@@ -291,16 +315,15 @@ const FindAFriend = () => {
           </div>
         ) : (
           <>
-            <div>
+            <div className="flex ">
+              <div className="border border-red-500 w-[50%]">
+
               <p className="mb-10">Received invites: </p>
               {invites.map((invitation) => (
                 <div
-                  className="flex items-center h-16 my-auto fborder"
-                  key={invitation.senderID}
+                className="flex items-center h-16 my-auto fborder"
+                key={invitation.senderID}
                 >
-                  {/* {invitation.senderID} */}
-                  {/* {getUser()} */}
-
                   <div className="chat-image avatar my-auto mx-3">
                     <div className="w-14 rounded-full">
                       <Image
@@ -308,12 +331,10 @@ const FindAFriend = () => {
                         height={40}
                         width={40}
                         src={`/${invitation.sender.avatarUrl}`}
-                      />
+                        />
                     </div>
                   </div>
                   <p className="mx-3 text-xl">{invitation.sender.nickname}</p>
-
-                  {/* <ConfirmationButtons user={invitation.sender.nickname} /> */}
 
                   <div>
                     <button
@@ -322,21 +343,21 @@ const FindAFriend = () => {
                           invitation.sender.nickname,
                           invitation.senderID,
                           "accept"
-                        );
-                      }}
-                      className="btn btn-check mx-2 w-9 h-9"
-                    >
+                          );
+                        }}
+                        className="btn btn-check mx-2 w-9 h-9"
+                        >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-5 w-5 text-white"
                         viewBox="0 0 20 20"
                         fill="currentColor"
-                      >
+                        >
                         <path
                           fillRule="evenodd"
                           d="M6.293 11.293a1 1 0 011.414 0L10 12.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
                           clipRule="evenodd"
-                        />
+                          />
                       </svg>
                     </button>
                     <button
@@ -345,26 +366,32 @@ const FindAFriend = () => {
                           invitation.sender.nickname,
                           invitation.senderID,
                           "decline"
-                        );
-                      }}
-                      className="btn btn-decline mx-2 w-9 h-9"
-                    >
+                          );
+                        }}
+                        className="btn btn-decline mx-2 w-9 h-9"
+                        >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-5 w-5 text-white"
                         viewBox="0 0 20 20"
                         fill="currentColor"
-                      >
+                        >
                         <path
                           fillRule="evenodd"
                           d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                           clipRule="evenodd"
-                        />
+                          />
                       </svg>
                     </button>
                   </div>
                 </div>
               ))}
+
+        </div>
+        <div  className="border border-yellow-500 w-[50%]">
+            <p className="mb-10">Friends list: </p>
+
+        </div>
             </div>
           </>
         )}
@@ -415,3 +442,4 @@ const FindAFriend = () => {
 };
 
 export default FindAFriend;
+
