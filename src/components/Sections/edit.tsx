@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect } from 'react'
-import TwoFac from './TwoFac'
+import TwoFac from './twoFac'
 import { useState, ChangeEvent} from 'react';
 import Image from 'next/image';
 import axios from 'axios';
