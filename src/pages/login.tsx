@@ -50,8 +50,8 @@ export const Login = () => {
       //check if the infos are set with the added value in response
       //let us pretend that is actually not set
 
-      router.push('/addInfos');
-      // router.push('/dashboard');
+      // router.push('/addInfos');
+      router.push('/dashboard');
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
