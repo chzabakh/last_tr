@@ -8,15 +8,14 @@ import Image from "next/image";
 import fourty from "../../public/fourty.png";
 import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
-import Router, { useRouter } from 'next/router';
+import Router, { useRouter } from "next/router";
 import { useAuth } from "./auth_context";
 import addInfos from "./addInfos";
 
 export const Login = () => {
-
   const router = useRouter();
 
-  const [loginStatus, setLoginStatus] = useState('');
+  const [loginStatus, setLoginStatus] = useState("");
   const [status, setStatus] = useState("0");
   const [message, setMessage] = useState("");
 
@@ -25,7 +24,7 @@ export const Login = () => {
     password: "",
   });
 
-  const {login, accessToken} = useAuth();
+  const { login, accessToken } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
@@ -44,58 +43,53 @@ export const Login = () => {
       const res = await axios.post("http://localhost:9000/auth/login", data);
       const tok = res.data.access_token;
       localStorage.setItem("token", tok);
-      console.log("local storage: "+localStorage.getItem("token"));
+      console.log("local storage: " + localStorage.getItem("token"));
       login(tok);
 
       //check if the infos are set with the added value in response
       //let us pretend that is actually not set
 
       // router.push('/addInfos');
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
 
-        setStatus('-1');
+        setStatus("-1");
         setMessage(err.response?.data.message);
-
       } else {
-        console.log('Unexpected error', err);
+        console.log("Unexpected error", err);
       }
     }
   };
 
-  
-
   function openNewWindow() {
-    const loginUrl: string = 'http://localhost:9000/auth/42/callback';
-    const newWindow = window.open(loginUrl, '_blank');
-  
-    if (!newWindow) {
-      alert('Pop-up blocked. Please allow pop-ups for this site and try again.');
-    } else {
-      window.addEventListener('message', (event) => {
-        if (event.source === newWindow && event.data.authenticated) {
-          
-          axios.post('http://localhost:9000/auth/42/login')
-            .then((response) => {
-              if(response)
-              {
-                router.push('/dashboard')
-                alert('yeey')
+    const loginUrl: string = "http://localhost:9000/auth/42/callback";
+    const newWindow = window.open(loginUrl, "_blank");
 
+    if (!newWindow) {
+      alert(
+        "Pop-up blocked. Please allow pop-ups for this site and try again."
+      );
+    } else {
+      window.addEventListener("message", (event) => {
+        if (event.source === newWindow && event.data.authenticated) {
+          axios
+            .post("http://localhost:9000/auth/42/login")
+            .then((response) => {
+              if (response) {
+                router.push("/dashboard");
+                alert("yeey");
               }
               console.log(response.data);
             })
             .catch((error) => {
-       
               console.log(error);
             });
         }
       });
     }
   }
-
 
   return (
     <Layout>
@@ -107,7 +101,7 @@ export const Login = () => {
           </button>
           <button className={styles.button}>
             <Image className={styles.logoTwo} alt="" src={gog} />
-           <p className="text-xs sm:text-xl">Login with Google</p>
+            <p className="text-xs sm:text-xl">Login with Google</p>
           </button>
           <div className={styles.or}>Or</div>
         </div>
@@ -122,9 +116,9 @@ export const Login = () => {
               name="email"
               value={data.email}
               onChange={handleChange}
-              onClick={() => setStatus('0')}
+              onClick={() => setStatus("0")}
               required
-              />
+            />
             <label className={styles.label}>Password:</label>
             <input
               type="password"
@@ -133,11 +127,13 @@ export const Login = () => {
               name="password"
               value={data.password}
               onChange={handleChange}
-              onClick={() => setStatus('0')}
+              onClick={() => setStatus("0")}
               required
             />
-            {status === '-1' ? <p>{message}</p> : null}
-            <button type="submit" className={styles.logIn}>Login</button>
+            {status === "-1" ? <p>{message}</p> : null}
+            <button type="submit" className={styles.logIn}>
+              Login
+            </button>
           </div>
           <Link href="register">You do not have an account ? Sign Up.</Link>
         </form>

@@ -84,7 +84,7 @@ const Dashboard = () => {
               me.avatarUrl != "none" ?
               <Image
               className="object-cover flex-auto mx-auto rounded-[30px]"
-              src={`/${me.avatarUrl}`}
+              src={`/uploads/${me.avatarUrl}`}
               alt={me.avatarUrl}
               height={200}
               width={200}
@@ -92,7 +92,7 @@ const Dashboard = () => {
               : null
             }
               <p className="font-serif text-center py-5 text-xl">
-                {me.nickname}
+                {me.nickname}{me.avatarUrl}
               </p>
             </div>
             <div className="w-full flex flex-col pt-[2rem]">

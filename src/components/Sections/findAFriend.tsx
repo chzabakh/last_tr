@@ -37,8 +37,9 @@ const FindAFriend = () => {
   });
   const { login, accessToken } = useAuth();
   const [invites, setInvites] = useState<Invitation[]>([]);
+  const [myfriends, setMyfriends] = useState<Friend[]>([]);
 
-  console.log(invites);
+  // console.log(invites);
 
   // console.log("please work [" + accessToken + "]");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -160,7 +161,7 @@ const FindAFriend = () => {
           }
         );
         setInvites(res.data);
-        console.log("ww", res.data);
+        // console.log("ww", res.data);
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -170,12 +171,12 @@ const FindAFriend = () => {
       }
     };
     invitations();
+    friendsList();
   }, []);
 
   const handleRemoveObject = (senderId: number) => {
     const newInvites = invites.filter((item) => item.senderID !== senderId); // Filter out the object with the specified ID
     setInvites(newInvites); // Update the state with the new array
-    friendsList();
   };
 
   const accDen = async (nickname: string, senderId: number, action: string) => {
@@ -243,13 +244,15 @@ const FindAFriend = () => {
         .catch((err) => {});
 
       const sendFriendReq = await axios.get(
-        `/users/${me?.data.nickname}/friendlist`,
+        `http://localhost:9000/users/${me?.data.nickname}/friendlist`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
+      setMyfriends(sendFriendReq.data);
+      console.log("haa", myfriends);
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log("89" + err.response?.data.message);
@@ -317,81 +320,84 @@ const FindAFriend = () => {
           <>
             <div className="flex ">
               <div className="border border-red-500 w-[50%]">
-
-              <p className="mb-10">Received invites: </p>
-              {invites.map((invitation) => (
-                <div
-                className="flex items-center h-16 my-auto fborder"
-                key={invitation.senderID}
-                >
-                  <div className="chat-image avatar my-auto mx-3">
-                    <div className="w-14 rounded-full">
-                      <Image
-                        alt="friendReqPic"
-                        height={40}
-                        width={40}
-                        src={`/${invitation.sender.avatarUrl}`}
+                <p className="mb-10">Received invites: </p>
+                {invites.map((invitation) => (
+                  <div
+                    className="flex items-center h-16 my-auto fborder"
+                    key={invitation.senderID}
+                  >
+                    <div className="chat-image avatar my-auto mx-3">
+                      <div className="w-14 rounded-full">
+                        <Image
+                          alt="friendReqPic"
+                          height={40}
+                          width={40}
+                          src={`/uploads/${invitation.sender.avatarUrl}`}
                         />
+                      </div>
                     </div>
-                  </div>
-                  <p className="mx-3 text-xl">{invitation.sender.nickname}</p>
+                    <p className="mx-3 text-xl">{invitation.sender.nickname}</p>
 
-                  <div>
-                    <button
-                      onClick={() => {
-                        handleFrReq(
-                          invitation.sender.nickname,
-                          invitation.senderID,
-                          "accept"
+                    <div>
+                      <button
+                        onClick={() => {
+                          handleFrReq(
+                            invitation.sender.nickname,
+                            invitation.senderID,
+                            "accept"
                           );
                         }}
                         className="btn btn-check mx-2 w-9 h-9"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 text-white"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
                         >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-white"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        >
-                        <path
-                          fillRule="evenodd"
-                          d="M6.293 11.293a1 1 0 011.414 0L10 12.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                          clipRule="evenodd"
+                          <path
+                            fillRule="evenodd"
+                            d="M6.293 11.293a1 1 0 011.414 0L10 12.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                            clipRule="evenodd"
                           />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleFrReq(
-                          invitation.sender.nickname,
-                          invitation.senderID,
-                          "decline"
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => {
+                          handleFrReq(
+                            invitation.sender.nickname,
+                            invitation.senderID,
+                            "decline"
                           );
                         }}
                         className="btn btn-decline mx-2 w-9 h-9"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 text-white"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
                         >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-white"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        >
-                        <path
-                          fillRule="evenodd"
-                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                          clipRule="evenodd"
+                          <path
+                            fillRule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clipRule="evenodd"
                           />
-                      </svg>
-                    </button>
+                        </svg>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-
-        </div>
-        <div  className="border border-yellow-500 w-[50%]">
-            <p className="mb-10">Friends list: </p>
-
-        </div>
+                ))}
+              </div>
+              <div className="border border-yellow-500 w-[50%]">
+                <p className="mb-10">Friends list: </p>
+                {myfriends.map((friend) => (
+                  <div key={friend.id}>
+                    <span>ID: {friend.id}, </span>
+                    <span>Nickname: {friend.nickname}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </>
         )}
@@ -442,4 +448,3 @@ const FindAFriend = () => {
 };
 
 export default FindAFriend;
-
