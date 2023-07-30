@@ -1,10 +1,10 @@
 'use client'
 import React, { useEffect } from 'react'
-import TwoFac from './twoFac'
 import { useState, ChangeEvent} from 'react';
 import Image from 'next/image';
 import axios from 'axios';
-import { League_Script } from 'next/font/google';
+import TwoFac from './twoFac';
+
 
 const Edit = () => {
 
