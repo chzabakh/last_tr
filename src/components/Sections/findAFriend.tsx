@@ -9,6 +9,7 @@ type Friend = {
   id: string;
   nickname: string;
   email: string;
+  state: string;
 };
 
 interface Sender {
@@ -34,6 +35,7 @@ const FindAFriend = () => {
     id: "null",
     nickname: "null",
     email: "null",
+    state: "null",
   });
   const { login, accessToken } = useAuth();
   const [invites, setInvites] = useState<Invitation[]>([]);
@@ -64,6 +66,7 @@ const FindAFriend = () => {
           id: "notfound",
           nickname: "null",
           email: "null",
+          state: "null",
         });
       } else {
         setFriend(res.data);
@@ -244,7 +247,7 @@ const FindAFriend = () => {
         .catch((err) => {});
 
       const sendFriendReq = await axios.get(
-        `http://localhost:9000/users/${me?.data.nickname}/friendlist`,
+        `http://localhost:9000/users/friendlist`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -252,7 +255,7 @@ const FindAFriend = () => {
         }
       );
       setMyfriends(sendFriendReq.data);
-      console.log("haa", myfriends);
+      console.log("haa", sendFriendReq.data);
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log("89" + err.response?.data.message);
@@ -293,7 +296,7 @@ const FindAFriend = () => {
             <Image
               className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
               // src={`/player2.png`}
-              src={`/${friend.avatarUrl}`}
+              src={`/uploads/${friend.avatarUrl}`}
               alt="pdp"
               height={80}
               width={80}
@@ -392,9 +395,22 @@ const FindAFriend = () => {
               <div className="border border-yellow-500 w-[50%]">
                 <p className="mb-10">Friends list: </p>
                 {myfriends.map((friend) => (
-                  <div key={friend.id}>
-                    <span>ID: {friend.id}, </span>
-                    <span>Nickname: {friend.nickname}</span>
+                  <div
+                    className="flex items-center h-16 my-auto fborder"
+                    key={friend.id}
+                  >
+                    <div className="chat-image avatar my-auto mx-3">
+                      <div className="w-14 rounded-full">
+                        <Image
+                          alt="friendReqPic"
+                          height={40}
+                          width={40}
+                          src={`/uploads/${friend.avatarUrl}`}
+                        />
+                      </div>
+                    </div>
+                    <span>{friend.nickname} :</span>
+                    <span>{friend.state}</span>
                   </div>
                 ))}
               </div>
@@ -408,12 +424,14 @@ const FindAFriend = () => {
             <div className="w-[40%]">
               <Image
                 className="object-cover mx-auto rounded-[20px]"
-                src={"/ah.jpg"}
+                src={`/uploads/${friend.avatarUrl}`}
                 alt="pdp"
-                height={80}
-                width={80}
+                height={200}
+                width={200}
               />
-              <p className="font-serif text-center py-5 text-xs">adolfy</p>
+              <p className="font-serif text-center py-5 text-xs">
+                {friend.nickname}
+              </p>
               <div className="gap-5 w-full flex flex-col">
                 <button
                   onClick={(e) => handleBlock(e, input)}
