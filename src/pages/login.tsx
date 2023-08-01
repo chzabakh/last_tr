@@ -11,11 +11,12 @@ import Layout from "@/components/Layout/layout";
 import Router, { useRouter } from 'next/router';
 import { useAuth } from "./auth_context";
 import addInfos from "./addInfos";
+import FortyTwoAuthPopup from "./42pop";
 
 export const Login = () => {
 
   const router = useRouter();
-
+  const [isOpen, setIsOpen] = useState(false);
   const [loginStatus, setLoginStatus] = useState('');
   const [status, setStatus] = useState("0");
   const [message, setMessage] = useState("");
@@ -43,16 +44,22 @@ export const Login = () => {
     try {
       const res = await axios.post("http://localhost:9000/auth/login", data);
       const tok = res.data.access_token;
+      const verify = res.data.isFirstLogin;
       localStorage.setItem("token", tok);
       console.log("local storage: "+localStorage.getItem("token"));
-      login(tok);
-
+      login(tok);         
       //check if the infos are set with the added value in response
       //let us pretend that is actually not set
-
-      router.push('/addInfos');
-      // router.push('/dashboard');
-    } catch (err) {
+      if(verify)
+      {
+        router.push('/addInfos');
+      }
+      else
+      {
+        router.push('/dashboard');
+      }
+      }
+      catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
 
@@ -66,43 +73,30 @@ export const Login = () => {
   };
 
   
-
   async function openNewWindow() {
-    const loginUrl: string = 'http://localhost:9000/auth/42/callback';
-    const newWindow = window.open(loginUrl, '_blank');
-  
-    if (!newWindow) {
-      alert('Pop-up blocked');
-    } else {
-      try{
-        const res = await axios.post('http://localhost:9000/auth/login');
-        const token = res.data.acces_token;
-        localStorage.setItem("token", token);
-        console.log("local storage: "+ localStorage.getItem("token"));
-        login(token);
-
-        }
-        catch(e)
-        {
-          alert(e)
-        }
+    try
+    {
+        const res = await axios.get('http://localhost:9000/auth/42/login');
+        console.log(res.data)
     }
-  }
+    catch(e)
+    {}
 
+  }
 
   return (
     <div className="global">
     <Layout>
       <div className={styles.container}>
         <div className={styles.auth}>
-          <button className={styles.button} onClick={() => openNewWindow()}>
+          <a className={styles.button} href="http://localhost:9000/auth/42/login">
             <Image className={styles.logo} alt="" src={fourty} />
             <p className="text-xs sm:text-xl">Login with Intra</p>
-          </button>
-          <button className={styles.button}>
+          </a>
+          {/* <button className={styles.button}>
             <Image className={styles.logoTwo} alt="" src={gog} />
            <p className="text-xs sm:text-xl">Login with Google</p>
-          </button>
+          </button> */}
           <div className={styles.or}>Or</div>
         </div>
         <form className={styles.formy} onSubmit={handleSubmit}>

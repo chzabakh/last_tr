@@ -39,17 +39,21 @@ const Edit = () => {
     }
 
     
-    function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
+    async function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
       const file = e.target.files?.[0];
       if (file) {
-        const previewUrl = URL.createObjectURL(file);
-        setPreview(previewUrl);
+        const Token = localStorage.getItem('token');
+        const headers = {Authorization: `Bearer ${Token}`}
+        const res = await axios.get('http://localhost:9000/users/my-avatar', {headers});
+        const previewUrl = URL.createObjectURL(res.data);
+        setPreview(previewUrl)
         setIsAvatarChanged(true);
         setAvatar(file); // Save the file in the state for later submission
       } else {
         alert('Upload the file you MF!');
       }
     }
+    
     
     function handleNickChange(e: ChangeEvent<HTMLInputElement>)
     {
@@ -78,13 +82,10 @@ const Edit = () => {
       {
           const Token = localStorage.getItem('token');
           const headers = {Authorization: `Bearer ${Token}`}
-          const res = await axios.get('http://localhost:9000/users/me/${Preview}', {headers}); 
-          const avatar = res.data.avatarUrl;
+          const res = await axios.get('http://localhost:9000/users/my-avatar', {headers}); 
           //p1.png
           console.log(res.data)
           console.log(res.data.avatarPic)
-          setPreview(avatar);
-
       }
       catch(err)
       {

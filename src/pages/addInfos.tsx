@@ -116,6 +116,7 @@ const addInfos = () => {
               <Image src="" alt="" width={100} height={100} className="border-2 self-center rounded-full"/>
               <input
                 key="avatar"
+                required
                 type="file"
                 accept=".jpg, .jpeg, .png"
                 className='my-1 bg-black/20 text-xs'
@@ -128,7 +129,7 @@ const addInfos = () => {
 
        <div className='px-5 gap-10 items-center  h-[60%] w-[70%] flex  flex-col justify-center'>
        <div className='self-center'>Change username:</div>
-        <input className="p-2 rounded-lg w-[50%] text-white bg-black/20" type="text" placeholder='Type new username' onChange={handleNickChange} />
+        <input className="p-2 rounded-lg w-[50%] text-white bg-black/20" type="text" placeholder='Type new username' required onChange={handleNickChange} />
         </div>
        <button className='border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white  p-3 rounded-2xl' onClick={handleSaveChanges}>Save changes</button>
        </div>
