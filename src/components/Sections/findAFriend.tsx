@@ -10,6 +10,7 @@ type Friend = {
   nickname: string;
   email: string;
   state: string;
+  friendStatus: string;
 };
 
 interface Sender {
@@ -30,12 +31,15 @@ interface Invitation {
 const FindAFriend = () => {
   const [item, setItem] = useState("6");
   const [input, setInput] = useState("");
+  const [identical, setIdentical] = useState("0");
+  const [myswitch, setMyswitch] = useState("list");
   const [friend, setFriend] = useState<Friend>({
     avatarUrl: "null",
     id: "null",
     nickname: "null",
     email: "null",
     state: "null",
+    friendStatus: "null",
   });
   const { login, accessToken } = useAuth();
   const [invites, setInvites] = useState<Invitation[]>([]);
@@ -48,9 +52,25 @@ const FindAFriend = () => {
     setInput(e.target.value);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.currentTarget.blur();
+      handleSubmit(e as any, input); // As we're simulating a button click, we cast the event to any.
+    }
+  };
+
   const getUser = async (myinput: string) => {
     try {
       console.log("input: [" + myinput + "]");
+      const me = await axios
+        .get(`http://localhost:9000/users/me`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        .catch((err) => {});
+      console.log("this is me", me);
       const res = await axios.get(
         `http://localhost:9000/users/${myinput}/profile`,
         {
@@ -61,16 +81,27 @@ const FindAFriend = () => {
       );
       console.log("39", res);
       if (res.data == "") {
+        alert("User not found!");
         setFriend({
           avatarUrl: "null",
           id: "notfound",
           nickname: "null",
           email: "null",
           state: "null",
+          friendStatus: "null",
         });
       } else {
         setFriend(res.data);
-        console.log("49", friend.avatarUrl);
+        setMyswitch("search");
+        console.log("NNNNNNN", res.data);
+      }
+      if (
+        me?.data.id == res.data.id &&
+        me?.data.nickname == res.data.nickname
+      ) {
+        setIdentical("1");
+      } else {
+        setIdentical("0");
       }
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -274,6 +305,7 @@ const FindAFriend = () => {
             type="text"
             placeholder="Enter the pseudo"
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             value={input}
           />
           <button onClick={(e) => handleSubmit(e, input)}>
@@ -291,11 +323,33 @@ const FindAFriend = () => {
             </svg>
           </button>
         </div>
-        {friend.id != "null" ? (
-          <div className="flex flex-col border-2  border-opacity-30 mx-auto w-[70%] min-h-[300px] h-[70%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+        {friend.id != "notfound" &&
+        friend.id != "null" &&
+        myswitch == "search" ? (
+          <div className="flex flex-col border-2  border-opacity-30 mx-auto w-[70%] min-h-[300px] h-[90%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+            <button className="w-2"
+              onClick={() => {
+                setMyswitch("list");
+              }}
+              style={{
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                fill="currentColor"
+                className="bi bi-x"
+                viewBox="0 0 16 16"
+              >
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+              </svg>
+            </button>
             <Image
               className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
-              // src={`/player2.png`}
               src={`/uploads/${friend.avatarUrl}`}
               alt="pdp"
               height={80}
@@ -305,12 +359,38 @@ const FindAFriend = () => {
               {friend.nickname}
             </p>
             <div className="w-full  absolute bottom-10 flex justify-evenly left-0">
-              <button
-                onClick={(e) => handleAdd(e)}
-                className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
-              >
-                Add friend
-              </button>
+              {friend.friendStatus === "None" && identical === "0" ? (
+                <button
+                  onClick={(e) => handleAdd(e)}
+                  className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                >
+                  Add friend
+                </button>
+              ) : null}
+              {friend.friendStatus === "Pending Received" ? (
+                <button
+                  onClick={(e) => handleAdd(e)}
+                  className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                >
+                  Accept friend request
+                </button>
+              ) : null}
+              {friend.friendStatus === "Pending Sent" ? (
+                <button
+                  onClick={(e) => handleAdd(e)}
+                  className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                >
+                  Cancel friend request
+                </button>
+              ) : null}
+              {friend.friendStatus === "friend" ? (
+                <button
+                  onClick={(e) => handleAdd(e)}
+                  className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                >
+                  Remove friend
+                </button>
+              ) : null}
               <button
                 onClick={() => setItem("9")}
                 className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md py-4 rounded-[30px]"
@@ -322,7 +402,7 @@ const FindAFriend = () => {
         ) : (
           <>
             <div className="flex ">
-              <div className="border border-red-500 w-[50%]">
+              <div className="w-[50%]">
                 <p className="mb-10">Received invites: </p>
                 {invites.map((invitation) => (
                   <div
@@ -392,7 +472,7 @@ const FindAFriend = () => {
                   </div>
                 ))}
               </div>
-              <div className="border border-yellow-500 w-[50%]">
+              <div className="w-[50%]">
                 <p className="mb-10">Friends list: </p>
                 {myfriends.map((friend) => (
                   <div
@@ -433,18 +513,22 @@ const FindAFriend = () => {
                 {friend.nickname}
               </p>
               <div className="gap-5 w-full flex flex-col">
-                <button
-                  onClick={(e) => handleBlock(e, input)}
-                  className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
-                >
-                  Block user
-                </button>
-                <button
-                  onClick={() => setItem("9")}
-                  className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md py-4 rounded-[30px]"
-                >
-                  Send Message
-                </button>
+                {identical === "0" ? (
+                  <>
+                    <button
+                      onClick={(e) => handleBlock(e, input)}
+                      className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                    >
+                      Block user
+                    </button>
+                    <button
+                      onClick={() => setItem("9")}
+                      className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md py-4 rounded-[30px]"
+                    >
+                      Send Message
+                    </button>{" "}
+                  </>
+                ) : null}
                 <button
                   className="hover:text-[#D6B3F1] mx-auto m-0 p-0 w-16"
                   onClick={() => setItem("2")}

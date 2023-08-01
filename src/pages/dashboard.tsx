@@ -92,7 +92,7 @@ const Dashboard = () => {
               : null
             }
               <p className="font-serif text-center py-5 text-xl">
-                {me.nickname}{me.avatarUrl}
+                {me.nickname}
               </p>
             </div>
             <div className="w-full flex flex-col pt-[2rem]">
