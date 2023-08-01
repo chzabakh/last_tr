@@ -50,8 +50,8 @@ export const Login = () => {
       //check if the infos are set with the added value in response
       //let us pretend that is actually not set
 
-      // router.push('/addInfos');
-      router.push('/dashboard');
+      router.push('/addInfos');
+      // router.push('/dashboard');
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
@@ -67,36 +67,31 @@ export const Login = () => {
 
   
 
-  function openNewWindow() {
+  async function openNewWindow() {
     const loginUrl: string = 'http://localhost:9000/auth/42/callback';
     const newWindow = window.open(loginUrl, '_blank');
   
     if (!newWindow) {
-      alert('Pop-up blocked. Please allow pop-ups for this site and try again.');
+      alert('Pop-up blocked');
     } else {
-      window.addEventListener('message', (event) => {
-        if (event.source === newWindow && event.data.authenticated) {
-          const res = axios.post('http://localhost:9000/auth/42/login')
-          .then((response) => {
-            
-                const tok = res.data.access_token;
-                localStorage.setItem("token", tok);
-                router.push('/dashboard')
-                alert('yeey')
+      try{
+        const res = await axios.post('http://localhost:9000/auth/login');
+        const token = res.data.acces_token;
+        localStorage.setItem("token", token);
+        console.log("local storage: "+ localStorage.getItem("token"));
+        login(token);
 
-              console.log(response.data);
-            })
-            .catch((error) => {
-       
-              console.log(error);
-            });
         }
-      });
+        catch(e)
+        {
+          alert(e)
+        }
     }
   }
 
 
   return (
+    <div className="global">
     <Layout>
       <div className={styles.container}>
         <div className={styles.auth}>
@@ -142,6 +137,7 @@ export const Login = () => {
         </form>
       </div>
     </Layout>
+    </div>
   );
 };
 

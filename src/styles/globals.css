@@ -33,14 +33,16 @@ a {
   color: inherit;
 }
 
-.containera {
-  max-width: 100vw;
-  margin-left: 5rem;
-  margin-right: 5rem;
-  min-height: 100vh;
+.global {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  max-width: 100vw;
+  margin-left: 20rem;
+  margin-right: 20rem;
+  min-height: 100vh;
+  height: 100vh;
+  position: relative;
   /* background-color: beige; */
 }
 

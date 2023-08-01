@@ -19,7 +19,7 @@
 .links
 {
   display: flex;
-  gap: 3rem;
+  gap: 2rem;
   align-items: center;
   color: rgba(178, 112, 241, 0.7);;
 }
@@ -30,13 +30,6 @@
   transition: 200ms;
 }
 
-
-
-.link
-{
- 
-   
-}
 
 .logout
 {

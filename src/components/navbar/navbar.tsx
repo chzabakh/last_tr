@@ -43,7 +43,6 @@ const Navbar = () => {
         ))}
       </div>
       <SmallButton url="contact" text="Contact Us" />
-      {/* <Link to="/contact">Hello</Link> */}
     </div>
   );
 };

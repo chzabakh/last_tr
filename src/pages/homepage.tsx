@@ -11,7 +11,7 @@ import SmallButton from "@/components/Button/smallButton";
 export default function Homepage() {
   return (
     <Layout>
-      <div className="flex items-center justify-center mx-0 my-[50px]">
+      <div className="flex mt-[200px] flex-row items-center justify-between absolute my-[50px]">
         <div className={styles.item1}>
           <TypeAnimation
             sequence={[
