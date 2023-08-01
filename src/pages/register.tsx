@@ -55,6 +55,7 @@ export const Register = () => {
   };
 
   return (
+    <div className="global">
     <Layout>
       <div className={styles.container}>
         <div className={styles.auth}>
@@ -114,6 +115,7 @@ export const Register = () => {
         </form>
       </div>
     </Layout>
+    </div>
   );
 };
 

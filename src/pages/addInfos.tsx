@@ -106,8 +106,8 @@ const addInfos = () => {
      
     
     return (
-    <>
-    <div className="my-20 h-[35rem] gap-3 flex justify-center items-center flex-col w-[50%]  mx-auto  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+    <div className='flex items-center justify-center h-screen w-screen'>
+    <div className="h-[35rem] w-[50rem] gap-3 flex justify-center items-center flex-col  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
     
     <div className='flex flex-col justify-center  items-center gap-6'>
             
@@ -126,13 +126,14 @@ const addInfos = () => {
               />
           </div>
 
-       <div className='px-5 gap-10 items-center border-2 h-[60%] w-[70%] flex  flex-col justify-center border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]'>
-       <div className='w-[40%] self-center'>Change username:</div>
+       <div className='px-5 gap-10 items-center  h-[60%] w-[70%] flex  flex-col justify-center'>
+       <div className='self-center'>Change username:</div>
         <input className="p-2 rounded-lg w-[50%] text-white bg-black/20" type="text" placeholder='Type new username' onChange={handleNickChange} />
         </div>
        <button className='border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white  p-3 rounded-2xl' onClick={handleSaveChanges}>Save changes</button>
        </div>
-  </>
+  <div/>
+  </div>
   );
 }
 
