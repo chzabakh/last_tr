@@ -76,15 +76,14 @@ export const Login = () => {
     } else {
       window.addEventListener('message', (event) => {
         if (event.source === newWindow && event.data.authenticated) {
-          
-          axios.post('http://localhost:9000/auth/42/login')
-            .then((response) => {
-              if(response)
-              {
+          const res = axios.post('http://localhost:9000/auth/42/login')
+          .then((response) => {
+            
+                const tok = res.data.access_token;
+                localStorage.setItem("token", tok);
                 router.push('/dashboard')
                 alert('yeey')
 
-              }
               console.log(response.data);
             })
             .catch((error) => {
