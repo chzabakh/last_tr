@@ -42,8 +42,8 @@ background: linear-gradient(90deg, rgba(228,175,232,1) 0%, rgba(141,5,170,1) 0%,
 }
 
 .title {
-  font-size: 60px;
-  font-weight: 400;
+  font-size: 50px;
+  font-weight: 300;
   height: 50%; /* Adjust the height value as per your design */
   background: linear-gradient(to bottom, #8d05aa, #3ce4e4);
   -webkit-background-clip: text;
