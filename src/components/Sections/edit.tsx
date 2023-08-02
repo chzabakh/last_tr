@@ -43,6 +43,12 @@ const Edit = () => {
     async function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
       const file = e.target.files?.[0];
       if (file) {
+        const maxFileSize = 1024 * 1024 * 5; // 5 MB
+
+        if (file.size > maxFileSize) {
+          alert('File is too large. Please upload a file smaller than 5 MB.');
+          return ;
+        }
         const previewUrl = URL.createObjectURL(file);
         setPreview(previewUrl)
         setIsAvatarChanged(true);
@@ -92,25 +98,10 @@ const Edit = () => {
     }
 
 
-    async function getNick()
-    {
-      try
-      {
-          const Token =  Cookies.get('token') 
-          const headers = {Authorization: `Bearer ${Token}`}
-          const res = await axios.get('http://localhost:9000/users/me', {headers}); 
-          const nickname= res.data.nickname;
-          setUsername(nickname);
-
-      }
-      catch(err)
-      {
-        console.log(err);
-      }
-    }
-
     async function handleSaveChanges() {
       try {
+
+      
         if (isAvatarChanged && Avatar) {
           const Token =  Cookies.get('token') 
           const headers = {
