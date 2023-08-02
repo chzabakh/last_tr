@@ -1,3 +1,5 @@
+'use client'
+
 import Leaderboard from "@/components/Sections/leaderboard";
 import Chat from "@/components/Sections/chat";
 import Image from "next/image";
@@ -6,6 +8,7 @@ import { useAuth } from "./auth_context";
 import { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
 import Edit from "@/components/Sections/edit";
+import Cookies from 'js-cookie';
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -22,6 +25,7 @@ type Me = {
 
 const Dashboard = () => {
   const [item, setItem] = useState("1");
+
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [me, setMe] = useState<Me>({
     TwofaAutEnabled: false,
@@ -42,7 +46,7 @@ const Dashboard = () => {
       try {
         const res = await axios.get(`http://localhost:9000/users/me`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${ Cookies.get('token') }`,
           },
         });
         setMe(res.data);
@@ -158,7 +162,7 @@ const Dashboard = () => {
               </button>
               <button
                 onClick={() => {
-                  localStorage.removeItem("token");
+                  Cookies.remove('token', { path: '/' });
                   router.push("/login");
                 }}
                 className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${

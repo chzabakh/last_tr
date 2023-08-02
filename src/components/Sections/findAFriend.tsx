@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import ConfirmationButtons from "../Button/confirmationButtons";
+import Cookies from 'js-cookie';
 
 type Friend = {
   avatarUrl: string;
@@ -29,6 +30,7 @@ interface Invitation {
 const FindAFriend = () => {
   const [item, setItem] = useState("6");
   const [input, setInput] = useState("");
+
   const [friend, setFriend] = useState<Friend>({
     avatarUrl: "null",
     id: "null",
@@ -52,7 +54,7 @@ const FindAFriend = () => {
         `http://localhost:9000/users/${myinput}/profile`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${ Cookies.get('token') }`,
           },
         }
       );

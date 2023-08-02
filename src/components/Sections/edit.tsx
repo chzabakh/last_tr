@@ -4,7 +4,7 @@ import { useState, ChangeEvent} from 'react';
 import Image from 'next/image';
 import axios from 'axios';
 import TwoFac from './twoFac';
-
+import Cookies from 'js-cookie';
 
 const Edit = () => {
 
@@ -21,10 +21,10 @@ const Edit = () => {
     const [error, seterror] = useState("");
 
     
-    // useEffect(() => {
-    //   getAvatar();
+    useEffect(() => {
+      getAvatar();
      
-    // }, [Preview]);
+    }, []);
 
     // useEffect(() => {
     //   getNick();
@@ -42,10 +42,7 @@ const Edit = () => {
     async function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
       const file = e.target.files?.[0];
       if (file) {
-        const Token = localStorage.getItem('token');
-        const headers = {Authorization: `Bearer ${Token}`}
-        const res = await axios.get('http://localhost:9000/users/my-avatar', {headers});
-        const previewUrl = URL.createObjectURL(res.data);
+        const previewUrl = URL.createObjectURL(file);
         setPreview(previewUrl)
         setIsAvatarChanged(true);
         setAvatar(file); // Save the file in the state for later submission
@@ -80,12 +77,12 @@ const Edit = () => {
     {
       try
       {
-          const Token = localStorage.getItem('token');
-          const headers = {Authorization: `Bearer ${Token}`}
-          const res = await axios.get('http://localhost:9000/users/my-avatar', {headers}); 
-          //p1.png
-          console.log(res.data)
-          console.log(res.data.avatarPic)
+        const Token = Cookies.get('token') 
+        const headers = {Authorization: `Bearer ${Token}`}
+        const res = await axios.get('http://localhost:9000/users/my-avatar', {headers, responseType: 'blob',});
+        const blob = new Blob([res.data], { type: 'image/png' });
+        const previewUrl = URL.createObjectURL(blob);
+        setPreview(previewUrl)
       }
       catch(err)
       {
@@ -98,11 +95,10 @@ const Edit = () => {
     {
       try
       {
-          const Token = localStorage.getItem('token');
+          const Token =  Cookies.get('token') 
           const headers = {Authorization: `Bearer ${Token}`}
           const res = await axios.get('http://localhost:9000/users/me', {headers}); 
           const nickname= res.data.nickname;
-          console.log(res.data)
           setUsername(nickname);
 
       }
@@ -115,9 +111,9 @@ const Edit = () => {
     async function handleSaveChanges() {
       try {
         if (isAvatarChanged && Avatar) {
-          const token = localStorage.getItem('token');
+          const Token =  Cookies.get('token') 
           const headers = {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${Token}`,
           };
         
           const data = new FormData(); 
@@ -151,7 +147,7 @@ const Edit = () => {
 
           try{
 
-              const Token = localStorage.getItem('token');
+              const Token = Cookies.get('token') 
               const headers = { Authorization: `Bearer ${Token}` };
               const data = { nickname: Username };
               await axios.patch('http://localhost:9000/users/me/settings/change-username', data, { headers });
@@ -176,7 +172,7 @@ const Edit = () => {
 
           try{
 
-              const Token = localStorage.getItem('token');
+              const Token = Cookies.get('token') 
               const headers = { Authorization: `Bearer ${Token}` };
               const data = {
                 password: oldpass,

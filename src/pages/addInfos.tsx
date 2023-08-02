@@ -3,6 +3,9 @@ import Image from 'next/image'
 import axios from 'axios';
 import Router, { useRouter } from 'next/router';
 import Dashboard from './dashboard';
+
+import Cookies from 'js-cookie';
+
 const addInfos = () => {
 
     const [Avatar, setAvatar] = useState<File | null>(null);
@@ -38,7 +41,7 @@ const addInfos = () => {
         try {
           if (isAvatarChanged && Avatar) 
           {
-            const token = localStorage.getItem('token');
+            const token =  Cookies.get('token') ;
             const headers = {
               Authorization: `Bearer ${token}`,
             };
@@ -113,7 +116,7 @@ const addInfos = () => {
             
             <div className="lg:text-lg text-xs max-w-full">Change the Avatar and Username</div>
        
-              <Image src="" alt="" width={100} height={100} className="border-2 self-center rounded-full"/>
+              <Image src={Preview} alt="" width={100} height={100} className="border-2 self-center rounded-full"/>
               <input
                 key="avatar"
                 required

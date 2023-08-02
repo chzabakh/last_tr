@@ -1,5 +1,6 @@
 // Login.tsx
-import React, { useContext } from "react";
+'use client'
+import React, { useContext, useEffect } from "react";
 import styles from "../styles/login.module.css";
 import Link from "next/link";
 import { useState } from "react";
@@ -11,10 +12,14 @@ import Layout from "@/components/Layout/layout";
 import Router, { useRouter } from 'next/router';
 import { useAuth } from "./auth_context";
 import addInfos from "./addInfos";
-import FortyTwoAuthPopup from "./42pop";
+// import FortyTwoAuthPopup from "./42pop";
+import Cookies from 'js-cookie';
+// import { MouseEvent } from 'react';
 
-export const Login = () => {
 
+export const Login  : React.FC  = () => {
+
+  
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [loginStatus, setLoginStatus] = useState('');
@@ -25,8 +30,11 @@ export const Login = () => {
     email: "",
     password: "",
   });
+  useEffect(() => {
+    console.log(Cookies.get('token') )
+  }, []);
 
-  const {login, accessToken} = useAuth();
+  // const {login, accessToken} = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
@@ -45,9 +53,10 @@ export const Login = () => {
       const res = await axios.post("http://localhost:9000/auth/login", data);
       const tok = res.data.access_token;
       const verify = res.data.isFirstLogin;
-      localStorage.setItem("token", tok);
-      console.log("local storage: "+localStorage.getItem("token"));
-      login(tok);         
+      // localStorage.setItem("token", tok);
+      Cookies.set('token', tok , { path: '/'});
+
+      // login(tok);         
       //check if the infos are set with the added value in response
       //let us pretend that is actually not set
       if(verify)
@@ -76,8 +85,10 @@ export const Login = () => {
   async function openNewWindow() {
     try
     {
-        const res = await axios.get('http://localhost:9000/auth/42/login');
-        console.log(res.data)
+        const url = "http://localhost:9000/auth/42/login";
+        const target = "_blank";
+        await window.open(url, target);
+        await window.close()
     }
     catch(e)
     {}

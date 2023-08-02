@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
+import { CookiesProvider } from 'react-cookie';
 import { AuthProvider } from "./auth_context";
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -8,9 +9,11 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => setRender(true), []);
   return render ? (
     <>
-      <AuthProvider>
+      {/* <AuthProvider> */}
+      <CookiesProvider>
         <Component {...pageProps} />
-      </AuthProvider>
+      </CookiesProvider>
+      {/* </AuthProvider> */}
     </>
   ) : null;
 }

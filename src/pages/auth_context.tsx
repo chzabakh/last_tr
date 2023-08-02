@@ -27,7 +27,7 @@ export const useAuth = (): AuthContextProps => useContext(AuthContext);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [accessToken, setAccessToken] = useState(
-    localStorage.getItem("token") as string
+     Cookies.get('token')  as string
   );
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
