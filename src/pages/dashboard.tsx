@@ -1,4 +1,3 @@
-'use client'
 
 import Leaderboard from "@/components/Sections/leaderboard";
 import Chat from "@/components/Sections/chat";
@@ -43,7 +42,15 @@ const Dashboard = () => {
   const router = useRouter();
 
   useEffect(() => {
-    getAvatar()
+    
+    // const fetchAvatar = async () => {
+     
+    //   const url = await getAvatar();
+    //   setPreview(url);
+    // };
+  
+    // fetchAvatar();
+    getAvatar();
     getMe();
   }, []);
 

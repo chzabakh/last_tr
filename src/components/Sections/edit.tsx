@@ -5,6 +5,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import TwoFac from './twoFac';
 import Cookies from 'js-cookie';
+import Place from '../../../public/Place.png'
 
 const Edit = () => {
 
@@ -211,7 +212,7 @@ const Edit = () => {
           <div className='flex'>
               <div className="flex-1 w-[50%]">Change the Avatar:</div>
             <div className='w-[50%]'>
-              <Image src={Preview} alt="" width={200} height={200} className="border-2 self-center"/>
+              <Image src={Preview  || Place} alt="" width={200} height={200} className="border-2 self-center"/>
               <input
                 key="avatar"
                 type="file"
