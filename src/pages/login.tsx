@@ -11,18 +11,17 @@ import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
 import Router, { useRouter } from 'next/router';
 import { useAuth } from "./auth_context";
+import { createPortal } from "react-dom";
 import addInfos from "./addInfos";
-// import FortyTwoAuthPopup from "./42pop";
 import Cookies from 'js-cookie';
-// import { MouseEvent } from 'react';
-
 
 export const Login  : React.FC  = () => {
 
   
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-  const [loginStatus, setLoginStatus] = useState('');
+
+  const [authWindow, setAuthWin] = useState<Window | null>(null);
+ 
   const [status, setStatus] = useState("0");
   const [message, setMessage] = useState("");
 
@@ -30,11 +29,21 @@ export const Login  : React.FC  = () => {
     email: "",
     password: "",
   });
+
   useEffect(() => {
-    console.log(Cookies.get('token') )
+    // window.addEventListener("message", (event) => {
+     
+    //   if (event.origin === "http://localhost:9000" && event.data === "success") {
+    //     authWindow?.close();
+        
+    //     // Redirect to the dashboard
+    //     router.push('/dashboard');
+    //   }
+    // });
+    console.log("test", Cookies.get());
   }, []);
 
-  // const {login, accessToken} = useAuth();
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
@@ -83,15 +92,20 @@ export const Login  : React.FC  = () => {
 
   
   async function openNewWindow() {
-    try
-    {
-        const url = "http://localhost:9000/auth/42/login";
-        const target = "_blank";
-        await window.open(url, target);
-        await window.close()
-    }
-    catch(e)
-    {}
+
+    const width = 400;
+    const height = 300;
+    const left = (window.screen.width - width) / 2;
+    const top = (window.screen.height - height) / 2;
+    
+    const authWindow = window.open(
+      "http://localhost:9000/auth/42/callback",
+      "_blank",
+      `width=${width},height=${height},left=${left},top=${top}`
+    );
+    
+    setAuthWin(authWindow);
+    
 
   }
 
@@ -100,7 +114,7 @@ export const Login  : React.FC  = () => {
     <Layout>
       <div className={styles.container}>
         <div className={styles.auth}>
-          <a className={styles.button} href="http://localhost:9000/auth/42/login">
+          <a className={styles.button} onClick={openNewWindow}>
             <Image className={styles.logo} alt="" src={fourty} />
             <p className="text-xs sm:text-xl">Login with Intra</p>
           </a>
