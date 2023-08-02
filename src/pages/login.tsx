@@ -111,7 +111,7 @@ export const Login  : React.FC  = () => {
   return (
     <div className="flex flex-col justify-between max-w-full mx-[3rem] h-full max-h-full min-h-full relative">
     <Layout>
-      <div className={styles.container}>
+      <div className="flex w-[100%] flex-col items-center gap-4 mx-auto justify-center relative">
         <div className={styles.auth}>
           <a className={styles.button} onClick={openNewWindow}>
             <Image className={styles.logo} alt="" src={fourty} />
