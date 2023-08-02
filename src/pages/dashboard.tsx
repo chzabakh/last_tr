@@ -43,8 +43,8 @@ const Dashboard = () => {
   const router = useRouter();
 
   useEffect(() => {
-    getMe();
     getAvatar()
+    getMe();
   }, []);
 
   useEffect(() => {
@@ -112,7 +112,6 @@ const Dashboard = () => {
               height={200}
               width={200}
               />
-             
             
               <p className="font-serif text-center py-5 text-xl">
                 {username}

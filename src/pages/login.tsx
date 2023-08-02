@@ -31,15 +31,15 @@ export const Login  : React.FC  = () => {
   });
 
   useEffect(() => {
-    // window.addEventListener("message", (event) => {
+    window.addEventListener("message", (event) => {
      
-    //   if (event.origin === "http://localhost:9000" && event.data === "success") {
-    //     authWindow?.close();
+      if (event.origin === "http://localhost:9000" && event.data === "success") {
+        authWindow?.close();
         
-    //     // Redirect to the dashboard
-    //     router.push('/dashboard');
-    //   }
-    // });
+        // Redirect to the dashboard
+        router.push('/dashboard');
+      }
+    });
     console.log("test", Cookies.get());
   }, []);
 
@@ -93,7 +93,7 @@ export const Login  : React.FC  = () => {
   
   async function openNewWindow() {
 
-    const width = 400;
+    const width = 200;
     const height = 300;
     const left = (window.screen.width - width) / 2;
     const top = (window.screen.height - height) / 2;
@@ -101,16 +101,15 @@ export const Login  : React.FC  = () => {
     const authWindow = window.open(
       "http://localhost:9000/auth/42/callback",
       "_blank",
-      `width=${width},height=${height},left=${left},top=${top}`
+      `width=200,height=300,left=${left},top=${top}`
     );
     
     setAuthWin(authWindow);
-    
 
   }
 
   return (
-    <div className="global">
+    <div className="flex flex-col justify-between max-w-full mx-[3rem] h-full max-h-full min-h-full relative">
     <Layout>
       <div className={styles.container}>
         <div className={styles.auth}>

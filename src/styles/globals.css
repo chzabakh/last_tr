@@ -40,10 +40,10 @@ a {
   max-width: 100vw;
   margin-left: 20rem;
   margin-right: 20rem;
-  min-height: 100vh;
+  min-height: 100%;
   height: 100vh;
   position: relative;
-  /* background-color: beige; */
+  background-color: beige;
 }
 
 *:hover ::-webkit-scrollbar {

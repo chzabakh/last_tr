@@ -55,7 +55,7 @@ export const Register = () => {
   };
 
   return (
-    <div className="global">
+    <div className="flex flex-col justify-between max-w-full mx-[3rem] h-full max-h-full min-h-full relative ">
     <Layout>
       <div className={styles.container}>
         <div className={styles.auth}>

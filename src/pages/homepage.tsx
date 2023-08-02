@@ -9,10 +9,15 @@ import Layout from "@/components/Layout/layout";
 import SmallButton from "@/components/Button/smallButton";
 
 export default function Homepage() {
+
+  const animationStyle = {
+    animation: 'move 2s ease-in-out infinite alternate',
+    
+  };
   return (
     <Layout>
-      <div className="flex mt-[200px] flex-row items-center justify-between absolute my-[50px]">
-        <div className={styles.item1}>
+      <div className="flex flex-row items-center justify-between  relative min-h-full  ">
+        <div className="flex justify-evenly flex-col w-[40%] h-[600px]">
           <TypeAnimation
             sequence={[
               "Welcome to the online Pong Game!",
@@ -26,14 +31,12 @@ export default function Homepage() {
             repeat={Infinity}
           />
           <p className={styles.desc}>
-            Join us now and dive into the fun of Pong Game! Join us now and dive
-            into the fun of Pong Game! Join us now and dive into the fun of Pong
-            Game! Join us now and dive into the fun of Pong Game!
+            Join us now and dive into the fun of Pong Game! 
           </p>
           <SmallButton url="login" text="Play now" />
         </div>
-        <div className={styles.item2}>
-          <Image alt="" src={bg} className={styles.img} />
+        <div className=" w-[50%] flex justify-items-end  justify-end">
+          <Image alt="" src={bg} className="h-[650px] w-[700px]" />
         </div>
       </div>
     </Layout>
