@@ -31,6 +31,7 @@ export const Login  : React.FC  = () => {
   });
 
   useEffect(() => {
+    console.log("tooken" , Cookies.get('token'))
     window.addEventListener("message", (event) => {
      
       if (event.origin === "http://localhost:9000" && event.data === "success") {
@@ -63,7 +64,7 @@ export const Login  : React.FC  = () => {
       const tok = res.data.access_token;
       const verify = res.data.isFirstLogin;
       // localStorage.setItem("token", tok);
-      Cookies.set('token', tok , { path: '/'});
+      Cookies.set('token', tok , { path: '/', HttpOnly: false});
 
       // login(tok);         
       //check if the infos are set with the added value in response
@@ -76,7 +77,7 @@ export const Login  : React.FC  = () => {
       {
         router.push('/dashboard');
       }
-      }
+     }
       catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);

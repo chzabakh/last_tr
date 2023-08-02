@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
 import Edit from "@/components/Sections/edit";
 import Cookies from 'js-cookie';
+import {isAuthenticated} from '../../src/secure'
+import Place from '../../public/Place.png'
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -23,6 +25,18 @@ type Me = {
 };
 
 const Dashboard = () => {
+
+  useEffect(() => {
+    const token = Cookies.get('token');
+    console.log("Token value:", token); // Debug log to check token value
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+    getAvatar();
+    getMe();
+  }, []);
+
   const [item, setItem] = useState("1");
   const [Preview, setPreview] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -41,18 +55,6 @@ const Dashboard = () => {
   });
   const router = useRouter();
 
-  useEffect(() => {
-    
-    // const fetchAvatar = async () => {
-     
-    //   const url = await getAvatar();
-    //   setPreview(url);
-    // };
-  
-    // fetchAvatar();
-    getAvatar();
-    getMe();
-  }, []);
 
   useEffect(() => {
     const handleResize = (): void => {
@@ -106,7 +108,9 @@ const Dashboard = () => {
   }
 
   return (
+    
     <>
+    
       <div className="flex flex-row h-full">
         {windowWidth > 768 ? (
           <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
@@ -114,7 +118,7 @@ const Dashboard = () => {
             
               <Image
               className="object-cover flex-auto mx-auto rounded-[30px]"
-              src={Preview}
+              src={Preview || Place}
               alt={me.avatarUrl}
               height={200}
               width={200}
