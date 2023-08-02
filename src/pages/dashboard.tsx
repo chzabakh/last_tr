@@ -25,8 +25,9 @@ type Me = {
 
 const Dashboard = () => {
   const [item, setItem] = useState("1");
-
+  const [Preview, setPreview] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [username, setUser] = useState("")
   const [me, setMe] = useState<Me>({
     TwofaAutEnabled: false,
     avatarUrl: "none",
@@ -42,26 +43,8 @@ const Dashboard = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const getMe = async () => {
-      try {
-        const res = await axios.get(`http://localhost:9000/users/me`, {
-          headers: {
-            Authorization: `Bearer ${ Cookies.get('token') }`,
-          },
-        });
-        setMe(res.data);
-      } catch (err) {
-        if (err instanceof AxiosError) {
-          console.log(err.response?.data.message);
-        } else {
-          console.log("Unexpected error", err);
-        }
-      }
-    };
-
     getMe();
-
-    return (): void => {};
+    getAvatar()
   }, []);
 
   useEffect(() => {
@@ -79,24 +62,60 @@ const Dashboard = () => {
   // const { accessToken } = useAuth();
 
   // console.log(accessToken);
+
+   const getMe = async () => {
+    try {
+      const res = await axios.get(`http://localhost:9000/users/me`, {
+        headers: {
+          Authorization: `Bearer ${ Cookies.get('token') }`,
+        },
+      });
+      // setMe(res.data);
+      setUser(res.data.nickname)
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err.response?.data.message);
+      } else {
+        console.log("Unexpected error", err);
+      }
+    }
+  };
+
+  async function getAvatar()
+  {
+    try
+    {
+      const Token = Cookies.get('token') 
+      const headers = {Authorization: `Bearer ${Token}`}
+      const res = await axios.get('http://localhost:9000/users/my-avatar', {headers, responseType: 'blob',});
+      const blob = new Blob([res.data], { type: 'image/png' });
+      const previewUrl = URL.createObjectURL(blob);
+      setPreview(previewUrl)
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
+  }
+
   return (
     <>
       <div className="flex flex-row h-full">
         {windowWidth > 768 ? (
           <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
-            <div>{
-              me.avatarUrl != "none" ?
+            <div>
+            
               <Image
               className="object-cover flex-auto mx-auto rounded-[30px]"
-              src={`/${me.avatarUrl}`}
+              src={Preview}
               alt={me.avatarUrl}
               height={200}
               width={200}
               />
-              : null
-            }
+             
+            
               <p className="font-serif text-center py-5 text-xl">
-                {me.nickname}
+                {username}
               </p>
             </div>
             <div className="w-full flex flex-col pt-[2rem]">
