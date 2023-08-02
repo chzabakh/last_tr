@@ -55,9 +55,9 @@ export const Register = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between max-w-full mx-[3rem] h-full max-h-full min-h-full relative">
+    <div className="flex flex-col my-2 justify-between max-w-full mx-[3rem] h-full max-h-full min-h-full relative">
     <Layout>
-      <div className="flex w-[100%] flex-col items-center gap-4 mx-auto justify-center relative">
+      <div className="flex w-[100%] flex-col items-center gap-4 mx-auto justify-center relative mb-5">
         <div className={styles.auth}>
           {/* <button className={styles.button}>
             <Image className={styles.logo} alt="" src={fourty} />

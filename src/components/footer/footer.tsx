@@ -4,8 +4,8 @@ import Image from 'next/image'
 import images from '../../../public/images.png'
 const Footer = () => {
   return (
-    <div className="absolute text-xs mt-2 w-full flex justify-between items-center  opacity-[0.5]">
-        <div>@2023 Made with &lt;3 for Trancendance. All rights reserved</div>
+    <div className="absolute text-xs mt-2 w-full flex justify-between items-center mt-auto  opacity-[0.5]">
+        <div>@2023 Made with &lt;3 for Trancendance.</div>
         <Image src={images} width={20} height={20} alt="" />
     </div>
   )
