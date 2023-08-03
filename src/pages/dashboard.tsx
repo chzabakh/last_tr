@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
 import Edit from "@/components/Sections/edit";
 import Cookies from 'js-cookie';
-import {isAuthenticated} from '../../src/secure'
 import Place from '../../public/Place.png'
 
 type Me = {

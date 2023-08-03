@@ -105,27 +105,25 @@ export const Login  : React.FC  = () => {
 
   
   async function openNewWindow() {
-
     const authWindow = window.open(
       "http://localhost:9000/auth/42/login",
       '_blank',
       'width=350,height=450'
     );
-    // const Token = Cookies.get('token') 
-    // const headers = {Authorization: `Bearer ${Token}`}
-    // const res = await axios.get('http://localhost:9000/auth/42/login');
-    // console.log(res.data)
-    // const tok = res.data;
-    if (authWindow) {
-      authWindow.document.write("<h1>Login Successful</h1>");
   
-      setTimeout(() => {
-        // Cookies.set('token', tok, {path : '/'})
-        Router.push('/dashboard')
-        authWindow.close();
-      }, 5000);
+    if (authWindow) {
+      const checkAuthComplete = setInterval(() => {
+        const token = Cookies.get('token');
+        if (token) {
+          Cookies.set('token', token, { path: '/' });
+          authWindow.close();
+          clearInterval(checkAuthComplete);
+          Router.push('/dashboard');
+        }
+      }, 1000);
+    } else {
+      alert('Failed to open authentication window');
     }
-   
   }
 
   return (

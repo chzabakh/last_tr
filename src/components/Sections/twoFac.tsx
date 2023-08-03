@@ -8,7 +8,7 @@ import Router from 'next/router';
 const TwoFac = () => {
   const [code, setCode] = useState("");
   const [error, setError] = useState("")
-  const [activate, setActivate] = useState(true)
+  const [activate, setActivate] = useState(false)
   const [qr, setQr] = useState("")
 
   useEffect(() => 
