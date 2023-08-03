@@ -11,7 +11,7 @@ const addInfos = () => {
     useEffect(() =>
     {
       getAvatar();
-    })
+    }, [])
 
     const [Avatar, setAvatar] = useState<File | null>(null);
     const [Preview, setPreview] = useState("");
@@ -60,13 +60,6 @@ const addInfos = () => {
 
       async function handleSaveChanges() 
       {
-        if (!isUsernameChanged && !isUsernameChanged) {
-          const confirmation = window.confirm('You have not changed the username or password. Are you sure you want to continue without making changes?');
-          // If the user clicks "Cancel" in the confirmation dialog, exit the function
-          if (!confirmation) {
-            return;
-            }
-          }
         try {
           if (isAvatarChanged && Avatar) 
           {
@@ -130,6 +123,13 @@ const addInfos = () => {
         catch(e)
         {
           alert(e)
+        }
+        if (!isUsernameChanged && !isUsernameChanged) {
+          const confirmation = window.confirm('You have not changed the username or password. Are you sure you want to continue without making changes?');
+          // If the user clicks "Cancel" in the confirmation dialog, exit the function
+          if (!confirmation) {
+            return;
+            }
         }
         router.push('/dashboard')
     }
