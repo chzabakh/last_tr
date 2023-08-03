@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import Image from 'next/image'
 import axios from 'axios';
 import Router, { useRouter } from 'next/router';
@@ -7,6 +7,11 @@ import Dashboard from './dashboard';
 import Cookies from 'js-cookie';
 
 const addInfos = () => {
+
+    useEffect(() =>
+    {
+      getAvatar();
+    })
 
     const [Avatar, setAvatar] = useState<File | null>(null);
     const [Preview, setPreview] = useState("");
@@ -17,11 +22,28 @@ const addInfos = () => {
 
     const router = useRouter();
 
+
+    async function getAvatar()
+    {
+      
+      try
+      {
+        const Token = Cookies.get('token') 
+        const headers = {Authorization: `Bearer ${Token}`}
+        const res = await axios.get('http://localhost:9000/users/my-avatar', {headers, responseType: 'blob',});
+        const blob = new Blob([res.data], { type: 'image/png' });
+        const previewUrl = URL.createObjectURL(blob);
+        setPreview(previewUrl)
+      }
+      catch(err)
+      {
+        console.log(err);
+      }
+    }
+
     function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (file) {
-          const previewUrl = URL.createObjectURL(file);
-          setPreview(previewUrl);
           setIsAvatarChanged(true);
           setAvatar(file); // Save the file in the state for later submission
         } else {
@@ -38,6 +60,13 @@ const addInfos = () => {
 
       async function handleSaveChanges() 
       {
+        if (!isUsernameChanged && !isUsernameChanged) {
+          const confirmation = window.confirm('You have not changed the username or password. Are you sure you want to continue without making changes?');
+          // If the user clicks "Cancel" in the confirmation dialog, exit the function
+          if (!confirmation) {
+            return;
+            }
+          }
         try {
           if (isAvatarChanged && Avatar) 
           {
@@ -76,7 +105,7 @@ const addInfos = () => {
 
             try{
   
-                const Token = localStorage.getItem('token');
+                const Token = Cookies.get('token')
                 const headers = { Authorization: `Bearer ${Token}` };
                 const data = { nickname: Username };
                 await axios.patch('http://localhost:9000/users/me/settings/change-username', data, { headers });
@@ -95,13 +124,14 @@ const addInfos = () => {
                 }
             }
           }
-          router.push('/dashboard')
-
+    
+          
         }
         catch(e)
         {
-                alert(e)
+          alert(e)
         }
+        router.push('/dashboard')
     }
     
       

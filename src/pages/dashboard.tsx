@@ -27,9 +27,7 @@ type Me = {
 const Dashboard = () => {
 
   useEffect(() => {
-    const token = Cookies.get('token');
-    console.log("Token value:", token); // Debug log to check token value
-    if (!token) {
+    if (!Cookies.get('token')) {
       router.push("/login");
       return;
     }

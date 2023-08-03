@@ -30,19 +30,31 @@ export const Login  : React.FC  = () => {
     password: "",
   });
 
-  useEffect(() => {
-    console.log("tooken" , Cookies.get('token'))
-    window.addEventListener("message", (event) => {
-     
-      if (event.origin === "http://localhost:9000" && event.data === "success") {
-        authWindow?.close();
-        
-        // Redirect to the dashboard
-        router.push('/dashboard');
-      }
-    });
-    console.log("test", Cookies.get());
-  }, []);
+
+  useEffect(() =>
+  {
+    // if(authWindow)
+    // {
+    //   const repeat = setInterval(() => 
+    //   {
+    //     const handleWindow = () =>
+    //     {
+    //         const url = authWindow.location.href;
+    //         // if (url.includes('success'))
+    //         // {
+    //             alert('yeeeeey')
+    //             authWindow.close()
+    //         // }
+    //         authWindow.addEventListener(("message"), handleWindow)
+    //     }
+
+    //   }, 1000) 
+    //   return () => clearInterval(repeat);
+    // }
+    
+  }, [])
+
+  
 
   
 
@@ -64,19 +76,19 @@ export const Login  : React.FC  = () => {
       const tok = res.data.access_token;
       const verify = res.data.isFirstLogin;
       // localStorage.setItem("token", tok);
-      Cookies.set('token', tok , { path: '/', HttpOnly: false});
+      Cookies.set('token', tok , { path: '/'});
 
       // login(tok);         
       //check if the infos are set with the added value in response
       //let us pretend that is actually not set
-      if(verify)
-      {
+      // if(verify)
+      // {
         router.push('/addInfos');
-      }
-      else
-      {
-        router.push('/dashboard');
-      }
+      // }
+      // else
+      // {
+      //   router.push('/dashboard');
+      // }
      }
       catch (err) {
       if (err instanceof AxiosError) {
@@ -94,19 +106,26 @@ export const Login  : React.FC  = () => {
   
   async function openNewWindow() {
 
-    const width = 200;
-    const height = 300;
-    const left = (window.screen.width - width) / 2;
-    const top = (window.screen.height - height) / 2;
-    
     const authWindow = window.open(
-      "http://localhost:9000/auth/42/callback",
-      "_blank",
-      `width=200,height=300,left=${left},top=${top}`
+      "http://localhost:9000/auth/42/login",
+      '_blank',
+      'width=350,height=450'
     );
-    
-    setAuthWin(authWindow);
-
+    // const Token = Cookies.get('token') 
+    // const headers = {Authorization: `Bearer ${Token}`}
+    // const res = await axios.get('http://localhost:9000/auth/42/login');
+    // console.log(res.data)
+    // const tok = res.data;
+    if (authWindow) {
+      authWindow.document.write("<h1>Login Successful</h1>");
+  
+      setTimeout(() => {
+        // Cookies.set('token', tok, {path : '/'})
+        Router.push('/dashboard')
+        authWindow.close();
+      }, 5000);
+    }
+   
   }
 
   return (
