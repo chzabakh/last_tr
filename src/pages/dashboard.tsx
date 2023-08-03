@@ -25,19 +25,12 @@ type Me = {
 
 const Dashboard = () => {
 
-  useEffect(() => {
-    if (!Cookies.get('token')) {
-      router.push("/login");
-      return;
-    }
-    getAvatar();
-    getMe();
-  }, []);
 
   const [item, setItem] = useState("1");
   const [Preview, setPreview] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [username, setUser] = useState("")
+  const [provider, setProvider] = useState("")
   const [me, setMe] = useState<Me>({
     TwofaAutEnabled: false,
     avatarUrl: "none",
@@ -52,57 +45,37 @@ const Dashboard = () => {
   });
   const router = useRouter();
 
-
   useEffect(() => {
-    const handleResize = (): void => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return (): void => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [windowWidth]);
-
-  // const { accessToken } = useAuth();
-
-  // console.log(accessToken);
-
-   const getMe = async () => {
-    try {
-      const res = await axios.get(`http://localhost:9000/users/me`, {
-        headers: {
-          Authorization: `Bearer ${ Cookies.get('token') }`,
-        },
-      });
-      // setMe(res.data);
-      setUser(res.data.nickname)
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        console.log(err.response?.data.message);
-      } else {
-        console.log("Unexpected error", err);
+    if (!Cookies.get('token')) {
+      router.push("/login");
+      return;
+    }
+    const fetchData = async () => {
+      try {
+        const token = Cookies.get('token');
+        const headers = { Authorization: `Bearer ${token}` };
+        const res = await axios.get('http://localhost:9000/users/me', { headers });
+        setUser(res.data.nickname);
+        setProvider(res.data.provider);
+  
+  
+        if (res.data.provider === "intra") {
+          setPreview(res.data.avatarUrl);
+        } else {
+          const avatarRes = await axios.get('http://localhost:9000/users/my-avatar', { headers, responseType: 'blob' });
+          const blob = new Blob([avatarRes.data], { type: 'image/png' });
+          const previewUrl = URL.createObjectURL(blob);
+          setPreview(previewUrl);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
       }
-    }
-  };
-
-  async function getAvatar()
-  {
-    try
-    {
-      const Token = Cookies.get('token') 
-      const headers = {Authorization: `Bearer ${Token}`}
-      const res = await axios.get('http://localhost:9000/users/my-avatar', {headers, responseType: 'blob',});
-      const blob = new Blob([res.data], { type: 'image/png' });
-      const previewUrl = URL.createObjectURL(blob);
-      setPreview(previewUrl)
-    }
-    catch(err)
-    {
-      console.log(err);
-    }
-  }
+    };
+  
+    fetchData();
+  }, [Cookies.get('token')]); // Dependency on the token
+  
+   
 
   return (
     
@@ -119,6 +92,7 @@ const Dashboard = () => {
               alt={me.avatarUrl}
               height={200}
               width={200}
+              priority={true}
               />
             
               <p className="font-serif text-center py-5 text-xl">

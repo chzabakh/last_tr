@@ -21,6 +21,7 @@ export const Login  : React.FC  = () => {
   const router = useRouter();
 
   const [authWindow, setAuthWin] = useState<Window | null>(null);
+  const [token, setToken] = useState(""); 
  
   const [status, setStatus] = useState("0");
   const [message, setMessage] = useState("");
@@ -29,33 +30,6 @@ export const Login  : React.FC  = () => {
     email: "",
     password: "",
   });
-
-
-  useEffect(() =>
-  {
-    // if(authWindow)
-    // {
-    //   const repeat = setInterval(() => 
-    //   {
-    //     const handleWindow = () =>
-    //     {
-    //         const url = authWindow.location.href;
-    //         // if (url.includes('success'))
-    //         // {
-    //             alert('yeeeeey')
-    //             authWindow.close()
-    //         // }
-    //         authWindow.addEventListener(("message"), handleWindow)
-    //     }
-
-    //   }, 1000) 
-    //   return () => clearInterval(repeat);
-    // }
-    
-  }, [])
-
-  
-
   
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,14 +55,14 @@ export const Login  : React.FC  = () => {
       // login(tok);         
       //check if the infos are set with the added value in response
       //let us pretend that is actually not set
-      // if(verify)
-      // {
+      if(verify)
+      {
         router.push('/addInfos');
-      // }
-      // else
-      // {
-      //   router.push('/dashboard');
-      // }
+      }
+      else
+      {
+        router.push('/dashboard');
+      }
      }
       catch (err) {
       if (err instanceof AxiosError) {
@@ -104,34 +78,41 @@ export const Login  : React.FC  = () => {
   };
 
   
-  async function openNewWindow() {
+  function openNewWindow() {
     const authWindow = window.open(
       "http://localhost:9000/auth/42/login",
       '_blank',
       'width=350,height=450'
     );
-  
+    console.log('token before: ', Cookies.get())
     if (authWindow) {
       const checkAuthComplete = setInterval(() => {
         const token = Cookies.get('token');
+        alert(token)
         if (token) {
-          Cookies.set('token', token, { path: '/' });
+          setToken(token);
           authWindow.close();
+          // Cookies.set('token', token, {path: '/'});
           clearInterval(checkAuthComplete);
-          Router.push('/dashboard');
+          Cookies.set('token', token, {path: '/'});   
+          console.log("token after setting cookies: ", Cookies.get('token'))       
+          Router.push('/dashboard'); 
+          // console.log("token after dashboard ", Cookies.get('token'))
         }
-      }, 1000);
+        console.log(token)
+      }, 500);
     } else {
       alert('Failed to open authentication window');
     }
+    // console.log("Cookie after getting out of function ", Cookies.get('token'))
   }
-
+  console.log("token globally: ", Cookies.get('token'))
   return (
     <div className="flex flex-col justify-between max-w-full mx-[3rem] h-full max-h-full min-h-full relative">
     <Layout>
       <div className="flex w-[100%] flex-col items-center gap-4 mx-auto justify-center relative">
         <div className={styles.auth}>
-          <a className={styles.button} onClick={openNewWindow}>
+        <a className={styles.button} onClick={openNewWindow}>
             <Image className={styles.logo} alt="" src={fourty} />
             <p className="text-xs sm:text-xl">Login with Intra</p>
           </a>
