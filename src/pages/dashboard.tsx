@@ -30,6 +30,7 @@ const Dashboard = () => {
   const [Preview, setPreview] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [username, setUser] = useState("")
+  const [token, setToken] = useState("")
   const [provider, setProvider] = useState("")
   const [me, setMe] = useState<Me>({
     TwofaAutEnabled: false,
@@ -46,15 +47,20 @@ const Dashboard = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!Cookies.get('token')) {
-      router.push("/login");
-      return;
-    }
+  
+
     const fetchData = async () => {
+      const token = Cookies.get('token')?.replace(/"/g, '');
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+      console.log("afyter: ", token )
       try {
-        const token = Cookies.get('token');
         const headers = { Authorization: `Bearer ${token}` };
-        const res = await axios.get('http://localhost:9000/users/me', { headers });
+        console.log("header", headers)
+        const res = await axios.get('http://localhost:9000/users/me',  { headers });
+        console.log(res.data)
         setUser(res.data.nickname);
         setProvider(res.data.provider);
   

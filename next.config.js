@@ -5,13 +5,6 @@ const nextConfig = {
 
 module.exports = {
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'cdn.intra.42.fr',
-        port: '',
-        pathname: '/account123/**',
-      },
-    ],
+    domains: ['cdn.intra.42.fr'],
   },
 }
