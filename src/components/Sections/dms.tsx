@@ -18,7 +18,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
         <div className="w-[50%] mt-10">
           <div className="chat-image avatar mx-auto">
             <div className="w-50 rounded-full">
-              <Image src="/zuck.jpg" width={80} height={80} alt="friend" />
+              <Image src="/zuck.jpg" width={200} height={200} alt="friend" />
             </div>
           </div>
           <p className="text-center">zuck STATUS: Playing</p>
@@ -56,7 +56,12 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
           <div className="chat chat-end">
             <div className="chat-image avatar">
               <div className="w-10 rounded-full">
-                <Image src="/ah.jpg" width={100} height={100} alt="friend" />
+                <Image
+                  src="/uploads/ah.jpg"
+                  width={100}
+                  height={100}
+                  alt="friend"
+                />
               </div>
             </div>
             <div className="chat-bubble chat-bubble-info">
@@ -74,7 +79,12 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
           <div className="chat chat-end">
             <div className="chat-image avatar">
               <div className="w-10 rounded-full">
-                <Image src="/ah.jpg" width={100} height={100} alt="friend" />
+                <Image
+                  src="/uploads/ah.jpg"
+                  width={100}
+                  height={100}
+                  alt="friend"
+                />
               </div>
             </div>
             <div className="chat-bubble chat-bubble-info">
@@ -84,7 +94,12 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
           <div className="chat chat-end">
             <div className="chat-image avatar">
               <div className="w-10 rounded-full">
-                <Image src="/ah.jpg" width={100} height={100} alt="friend" />
+                <Image
+                  src="/uploads/ah.jpg"
+                  width={100}
+                  height={100}
+                  alt="friend"
+                />
               </div>
             </div>
             <div className="chat-bubble chat-bubble-info">
@@ -112,7 +127,12 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
           <div className="chat chat-end">
             <div className="chat-image avatar">
               <div className="w-10 rounded-full">
-                <Image src="/ah.jpg" width={100} height={100} alt="friend" />
+                <Image
+                  src="/uploads/ah.jpg"
+                  width={100}
+                  height={100}
+                  alt="friend"
+                />
               </div>
             </div>
             <div className="chat-bubble chat-bubble-info">
@@ -130,7 +150,12 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
           <div className="chat chat-end">
             <div className="chat-image avatar">
               <div className="w-10 rounded-full">
-                <Image src="/ah.jpg" width={100} height={100} alt="friend" />
+                <Image
+                  src="/uploads/ah.jpg"
+                  width={100}
+                  height={100}
+                  alt="friend"
+                />
               </div>
             </div>
             <div className="chat-bubble chat-bubble-info">
@@ -140,7 +165,12 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
           <div className="chat chat-end">
             <div className="chat-image avatar">
               <div className="w-10 rounded-full">
-                <Image src="/ah.jpg" width={100} height={100} alt="friend" />
+                <Image
+                  src="/uploads/ah.jpg"
+                  width={100}
+                  height={100}
+                  alt="friend"
+                />
               </div>
             </div>
             <div className="chat-bubble chat-bubble-info">

@@ -4,6 +4,7 @@ import { useState, ChangeEvent } from "react";
 import Image from "next/image";
 import axios from "axios";
 import TwoFac from "./twoFac";
+import Cookies from "js-cookie";
 
 const Edit = () => {
   const [showTwoFac, setShowTwoFac] = useState(false);
@@ -63,7 +64,7 @@ const Edit = () => {
 
   async function getAvatar() {
     try {
-      const Token = localStorage.getItem("token");
+      const Token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${Token}` };
       const res = await axios.get("http://localhost:9000/users/me/${Preview}", {
         headers,
@@ -80,7 +81,7 @@ const Edit = () => {
 
   async function getNick() {
     try {
-      const Token = localStorage.getItem("token");
+      const Token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${Token}` };
       const res = await axios.get("http://localhost:9000/users/me", {
         headers,
@@ -96,9 +97,9 @@ const Edit = () => {
   async function handleSaveChanges() {
     try {
       if (isAvatarChanged && Avatar) {
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token");
         const headers = {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${Cookies.get("token")}`,
         };
 
         const data = new FormData();
@@ -124,7 +125,7 @@ const Edit = () => {
 
       if (isUsernameChanged && Username) {
         try {
-          const Token = localStorage.getItem("token");
+          const Token = Cookies.get("token");
           const headers = { Authorization: `Bearer ${Token}` };
           const data = { nickname: Username };
           await axios.patch(
@@ -145,7 +146,7 @@ const Edit = () => {
 
       if (pass && oldpass && isPassChanged && isOldPassChanged) {
         try {
-          const Token = localStorage.getItem("token");
+          const Token = Cookies.get("token");
           const headers = { Authorization: `Bearer ${Token}` };
           const data = {
             password: oldpass,

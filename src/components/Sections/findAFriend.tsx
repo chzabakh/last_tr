@@ -2,6 +2,7 @@ import { useAuth } from "@/pages/auth_context";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import ConfirmationButtons from "../Button/confirmationButtons";
 
 type Friend = {
@@ -66,7 +67,7 @@ const FindAFriend = () => {
       const me = await axios
         .get(`http://localhost:9000/users/me`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
         })
         .catch((err) => {});
@@ -75,7 +76,7 @@ const FindAFriend = () => {
         `http://localhost:9000/users/${myinput}/profile`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
         }
       );
@@ -125,7 +126,7 @@ const FindAFriend = () => {
       const me = await axios
         .get(`http://localhost:9000/users/me`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
         })
         .catch((err) => {});
@@ -137,7 +138,7 @@ const FindAFriend = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
         }
       );
@@ -150,9 +151,54 @@ const FindAFriend = () => {
     }
   };
 
-  const handleAdd = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+  const cancelAdd = async (username: string) => {
+    try {
+      const cancel = await axios
+        .post(`http://localhost:9000/users/${username}/cancel-request`, {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        })
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log("175" + err.response?.data.message);
+      } else {
+        console.log("177" + "Unexpected error", err);
+      }
+    }
+  };
+
+
+  const removeFriend = async (username: string) => {
+    try {
+      const remove = await axios
+        .delete(`http://localhost:9000/users/${username}`, {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        })
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log("89" + err.response?.data.message);
+      } else {
+        console.log("91" + "Unexpected error", err);
+      }
+    }
+  };
+
+
+
+  const handleAdd = async (e: React.MouseEvent<HTMLButtonElement>, reqtype: string) => {
     e.preventDefault();
+    if (reqtype == "None")
     await addUser();
+    
+    else if (reqtype == "p-sent")
+    await cancelAdd(input);
+
+    else if (reqtype == "friends")
+    await removeFriend(input);
   };
 
   const blockUser = async () => {
@@ -161,7 +207,7 @@ const FindAFriend = () => {
         `http://localhost:9000/users/${input}/block-user`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
         }
       );
@@ -190,7 +236,7 @@ const FindAFriend = () => {
 
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${Cookies.get("token")}`,
             },
           }
         );
@@ -224,7 +270,7 @@ const FindAFriend = () => {
           {},
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${Cookies.get("token")}`,
             },
           }
         );
@@ -244,7 +290,7 @@ const FindAFriend = () => {
           {},
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${Cookies.get("token")}`,
             },
           }
         );
@@ -272,7 +318,7 @@ const FindAFriend = () => {
       const me = await axios
         .get(`http://localhost:9000/users/me`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
         })
         .catch((err) => {});
@@ -281,7 +327,7 @@ const FindAFriend = () => {
         `http://localhost:9000/users/friendlist`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
         }
       );
@@ -327,7 +373,8 @@ const FindAFriend = () => {
         friend.id != "null" &&
         myswitch == "search" ? (
           <div className="flex flex-col border-2  border-opacity-30 mx-auto w-[70%] min-h-[300px] h-[90%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-            <button className="w-2"
+            <button
+              className="w-2"
               onClick={() => {
                 setMyswitch("list");
               }}
@@ -352,8 +399,8 @@ const FindAFriend = () => {
               className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
               src={`/uploads/${friend.avatarUrl}`}
               alt="pdp"
-              height={80}
-              width={80}
+              height={200}
+              width={200}
             />
             <p className="font-serif text-center py-5 text-xl">
               {friend.nickname}
@@ -361,23 +408,35 @@ const FindAFriend = () => {
             <div className="w-full  absolute bottom-10 flex justify-evenly left-0">
               {friend.friendStatus === "None" && identical === "0" ? (
                 <button
-                  onClick={(e) => handleAdd(e)}
+                  onClick={(e) => handleAdd(e, "None")}
                   className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
                 >
                   Add friend
                 </button>
               ) : null}
               {friend.friendStatus === "Pending Received" ? (
+                <>
                 <button
-                  onClick={(e) => handleAdd(e)}
+                  onClick={(e) => handleFrReq(friend.nickname, 0, "accept")}
                   className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
-                >
+                  >
                   Accept friend request
                 </button>
-              ) : null}
+
+
+                <button
+                  onClick={(e) => handleFrReq(friend.nickname, 0, "deny")}
+                  className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                >
+                  Deny friend request
+                </button>
+
+                  </>
+              ) 
+              : null}
               {friend.friendStatus === "Pending Sent" ? (
                 <button
-                  onClick={(e) => handleAdd(e)}
+                  onClick={(e) => handleAdd(e, "p-sent")}
                   className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
                 >
                   Cancel friend request
@@ -385,7 +444,7 @@ const FindAFriend = () => {
               ) : null}
               {friend.friendStatus === "friend" ? (
                 <button
-                  onClick={(e) => handleAdd(e)}
+                  onClick={(e) => handleAdd(e, "friends")}
                   className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
                 >
                   Remove friend
@@ -401,8 +460,8 @@ const FindAFriend = () => {
           </div>
         ) : (
           <>
-            <div className="flex ">
-              <div className="w-[50%]">
+            <div className="flex flex-wrap flex-col xl:flex-row h-[80%]">
+              <div className="mx-auto min-w[350px] w-[50%]">
                 <p className="mb-10">Received invites: </p>
                 {invites.map((invitation) => (
                   <div
@@ -413,15 +472,15 @@ const FindAFriend = () => {
                       <div className="w-14 rounded-full">
                         <Image
                           alt="friendReqPic"
-                          height={40}
-                          width={40}
+                          height={200}
+                          width={200}
                           src={`/uploads/${invitation.sender.avatarUrl}`}
                         />
                       </div>
                     </div>
                     <p className="mx-3 text-xl">{invitation.sender.nickname}</p>
 
-                    <div>
+                    <div className="flex flex-row min-w[110px]">
                       <button
                         onClick={() => {
                           handleFrReq(
@@ -472,7 +531,7 @@ const FindAFriend = () => {
                   </div>
                 ))}
               </div>
-              <div className="w-[50%]">
+              <div className="mx-auto min-w[350px] w-[50%]">
                 <p className="mb-10">Friends list: </p>
                 {myfriends.map((friend) => (
                   <div
@@ -483,8 +542,8 @@ const FindAFriend = () => {
                       <div className="w-14 rounded-full">
                         <Image
                           alt="friendReqPic"
-                          height={40}
-                          width={40}
+                          height={200}
+                          width={200}
                           src={`/uploads/${friend.avatarUrl}`}
                         />
                       </div>

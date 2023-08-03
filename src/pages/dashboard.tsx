@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "./auth_context";
 import { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
+import Cookies from "js-cookie";
 import Edit from "@/components/Sections/edit";
 
 type Me = {
@@ -42,14 +43,16 @@ const Dashboard = () => {
       try {
         const res = await axios.get(`http://localhost:9000/users/me`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
         });
         setMe(res.data);
       } catch (err) {
         if (err instanceof AxiosError) {
+          router.push("/");
           console.log(err.response?.data.message);
         } else {
+          router.push("/");
           console.log("Unexpected error", err);
         }
       }
@@ -80,17 +83,17 @@ const Dashboard = () => {
       <div className="flex flex-row h-full">
         {windowWidth > 768 ? (
           <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
-            <div>{
-              me.avatarUrl != "none" ?
-              <Image
-              className="object-cover flex-auto mx-auto rounded-[30px]"
-              src={`/uploads/${me.avatarUrl}`}
-              alt={me.avatarUrl}
-              height={200}
-              width={200}
-              />
-              : null
-            }
+            <div>
+              {me.avatarUrl != "none" ? (
+                <Image
+                  className="object-cover flex-auto mx-auto rounded-[30px]"
+                  src={`/uploads/${me.avatarUrl}`}
+                  alt={me.avatarUrl}
+                  height={200}
+                  width={200}
+                  style={{ width: "auto", height: "auto" }}
+                />
+              ) : null}
               <p className="font-serif text-center py-5 text-xl">
                 {me.nickname}
               </p>
@@ -158,7 +161,7 @@ const Dashboard = () => {
               </button>
               <button
                 onClick={() => {
-                  localStorage.removeItem("token");
+                  Cookies.remove("token");
                   router.push("/login");
                 }}
                 className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
