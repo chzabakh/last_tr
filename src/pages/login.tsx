@@ -88,7 +88,6 @@ export const Login  : React.FC  = () => {
     if (authWindow) {
       const checkAuthComplete = setInterval(() => {
         const token = Cookies.get('token');
-        alert(token)
         if (token) {
           setToken(token);
           authWindow.close();

@@ -50,19 +50,19 @@ const Dashboard = () => {
   
 
     const fetchData = async () => {
-      const token = Cookies.get('token')?.replace(/"/g, '');
+      // const token = Cookies.get('token')
+      const token = Cookies.get('token')
+      console.log(token)
       if (!token) {
         router.push("/login");
         return;
       }
-      console.log("afyter: ", token )
       try {
         const headers = { Authorization: `Bearer ${token}` };
-        console.log("header", headers)
+        console.log(headers)
         const res = await axios.get('http://localhost:9000/users/me',  { headers });
         console.log(res.data)
         setUser(res.data.nickname);
-        setProvider(res.data.provider);
   
   
         if (res.data.provider === "intra") {

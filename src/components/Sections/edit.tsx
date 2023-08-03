@@ -82,18 +82,22 @@ const Edit = () => {
 
     async function getAvatar()
     {
-      try
-      {
-        const Token = Cookies.get('token') 
-        const headers = {Authorization: `Bearer ${Token}`}
-        const res = await axios.get('http://localhost:9000/users/my-avatar', {headers, responseType: 'blob',});
-        const blob = new Blob([res.data], { type: 'image/png' });
-        const previewUrl = URL.createObjectURL(blob);
-        setPreview(previewUrl)
-      }
-      catch(err)
-      {
-        console.log(err);
+      const token = Cookies.get('token')
+    
+      console.log("afyter: ", token )
+      try {
+        const headers = { Authorization: `Bearer ${token}` };
+        const res = await axios.get('http://localhost:9000/users/me',  { headers });
+        if (res.data.provider === "intra") {
+          setPreview(res.data.avatarUrl);
+        } else {
+          const avatarRes = await axios.get('http://localhost:9000/users/my-avatar', { headers, responseType: 'blob' });
+          const blob = new Blob([avatarRes.data], { type: 'image/png' });
+          const previewUrl = URL.createObjectURL(blob);
+          setPreview(previewUrl);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
       }
     }
 
@@ -106,7 +110,7 @@ const Edit = () => {
 
       
         if (isAvatarChanged && Avatar) {
-          const Token =  Cookies.get('token') 
+          const Token =  Cookies.get('token')
           const headers = {
             Authorization: `Bearer ${Token}`,
           };
@@ -142,7 +146,7 @@ const Edit = () => {
 
           try{
 
-              const Token = Cookies.get('token') 
+              const Token = Cookies.get('token')
               const headers = { Authorization: `Bearer ${Token}` };
               const data = { nickname: Username };
               await axios.patch('http://localhost:9000/users/me/settings/change-username', data, { headers });
@@ -167,7 +171,7 @@ const Edit = () => {
 
           try{
 
-              const Token = Cookies.get('token') 
+              const Token = Cookies.get('token')
               const headers = { Authorization: `Bearer ${Token}` };
               const data = {
                 password: oldpass,

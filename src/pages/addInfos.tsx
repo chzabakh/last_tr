@@ -3,7 +3,7 @@ import Image from 'next/image'
 import axios from 'axios';
 import Router, { useRouter } from 'next/router';
 import Dashboard from './dashboard';
-
+import Place from '../../public/Place.png'
 import Cookies from 'js-cookie';
 
 const addInfos = () => {
@@ -11,7 +11,7 @@ const addInfos = () => {
     useEffect(() =>
     {
       getAvatar();
-    }, [])
+    })
 
     const [Avatar, setAvatar] = useState<File | null>(null);
     const [Preview, setPreview] = useState("");
@@ -130,7 +130,7 @@ const addInfos = () => {
           if (!confirmation) {
             return;
             }
-        }
+          }
         router.push('/dashboard')
     }
     
@@ -146,7 +146,7 @@ const addInfos = () => {
             
             <div className="lg:text-lg text-xs max-w-full">Change the Avatar and Username</div>
        
-              <Image src={Preview} alt="" width={100} height={100} className="border-2 self-center rounded-full"/>
+              <Image src={Preview || Place} alt="" width={100} height={100} className="border-2 self-center rounded-full"/>
               <input
                 key="avatar"
                 required
