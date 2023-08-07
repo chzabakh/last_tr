@@ -13,7 +13,6 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
   };
   return (
     <>
-      {/* <div className="flex p-0 border-2 flex-auto h-full  w-[77%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]"> */}
       <div className="w-[400px] flex flex-xol justify-center">
         <div className="w-[50%] mt-10">
           <div className="chat-image avatar mx-auto">
@@ -40,7 +39,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
           </div>
         </div>
       </div>
-      <div className="border border-opacity-30 border-violet-400 h-full my-0 w-[1px]"></div>
+      <div className="border border-opacity-30 border-violet-400 h-full my-0 mr-5 w-[1px]"></div>
       <div className="flex flex-col p-0 m-0 justify-center w-full h-full pt-5">
         <div className="mb-16 overflow-auto ">
           <div className="chat chat-start">
