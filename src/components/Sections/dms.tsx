@@ -1,16 +1,119 @@
+import axios, { AxiosError } from "axios";
+import Cookies from "js-cookie";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+interface User {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  FirstLogin: boolean;
+  TwofaAutEnabled: boolean;
+  TwofaAutSecret: string | null;
+  avatarUrl: string;
+  email: string;
+  friendStatus: string;
+  hash: string;
+  nickname: string;
+  provider: string;
+  state: string;
+}
+
+interface Seen {
+  FirstLogin: boolean;
+  TwofaAutEnabled: boolean;
+  TwofaAutSecret: string | null;
+  avatarUrl: string;
+  createdAt: string;
+  email: string;
+  friendStatus: string;
+  hash: string;
+  id: number;
+  nickname: string;
+  provider: string;
+  state: string;
+  updatedAt: string;
+}
+
+interface Sender {
+  FirstLogin: boolean;
+  TwofaAutEnabled: boolean;
+  TwofaAutSecret: string | null;
+  avatarUrl: string;
+  createdAt: string;
+  email: string;
+  friendStatus: string;
+  hash: string;
+  id: number;
+  nickname: string;
+  provider: string;
+  state: string;
+  updatedAt: string;
+}
+
+interface Message {
+  content: string;
+  createdAt: string;
+  id: number;
+  recieverID: number;
+  roomID: string;
+  seen: Seen[];
+  sender: Sender;
+}
+
+interface Chat {
+  id: number;
+  createdAt: string;
+  lastMessageAt: string;
+  messages: Message[];
+  name: string | null;
+  ownerID: number | null;
+  password: string | null;
+  uid: string;
+  users: User[];
+  isGroup: boolean | null;
+  isPrivate: boolean | null;
+}
 
 interface DmProps {
   dm: string;
   updateItem: (newValue: string, newDm: string) => void;
+  chat: Chat;
+  setChatList : (newValue: Array<any>) => void;
 }
 
-const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
+const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
   const [input, setInput] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInput(e.target.value);
   };
+
+  useEffect(() => {
+    const getMe = async () => {
+      try {
+        const res = await axios.get(`http://localhost:9000/users/me`, {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        });
+        setNickname(res.data.nickname);
+        console.log("me",res.data.nickname);
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          console.log(err.response?.data.message);
+        } else {
+          console.log("Unexpected error", err);
+        }
+      }
+    };
+
+    getMe();
+    setIsLoading(false);
+  }, []);
+
   return (
     <>
       <div className="w-[400px] flex flex-xol justify-center">
@@ -42,7 +145,13 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
       <div className="border border-opacity-30 border-violet-400 h-full my-0 mr-5 w-[1px]"></div>
       <div className="flex flex-col p-0 m-0 justify-center w-full h-full pt-5">
         <div className="mb-16 overflow-auto ">
-          <div className="chat chat-start">
+
+
+{isLoading ? <p>Loading...</p> : ( chat.messages.map((chat, index) => (
+  <div key={index}>
+{chat.sender.nickname == nickname ? 
+
+<div className="chat chat-start">
             <div className="chat-image avatar">
               <div className="w-10 rounded-full">
                 <Image src="/zuck.jpg" width={100} height={100} alt="friend" />
@@ -52,68 +161,11 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
               It was said that you would, destroy the Sith, not join them.
             </div>
           </div>
+
+          :
+
+
           <div className="chat chat-end">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <Image
-                  src="/uploads/ah.jpg"
-                  width={100}
-                  height={100}
-                  alt="friend"
-                />
-              </div>
-            </div>
-            <div className="chat-bubble chat-bubble-info">
-              It was you who would bring balance to the Force
-            </div>
-          </div>
-          <div className="chat chat-start">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <Image src="/zuck.jpg" width={100} height={100} alt="friend" />
-              </div>
-            </div>
-            <div className="chat-bubble">Not leave it in Darkness</div>
-          </div>
-          <div className="chat chat-end">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <Image
-                  src="/uploads/ah.jpg"
-                  width={100}
-                  height={100}
-                  alt="friend"
-                />
-              </div>
-            </div>
-            <div className="chat-bubble chat-bubble-info">
-              It was said that you would, destroy the Sith, not join them.
-            </div>
-          </div>
-          <div className="chat chat-end">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <Image
-                  src="/uploads/ah.jpg"
-                  width={100}
-                  height={100}
-                  alt="friend"
-                />
-              </div>
-            </div>
-            <div className="chat-bubble chat-bubble-info">
-              It was you who would bring balance to the Force
-            </div>
-          </div>
-          <div className="chat chat-start">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <Image src="/zuck.jpg" width={100} height={100} alt="friend" />
-              </div>
-            </div>
-            <div className="chat-bubble">Not leave it in Darkness</div>
-          </div>
-          <div className="chat chat-start">
             <div className="chat-image avatar">
               <div className="w-10 rounded-full">
                 <Image src="/zuck.jpg" width={100} height={100} alt="friend" />
@@ -123,67 +175,13 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem }) => {
               It was said that you would, destroy the Sith, not join them.
             </div>
           </div>
-          <div className="chat chat-end">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <Image
-                  src="/uploads/ah.jpg"
-                  width={100}
-                  height={100}
-                  alt="friend"
-                />
-              </div>
-            </div>
-            <div className="chat-bubble chat-bubble-info">
-              It was you who would bring balance to the Force
-            </div>
-          </div>
-          <div className="chat chat-start">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <Image src="/zuck.jpg" width={100} height={100} alt="friend" />
-              </div>
-            </div>
-            <div className="chat-bubble">Not leave it in Darkness</div>
-          </div>
-          <div className="chat chat-end">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <Image
-                  src="/uploads/ah.jpg"
-                  width={100}
-                  height={100}
-                  alt="friend"
-                />
-              </div>
-            </div>
-            <div className="chat-bubble chat-bubble-info">
-              It was said that you would, destroy the Sith, not join them.
-            </div>
-          </div>
-          <div className="chat chat-end">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <Image
-                  src="/uploads/ah.jpg"
-                  width={100}
-                  height={100}
-                  alt="friend"
-                />
-              </div>
-            </div>
-            <div className="chat-bubble chat-bubble-info">
-              It was you who would bring balance to the Force
-            </div>
-          </div>
-          <div className="chat chat-start">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <Image src="/zuck.jpg" width={100} height={100} alt="friend" />
-              </div>
-            </div>
-            <div className="chat-bubble">Not leave it in Darkness</div>
-          </div>
+
+
+
+}
+
+  </div>
+)))    }
         </div>
         <div className="flex absolute bottom-4 w-[45%] lg:w-[50%] xl:w-[60%] border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
           <input

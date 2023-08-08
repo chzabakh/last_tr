@@ -3,7 +3,6 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import ConfirmationButtons from "../Button/confirmationButtons";
 import Dms from "./dms";
 
 type Friend = {
@@ -375,7 +374,8 @@ const FindAFriend = () => {
     <>
       {dm == "1" ? (
         <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-          <Dms dm={dm} updateItem={updateItem} />
+          <Dms dm={dm} updateItem={updateItem} />hhhh
+          {/* <FindAFriend/> */}
         </div>
       ) : (
         <>
@@ -407,7 +407,7 @@ const FindAFriend = () => {
             {friend.id != "notfound" &&
             friend.id != "null" &&
             myswitch == "search" ? (
-              <div className="flex flex-col border-2  border-opacity-30 mx-auto w-[70%] min-h-[300px] h-[90%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+              <div className="flex flex-col border-2 border-opacity-30 mx-auto w-[70%] min-h-[300px] h-[90%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                 <button
                   className="w-2"
                   onClick={() => {
@@ -516,7 +516,7 @@ const FindAFriend = () => {
                           {invitation.sender.nickname}
                         </p>
 
-                        <div className="flex flex-row min-w[110px]">
+                        <div className="flex absolute right-2 flex-row min-w[110px]">
                           <button
                             onClick={() => {
                               handleFrReq(
