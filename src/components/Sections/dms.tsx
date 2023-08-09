@@ -79,12 +79,13 @@ interface DmProps {
   dm: string;
   updateItem: (newValue: string, newDm: string) => void;
   chat: Chat;
-  setChatList : (newValue: Array<any>) => void;
+  setChatList: (newValue: Array<any>) => void;
 }
 
 const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
   const [input, setInput] = useState("");
   const [nickname, setNickname] = useState("");
+  const [avatar, setAvatar] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -99,8 +100,8 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
         });
+        setAvatar(res.data.avatarUrl);
         setNickname(res.data.nickname);
-        console.log("me",res.data.nickname);
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -116,11 +117,17 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
 
   return (
     <>
+    <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
       <div className="w-[400px] flex flex-xol justify-center">
         <div className="w-[50%] mt-10">
           <div className="chat-image avatar mx-auto">
             <div className="w-50 rounded-full">
-              <Image src="/zuck.jpg" width={200} height={200} alt="friend" />
+              <Image
+                src={`/uploads/${avatar}`}
+                width={200}
+                height={200}
+                alt="friend"
+              />
             </div>
           </div>
           <p className="text-center">zuck STATUS: Playing</p>
@@ -145,43 +152,43 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
       <div className="border border-opacity-30 border-violet-400 h-full my-0 mr-5 w-[1px]"></div>
       <div className="flex flex-col p-0 m-0 justify-center w-full h-full pt-5">
         <div className="mb-16 overflow-auto ">
-
-
-{isLoading ? <p>Loading...</p> : ( chat.messages.map((chat, index) => (
-  <div key={index}>
-{chat.sender.nickname == nickname ? 
-
-<div className="chat chat-start">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <Image src="/zuck.jpg" width={100} height={100} alt="friend" />
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            chat.messages.map((chat, index) => (
+              <div key={index}>
+                {chat.sender.nickname == nickname ? (
+                  <div className="chat chat-start">
+                    <div className="chat-image avatar">
+                      <div className="w-10 rounded-full">
+                        <Image
+                          src={`/uploads/${chat.sender.avatarUrl}`}
+                          width={100}
+                          height={100}
+                          alt="me"
+                        />
+                      </div>
+                    </div>
+                    <div className="chat-bubble">{chat.content}</div>
+                  </div>
+                ) : (
+                  <div className="chat chat-end">
+                    <div className="chat-image avatar">
+                      <div className="w-10 rounded-full">
+                        <Image
+                          src={`/uploads/${avatar}`}
+                          width={100}
+                          height={100}
+                          alt="friend"
+                        />
+                      </div>
+                    </div>
+                    <div className="chat-bubble">{chat.content}</div>
+                  </div>
+                )}
               </div>
-            </div>
-            <div className="chat-bubble">
-              It was said that you would, destroy the Sith, not join them.
-            </div>
-          </div>
-
-          :
-
-
-          <div className="chat chat-end">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <Image src="/zuck.jpg" width={100} height={100} alt="friend" />
-              </div>
-            </div>
-            <div className="chat-bubble">
-              It was said that you would, destroy the Sith, not join them.
-            </div>
-          </div>
-
-
-
-}
-
-  </div>
-)))    }
+            ))
+          )}
         </div>
         <div className="flex absolute bottom-4 w-[45%] lg:w-[50%] xl:w-[60%] border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
           <input
@@ -210,6 +217,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
           </button>
         </div>
       </div>
+    </div>
     </>
   );
 };
