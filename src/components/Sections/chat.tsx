@@ -68,7 +68,7 @@ const Chat = () => {
             empty
           </div>
         ) : null}
-        {item == "6" ? <FindAFriend /> : null}
+        {item == "6" ? <FindAFriend dmm={dm} updateItemm={updateItem} /> : null}
         {/* {item == "7" ? <Dms/> : null} */}
         {item == "7" ? <Messages dm={dm} updateItem={updateItem} /> : null}
         {item === "8" ? <Channels /> : null}

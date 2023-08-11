@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface User {
   id: number;
@@ -82,14 +82,65 @@ interface DmProps {
   setChatList: (newValue: Array<any>) => void;
 }
 
+type Friend = {
+  avatarUrl: string;
+  id: string;
+  nickname: string;
+  email: string;
+  state: string;
+  friendStatus: string;
+};
+
 const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
   const [input, setInput] = useState("");
   const [nickname, setNickname] = useState("");
   const [avatar, setAvatar] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [reload, setReload] = useState(true);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [newmsg, setNewmsg] = useState<Message | null>(null);
+  const [profile, setProfile] = useState(false);
+  const [myinput, setMyinput] = useState("");
+  const [friend, setFriend] = useState<Friend>({
+    avatarUrl: "null",
+    id: "null",
+    nickname: "null",
+    email: "null",
+    state: "null",
+    friendStatus: "null",
+  });
+
+  // console.log("tocheck",chat);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInput(e.target.value);
+  };
+
+  const sendMsg = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        `http://localhost:9000/chat/send-message`,
+        {
+          RoomId: chat.uid,
+          message: input,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      setAvatar(res.data.avatarUrl);
+      setNickname(res.data.nickname);
+      console.log(reload);
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err.response?.data.message);
+      } else {
+        console.log("Unexpected error", err);
+      }
+    }
   };
 
   useEffect(() => {
@@ -111,113 +162,223 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
       }
     };
 
-    getMe();
-    setIsLoading(false);
-  }, []);
+    const getFriend = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:9000/users/${chat.users[0].nickname}/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
+        setFriend(res.data);
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          console.log(err.response?.data.message);
+        } else {
+          console.log("Unexpected error", err);
+        }
+      }
+    };
 
+    const getMessages = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:9000/${chat.uid}/messages`,
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
+        console.log("tttt", res.data);
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          console.log(err.response?.data.message);
+        } else {
+          console.log("Unexpected error", err);
+        }
+      }
+    };
+    console.log("[", chat.users[0].nickname.length, "]");
+    setMyinput(chat.users[0].nickname);
+    getMe();
+    // getMessages();
+    getFriend();
+    setIsLoading(false);
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [reload]);
   return (
     <>
-    <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-      <div className="w-[400px] flex flex-xol justify-center">
-        <div className="w-[50%] mt-10">
-          <div className="chat-image avatar mx-auto">
-            <div className="w-50 rounded-full">
-              <Image
-                src={`/uploads/${avatar}`}
-                width={200}
-                height={200}
-                alt="friend"
-              />
+      {profile ? (
+        <div className="absolute z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-[100%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+          <div className="w-[40%]">
+            <Image
+              className="object-cover mx-auto rounded-[20px]"
+              src={`/uploads/${friend.avatarUrl}`}
+              alt="pdp"
+              height={200}
+              width={200}
+            />
+            <p className="font-serif text-center py-5 text-xs">
+              {friend.nickname}
+            </p>
+            <div className="gap-5 w-full flex flex-col">
+              {
+              
+                <button
+                // onClick={(e) => handleBlock(e, input)}////////////////////////////
+                className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                >
+                  Block user
+                </button>
+                /* <>
+                <button
+                  onClick={() => {
+                    // setItem("9");/////////////////////
+                    // callDm(Number(friend.id));/////////////////////
+                  }}
+                  className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md py-4 rounded-[30px]"
+                >
+                  Send Message
+                </button>{" "}
+              </> */}
+
+              <button onClick={() => setProfile(false)}
+                className="hover:text-[#D6B3F1] mx-auto m-0 p-0 w-16"
+                // onClick={() => setItem("2")}/////////////////////////////////
+              >
+                &larr; Back
+              </button>
             </div>
           </div>
-          <p className="text-center">zuck STATUS: Playing</p>
-          <div className="flex flex-col">
-            <button className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-full py-1 my-3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-              Invite to a game
-            </button>
-            <button className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-full py-1 my-3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-              View Profile
-            </button>
-            <button
-              className="hover:text-[#D6B3F1] mx-auto m-0 p-0 w-16"
-              onClick={() => {
-                updateItem("7", "0");
-              }}
-            >
-              &larr; Back
-            </button>
+          <div className="py-20 pl-40 w-[60%] flex flex-col gap-10">
+            <p>Number of matches:</p>
+            <p>Win:</p>
+            <p>Loss:</p>
           </div>
         </div>
-      </div>
-      <div className="border border-opacity-30 border-violet-400 h-full my-0 mr-5 w-[1px]"></div>
-      <div className="flex flex-col p-0 m-0 justify-center w-full h-full pt-5">
-        <div className="mb-16 overflow-auto ">
-          {isLoading ? (
-            <p>Loading...</p>
-          ) : (
-            chat.messages.map((chat, index) => (
-              <div key={index}>
-                {chat.sender.nickname == nickname ? (
-                  <div className="chat chat-start">
-                    <div className="chat-image avatar">
-                      <div className="w-10 rounded-full">
-                        <Image
-                          src={`/uploads/${chat.sender.avatarUrl}`}
-                          width={100}
-                          height={100}
-                          alt="me"
-                        />
-                      </div>
-                    </div>
-                    <div className="chat-bubble">{chat.content}</div>
-                  </div>
-                ) : (
-                  <div className="chat chat-end">
-                    <div className="chat-image avatar">
-                      <div className="w-10 rounded-full">
-                        <Image
-                          src={`/uploads/${avatar}`}
-                          width={100}
-                          height={100}
-                          alt="friend"
-                        />
-                      </div>
-                    </div>
-                    <div className="chat-bubble">{chat.content}</div>
-                  </div>
-                )}
+      ) : (
+        <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+          <div className="w-[400px] flex flex-xol justify-center">
+            <div className="w-[50%] mt-10">
+              <div className="chat-image avatar mx-auto">
+                <div className="w-50 rounded-full">
+                  {avatar ? (
+                    <Image
+                      src={`/uploads/${avatar}`}
+                      width={200}
+                      height={200}
+                      alt="friend"
+                    />
+                  ) : null}
+                </div>
               </div>
-            ))
-          )}
+              <p className="text-center">zuck STATUS: Playing</p>
+              <div className="flex flex-col">
+                <button className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-full py-1 my-3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+                  Invite to a game
+                </button>
+                <button
+                  onClick={() => setProfile(true)}
+                  className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-full py-1 my-3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                >
+                  View Profile
+                </button>
+                <button
+                  className="hover:text-[#D6B3F1] mx-auto m-0 p-0 w-16"
+                  onClick={() => {
+                    updateItem("7", "0");
+                  }}
+                >
+                  &larr; Back
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="border border-opacity-30 border-violet-400 h-full my-0 mr-5 w-[1px]"></div>
+          <div className="flex flex-col p-0 m-0 justify-center w-full h-full pt-5">
+            <div className="mb-16 overflow-auto " ref={chatContainerRef}>
+              {isLoading ? (
+                <p>Loading...</p>
+              ) : (
+                chat.messages.map((chat, index) => (
+                  <div key={index}>
+                    {chat.sender.nickname == nickname ? (
+                      <div className="chat chat-end">
+                        <div className="chat-image avatar">
+                          <div className="w-10 rounded-full">
+                            {chat.sender.avatarUrl ? (
+                              <Image
+                                src={`/uploads/${chat.sender.avatarUrl}`}
+                                width={100}
+                                height={100}
+                                alt="me"
+                              />
+                            ) : null}
+                          </div>
+                        </div>
+                        <div className="chat-bubble">{chat.content}</div>
+                      </div>
+                    ) : (
+                      <div className="chat chat-start">
+                        <div className="chat-image avatar">
+                          <div className="w-10 rounded-full">
+                            {avatar ? (
+                              <Image
+                                src={`/uploads/${chat.sender.avatarUrl}`}
+                                width={100}
+                                height={100}
+                                alt="friend"
+                              />
+                            ) : null}
+                          </div>
+                        </div>
+                        <div className="chat-bubble">{chat.content}</div>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="flex absolute bottom-4 w-[45%] lg:w-[50%] xl:w-[60%] border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
+              <input
+                className="w-full bg-transparent pl-3 py-4 focus:outline-none"
+                type="text"
+                placeholder="Type Message.."
+                onChange={handleChange}
+                value={input}
+              />
+              <button
+                onClick={(e) => {
+                  sendMsg(e);
+                  setReload(!reload);
+                }}
+              >
+                <svg
+                  className="text-white m-2"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                  <path d="M21 3L14.5 21a.55 .55 0 0 1 -1 0L10 14L3 10.5a.55 .55 0 0 1 0 -1L21 3" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="flex absolute bottom-4 w-[45%] lg:w-[50%] xl:w-[60%] border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
-          <input
-            className="w-full bg-transparent pl-3 py-4 focus:outline-none"
-            type="text"
-            placeholder="Type Message.."
-            onChange={handleChange}
-            value={input}
-          />
-          <button>
-            <svg
-              className="text-white m-2"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              stroke="currentColor"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" />
-              <line x1="10" y1="14" x2="21" y2="3" />
-              <path d="M21 3L14.5 21a.55 .55 0 0 1 -1 0L10 14L3 10.5a.55 .55 0 0 1 0 -1L21 3" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
+      )}
     </>
   );
 };

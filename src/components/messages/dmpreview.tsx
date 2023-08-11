@@ -101,22 +101,22 @@ const Dmpreview: React.FC<MessageProps> = ({
     <>
       {dm == chat.id.toString() ? (
         // <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-          <Dms
-            dm={dm}
-            updateItem={updateItem}
-            chat={chat}
-            setChatList={setChatList}
-          />
-        //  </div>
+        <Dms
+          dm={dm}
+          updateItem={updateItem}
+          chat={chat}
+          setChatList={setChatList}
+        />
       ) : (
+        //  </div>
         <button
           onClick={() => {
             // setDm("1");
             updateItem("7", chat.id.toString());
           }}
-          className="items-center my-1 w-[90%] cursor-pointer flex mx-10 gap-5 flex-row hover:bg-white hover:text-black"
+          className=" -z-20 border-2 border-gray-500 hover:bg-gray-500 bg-gray-600 rounded-lg items-center my-2 w-[90%] cursor-pointer flex mx-2 p-2 gap-5 flex-row"
         >
-          <div className="chat-image avatar -z-10">
+          <div className="flex flex-col chat-image avatar -z-10">
             <div className="w-10 rounded-full">
               <Image
                 src={`/uploads/${chat.users[0].avatarUrl}`}
@@ -127,13 +127,19 @@ const Dmpreview: React.FC<MessageProps> = ({
             </div>
           </div>
           {!chat.messages[chat.messages.length - 1]?.content ? (
-            <p className="italic text-xs xs:text-base lg:text-base">
-              You are new friends, Start chatting now!
-            </p>
+            <div className="flex flex-col flex-grow">
+              <p className="text-xs italic text-left">{chat.users[0].nickname}</p>
+              <p className="italic text-xs xs:lg lg:text-xl text-left">
+                You are new friends, Start chatting now!
+              </p>
+            </div>
           ) : (
-            <p className="text-xs xs:text-base lg:text-base">
-              {chat.messages[chat.messages.length - 1]?.content}
-            </p>
+            <div className="flex flex-col flex-grow">
+              <p className="text-xs italic text-left">{chat.users[0].nickname}</p>
+              <p className="text-xs xs:text-lg lg:text-xl text-left">
+                {chat.messages[chat.messages.length - 1]?.content}
+              </p>
+            </div>
           )}
         </button>
       )}

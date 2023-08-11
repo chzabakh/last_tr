@@ -4,6 +4,12 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Dms from "./dms";
+import Messages from "./messages";
+
+interface ChatProps {
+  dmm: string;
+  updateItemm: (newValue: string, newDm: string) => void;
+}
 
 type Friend = {
   avatarUrl: string;
@@ -29,8 +35,9 @@ interface Invitation {
   friendRequestStatus: string;
 }
 
-const FindAFriend = () => {
+const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [item, setItem] = useState("6");
+  const [reload, setReload] = useState(false);
   const [input, setInput] = useState("");
   const [identical, setIdentical] = useState("0");
   const [myswitch, setMyswitch] = useState("list");
@@ -258,7 +265,7 @@ const FindAFriend = () => {
     };
     invitations();
     friendsList();
-  }, []);
+  }, [reload]);
 
   const handleRemoveObject = (senderId: number) => {
     const newInvites = invites.filter((item) => item.senderID !== senderId); // Filter out the object with the specified ID
@@ -374,8 +381,9 @@ const FindAFriend = () => {
     <>
       {dm == "1" ? (
         <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-          <Dms dm={dm} updateItem={updateItem} />hhhh
-          {/* <FindAFriend/> */}
+          {/* <Dms dm={dm} updateItem={updateItem} /> */}
+          {/* <FindAFriend  dmm={dm} updateItemm={updateItem}/> */}
+          {/* <Messages dm={dm} updateItem={updateItem} /> */}
         </div>
       ) : (
         <>
@@ -407,11 +415,15 @@ const FindAFriend = () => {
             {friend.id != "notfound" &&
             friend.id != "null" &&
             myswitch == "search" ? (
-              <div className="flex flex-col border-2 border-opacity-30 mx-auto w-[70%] min-h-[300px] h-[90%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+              <div className="flex flex-col border-2 border-opacity-30 mx-auto w-[70%] max-h-[500px] flex-grow min-h[400px] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                 <button
                   className="w-2"
                   onClick={() => {
-                    setDm("1");
+                    setMyswitch("list");
+                    setReload(!reload);
+                    console.log(reload);
+                    // setDm("1");
+                    // updateItem("1", "6")
                   }}
                   style={{
                     background: "transparent",
@@ -618,7 +630,7 @@ const FindAFriend = () => {
           </div>
           {item == "9" ? (
             <>
-              <div className="absolute z-2 flex justify-evenly border-2  border-opacity-30 w-[98%] h-[90%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+              <div className="absolute z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-[100%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                 <div className="w-[40%]">
                   <Image
                     className="object-cover mx-auto rounded-[20px]"
@@ -671,5 +683,4 @@ const FindAFriend = () => {
     </>
   );
 };
-
 export default FindAFriend;

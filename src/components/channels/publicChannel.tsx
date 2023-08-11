@@ -1,5 +1,6 @@
 "use client";
 import axios from "axios";
+import Cookies from "js-cookie";
 import React from "react";
 import { useState, ChangeEvent } from "react";
 
