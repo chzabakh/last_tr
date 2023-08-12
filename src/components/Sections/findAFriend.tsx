@@ -35,6 +35,13 @@ interface Invitation {
   friendRequestStatus: string;
 }
 
+interface Blockedpoeple {
+  blockedUserID: number;
+  blockedUserNickname: string;
+  blockingUserID: number;
+  blockingUserNickname: string;
+}
+
 const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [item, setItem] = useState("6");
   const [reload, setReload] = useState(false);
@@ -42,6 +49,10 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [identical, setIdentical] = useState("0");
   const [myswitch, setMyswitch] = useState("list");
   const [dm, setDm] = useState("0");
+  const [toblk, setToblk] = useState("");
+  const [isblocked, setIsblocked] = useState("f");
+  const [blockedlist, setBlockedlist] = useState<Blockedpoeple[] >([]);
+
   const updateItem = (newValue: string, newDm: string) => {
     setItem(newValue);
     setDm(newDm);
@@ -66,12 +77,35 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && input) {
       e.preventDefault();
       e.currentTarget.blur();
       handleSubmit(e as any, input); // As we're simulating a button click, we cast the event to any.
     }
   };
+
+  function hasBlocked(
+    blockingUserNickname: string,
+    blockedUserNickname: string,
+    blockInfoArray: Blockedpoeple[]
+  ) {
+    console.log("array",blockInfoArray);
+    console.log("these are the users:", blockingUserNickname, blockedUserNickname);
+    for (const blockInfo of blockInfoArray) {
+      console.log("blockingraw and blockinglist:",blockingUserNickname, blockInfo.blockingUserNickname);
+      console.log("blockedraw and blockedlist:",blockedUserNickname, blockInfo.blockedUserNickname);
+      if (
+        blockInfo.blockingUserNickname === blockingUserNickname &&
+        blockInfo.blockedUserNickname === blockedUserNickname
+      ) {
+        console.log("true returned");
+        setIsblocked("t");
+        return;
+      }
+    }
+        console.log("false returned");
+        setIsblocked("f");
+  }
 
   const getUser = async (myinput: string) => {
     try {
@@ -92,6 +126,12 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           },
         }
       );
+      console.log(res.data);
+      setToblk(input);
+      // console.log("this: ",me?.data.nickname);
+      hasBlocked(me?.data.nickname, input, blockedlist);
+      console.log("the user is blocked? ",isblocked);
+      setInput("");
       console.log("39", res);
       if (res.data == "") {
         alert("User not found!");
@@ -217,13 +257,15 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const blockUser = async () => {
     try {
       const block = await axios.post(
-        `http://localhost:9000/users/${input}/block-user`,
+        `http://localhost:9000/users/${toblk}/block-user`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
         }
       );
+      console.log(block.data);
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
@@ -263,8 +305,32 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         }
       }
     };
+
+    const blockedUsers = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:9000/users/blockedusers`,
+
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
+        setBlockedlist(res.data);
+        console.log("blocked: ", res.data);
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          console.log(err.response?.data.message);
+        } else {
+          console.log("Unexpected error", err);
+        }
+      }
+    };
+
     invitations();
     friendsList();
+    blockedUsers();
   }, [reload]);
 
   const handleRemoveObject = (senderId: number) => {
@@ -396,8 +462,10 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
                 value={input}
-              />
-              <button onClick={(e) => handleSubmit(e, input)}>
+                />
+              <button 
+                disabled={input == "" ? true : false}
+              onClick={(e) => handleSubmit(e, input)}>
                 <svg
                   className="h-8 w-8 text-white m-1 p-1"
                   viewBox="0 0 24 24"

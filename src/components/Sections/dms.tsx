@@ -98,9 +98,9 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [reload, setReload] = useState(true);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const [newmsg, setNewmsg] = useState<Message | null>(null);
+  const [newmsg, setNewmsg] = useState<Message[] | null>(null);
   const [profile, setProfile] = useState(false);
-  const [myinput, setMyinput] = useState("");
+  // const [myinput, setMyinput] = useState("");
   const [friend, setFriend] = useState<Friend>({
     avatarUrl: "null",
     id: "null",
@@ -131,9 +131,10 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
           },
         }
       );
-      setAvatar(res.data.avatarUrl);
-      setNickname(res.data.nickname);
+      // setAvatar(res.data.avatarUrl);
+      // setNickname(res.data.nickname);
       console.log(reload);
+      setInput("");
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
@@ -185,13 +186,14 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
     const getMessages = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:9000/${chat.uid}/messages`,
+          `http://localhost:9000/chat/${chat.uid}/messages`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
             },
           }
         );
+        setNewmsg(res.data);
         console.log("tttt", res.data);
       } catch (err) {
         if (err instanceof AxiosError) {
@@ -202,9 +204,9 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
       }
     };
     console.log("[", chat.users[0].nickname.length, "]");
-    setMyinput(chat.users[0].nickname);
+    // setMyinput(chat.users[0].nickname);
     getMe();
-    // getMessages();
+    getMessages();
     getFriend();
     setIsLoading(false);
     if (chatContainerRef.current) {
@@ -212,6 +214,43 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
         chatContainerRef.current.scrollHeight;
     }
   }, [reload]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.currentTarget.blur();
+      sendMsg(e as any);
+      // handleSubmit(e as any, input); // As we're simulating a button click, we cast the event to any.
+    }
+  };
+
+  const blockUser = async () => {
+    try {
+      const block = await axios.post(
+        `http://localhost:9000/users/${input}/block-user`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err.response?.data.message);
+      } else {
+        console.log("Unexpected error", err);
+      }
+    }
+  };
+
+  const handleBlock = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    input: string
+  ) => {
+    e.preventDefault();
+    await blockUser();
+  };
+
   return (
     <>
       {profile ? (
@@ -229,10 +268,9 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
             </p>
             <div className="gap-5 w-full flex flex-col">
               {
-              
                 <button
-                // onClick={(e) => handleBlock(e, input)}////////////////////////////
-                className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                  onClick={(e) => handleBlock(e, input)}
+                  className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
                 >
                   Block user
                 </button>
@@ -246,9 +284,11 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
                 >
                   Send Message
                 </button>{" "}
-              </> */}
+              </> */
+              }
 
-              <button onClick={() => setProfile(false)}
+              <button
+                onClick={() => setProfile(false)}
                 className="hover:text-[#D6B3F1] mx-auto m-0 p-0 w-16"
                 // onClick={() => setItem("2")}/////////////////////////////////
               >
@@ -270,7 +310,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
                 <div className="w-50 rounded-full">
                   {avatar ? (
                     <Image
-                      src={`/uploads/${avatar}`}
+                      src={`/uploads/${chat.users[0].avatarUrl}`}
                       width={200}
                       height={200}
                       alt="friend"
@@ -278,7 +318,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
                   ) : null}
                 </div>
               </div>
-              <p className="text-center">zuck STATUS: Playing</p>
+              <p className="text-center">{chat.users[0].nickname} STATUS: Playing</p>
               <div className="flex flex-col">
                 <button className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-full py-1 my-3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                   Invite to a game
@@ -306,7 +346,8 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
               {isLoading ? (
                 <p>Loading...</p>
               ) : (
-                chat.messages.map((chat, index) => (
+                newmsg?.map((chat, index) => (
+                  // chat.messages.map((chat, index) => (
                   <div key={index}>
                     {chat.sender.nickname == nickname ? (
                       <div className="chat chat-end">
@@ -348,6 +389,10 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
             <div className="flex absolute bottom-4 w-[45%] lg:w-[50%] xl:w-[60%] border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
               <input
                 className="w-full bg-transparent pl-3 py-4 focus:outline-none"
+                onKeyDown={(e) => {
+                  handleKeyDown(e);
+                  setReload(!reload);
+                }}
                 type="text"
                 placeholder="Type Message.."
                 onChange={handleChange}
