@@ -50,8 +50,10 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [myswitch, setMyswitch] = useState("list");
   const [dm, setDm] = useState("0");
   const [toblk, setToblk] = useState("");
-  const [isblocked, setIsblocked] = useState("f");
-  const [blockedlist, setBlockedlist] = useState<Blockedpoeple[] >([]);
+  const [isblocked, setIsblocked] = useState(false);
+  const [user1, setUser1] = useState("");
+  const [user2, setUser2] = useState("");
+  const [blockedlist, setBlockedlist] = useState<Blockedpoeple[]>([]);
 
   const updateItem = (newValue: string, newDm: string) => {
     setItem(newValue);
@@ -89,22 +91,34 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     blockedUserNickname: string,
     blockInfoArray: Blockedpoeple[]
   ) {
-    console.log("array",blockInfoArray);
-    console.log("these are the users:", blockingUserNickname, blockedUserNickname);
+    console.log("array", blockInfoArray);
+    console.log(
+      "these are the users:",
+      blockingUserNickname,
+      blockedUserNickname
+    );
     for (const blockInfo of blockInfoArray) {
-      console.log("blockingraw and blockinglist:",blockingUserNickname, blockInfo.blockingUserNickname);
-      console.log("blockedraw and blockedlist:",blockedUserNickname, blockInfo.blockedUserNickname);
+      console.log(
+        "blockingraw and blockinglist:",
+        blockingUserNickname,
+        blockInfo.blockingUserNickname
+      );
+      console.log(
+        "blockedraw and blockedlist:",
+        blockedUserNickname,
+        blockInfo.blockedUserNickname
+      );
       if (
         blockInfo.blockingUserNickname === blockingUserNickname &&
         blockInfo.blockedUserNickname === blockedUserNickname
       ) {
         console.log("true returned");
-        setIsblocked("t");
+        setIsblocked(true);
         return;
       }
     }
-        console.log("false returned");
-        setIsblocked("f");
+    console.log("false returned");
+    setIsblocked(false);
   }
 
   const getUser = async (myinput: string) => {
@@ -129,9 +143,11 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       console.log(res.data);
       setToblk(input);
       // console.log("this: ",me?.data.nickname);
-      hasBlocked(me?.data.nickname, input, blockedlist);
-      console.log("the user is blocked? ",isblocked);
-      setInput("");
+      // hasBlocked(me?.data.nickname, input, blockedlist);///////////////////
+      setUser1(me?.data.nickname);
+      setUser2(input);
+      console.log("the user is blocked? ", isblocked);
+      // setInput("");
       console.log("39", res);
       if (res.data == "") {
         alert("User not found!");
@@ -182,7 +198,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           },
         })
         .catch((err) => {});
-
+      console.log("chchchch:", input);
       const sendFriendReq = await axios.post(
         `http://localhost:9000/users/${me?.data.nickname}/send-friend-request`,
         {
@@ -194,6 +210,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           },
         }
       );
+      console.log("poi", sendFriendReq, input);
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log("89" + err.response?.data.message);
@@ -462,10 +479,11 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
                 value={input}
-                />
-              <button 
+              />
+              <button
                 disabled={input == "" ? true : false}
-              onClick={(e) => handleSubmit(e, input)}>
+                onClick={(e) => handleSubmit(e, input)}
+              >
                 <svg
                   className="h-8 w-8 text-white m-1 p-1"
                   viewBox="0 0 24 24"
@@ -565,7 +583,10 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                     </button>
                   ) : null}
                   <button
-                    onClick={() => setItem("9")}
+                    onClick={() => {
+                      setItem("9");
+                      hasBlocked(user1, user2, blockedlist);
+                    }}
                     className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md py-4 rounded-[30px]"
                   >
                     See Profile

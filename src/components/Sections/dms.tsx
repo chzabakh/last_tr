@@ -3,6 +3,8 @@ import Cookies from "js-cookie";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 
+import io, { Socket } from "socket.io-client";
+
 interface User {
   id: number;
   createdAt: string;
@@ -98,8 +100,10 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [reload, setReload] = useState(true);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const [newmsg, setNewmsg] = useState<Message[] | null>(null);
+  const [newmsg, setNewmsg] = useState<Message[]>([]);
   const [profile, setProfile] = useState(false);
+  const [socket, setSocket] = useState<Socket>();
+  const [con, setCon] = useState(false);
   // const [myinput, setMyinput] = useState("");
   const [friend, setFriend] = useState<Friend>({
     avatarUrl: "null",
@@ -134,7 +138,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
       // setAvatar(res.data.avatarUrl);
       // setNickname(res.data.nickname);
       console.log(reload);
-      setInput("");
+      // setInput("");
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
@@ -145,6 +149,18 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
   };
 
   useEffect(() => {
+    console.log("df");
+    if (!con) {
+      setCon(true);
+      const socket = io("http://localhost:9000/chat");
+      setSocket(socket);
+    }
+  }, []);
+
+  useEffect(() => {
+    // console.log(socket);
+    // const conversationId = chat.uid;
+    // socket?.emit("joinRoom", { conversationId });
     const getMe = async () => {
       try {
         const res = await axios.get(`http://localhost:9000/users/me`, {
@@ -213,7 +229,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
-  }, [reload]);
+  }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -251,6 +267,20 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
     await blockUser();
   };
 
+  useEffect(() => {
+    if (socket)
+    {
+
+      socket.on("message:new", (message: Message) => {
+        setNewmsg((cur) => [...cur, message]);
+      });
+      return () => {
+        socket.off("message:new");
+        // socket?.disconnect();
+      };
+    }
+  }, []);
+console.log("objecttttttttttttttt");
   return (
     <>
       {profile ? (
@@ -318,7 +348,9 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
                   ) : null}
                 </div>
               </div>
-              <p className="text-center">{chat.users[0].nickname} STATUS: Playing</p>
+              <p className="text-center">
+                {chat.users[0].nickname} STATUS: Playing
+              </p>
               <div className="flex flex-col">
                 <button className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-full py-1 my-3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                   Invite to a game
@@ -391,7 +423,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
                 className="w-full bg-transparent pl-3 py-4 focus:outline-none"
                 onKeyDown={(e) => {
                   handleKeyDown(e);
-                  setReload(!reload);
+                  // setReload(!reload);
                 }}
                 type="text"
                 placeholder="Type Message.."
@@ -401,7 +433,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
               <button
                 onClick={(e) => {
                   sendMsg(e);
-                  setReload(!reload);
+                  // setReload(!reload);
                 }}
               >
                 <svg
