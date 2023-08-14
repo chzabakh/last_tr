@@ -52,6 +52,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       // const token = Cookies.get('token')
       const token = Cookies.get('token')
+      alert(token)
       console.log(token)
       if (!token) {
         router.push("/login");

@@ -1,5 +1,6 @@
 'use client'
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import React from 'react'
 import { useState , ChangeEvent} from 'react'
 
@@ -12,37 +13,49 @@ const PublicChannel = () => {
     setChannelName(e.target.value);
   }
 
-  function handleSubmit()
+  async function handleSubmit()
   {
-    if(roomName)
-    {
-      try{
-          const Token = localStorage.getItem('token');
-          const headers = {Authorization: `Bearer ${Token}`}
-          axios.post('http://localhost:9000/chat/createroom/', {roomName: roomName}, {headers})
-          alert("Room Created");
-      }
-      catch(err : any)
-      {
-          if(axios.isAxiosError(err) && err.response)
-          {
-              const error = err.message;
-              alert(error);
-          }
-          else
-          {
-            alert(err.message);
-          }
+    if (roomName) {
+      try {
+        const token = Cookies.get('token');
+        const headers = { Authorization: `Bearer ${token}` };
+        
+
+        const requestBody = {
+          isGroup: true,
+          isProtected: false, 
+          isPrivate: false, 
+          members: [], 
+          name: roomName,
+        };
+
+        const response = await axios.post('http://localhost:9000/chat/createroom/', requestBody, { headers });
+
+        if (response.status === 200) {
+          setChannelName('')   
+        } else {
+          setChannelName('')
+          console.log(response.status)
+          alert('Failed to create room');
+        }
+      } catch (err: any) {
+        if (axios.isAxiosError(err) && err.response) {
+          const error = err.response.data.message || err.message;
+          alert(error);
+        } else {
+          alert(err.message);
+        }
       }
     }
   }
+  
   return (
     <>
     <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-white dark:text-white">Channel name:</label>
     <input type="text" id="first_name" className="focus:border-none outline-none  border-gray-300 text-white/60 text-sm rounded-lg p-3 w-full bg-black/40" placeholder="Enter name..." value={roomName} onChange={handleName}  required>
     </input>
     <button className="border-opacity-40 border-violet-400 hover:border-[#2dd4bf]
-  border-[3px] p-2 rounded-full w-[150px] self-center text-xs " onClick={handleSubmit}>Create Channel</button></>
+  border-[3px] p-2 rounded-full w-[150px] self-center text-xs " onClick={handleSubmit} >Create Channel</button></>
   )
 }
 
