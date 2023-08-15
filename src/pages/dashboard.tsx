@@ -9,6 +9,7 @@ import axios, { AxiosError } from "axios";
 import Edit from "@/components/Sections/edit";
 import Cookies from 'js-cookie';
 import Place from '../../public/Place.png'
+import Game from "@/components/Sections/game";
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -52,7 +53,6 @@ const Dashboard = () => {
     const fetchData = async () => {
       // const token = Cookies.get('token')
       const token = Cookies.get('token')
-      alert(token)
       console.log(token)
       if (!token) {
         router.push("/login");
@@ -189,6 +189,7 @@ const Dashboard = () => {
           {item === "1" ? <Leaderboard /> : null}
           {item === "2" ? <Chat /> : null}
           {item == "5" ? <Edit /> : null}
+          {item == "3" ? <Game /> : null}
         </div>
       </div>
     </>
