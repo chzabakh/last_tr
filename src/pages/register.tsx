@@ -55,18 +55,19 @@ export const Register = () => {
   };
 
   return (
+    <div className="flex flex-col my-2 justify-between max-w-full mx-[3rem] h-full max-h-full min-h-full relative">
     <Layout>
-      <div className={styles.container}>
+      <div className="flex w-[100%] flex-col items-center gap-4 mx-auto justify-center relative mb-5">
         <div className={styles.auth}>
-          <button className={styles.button}>
+          {/* <button className={styles.button}>
             <Image className={styles.logo} alt="" src={fourty} />
             <div>Register with Intra</div>
-          </button>
-          <button className={styles.button}>
+          </button> */}
+          {/* <button className={styles.button}>
             <Image className={styles.logoTwo} alt="" src={gog} />
             Register with Google
-          </button>
-          <div className={styles.or}>Or</div>
+          </button> */}
+          {/* <div className={styles.or}>Or</div> */}
         </div>
         <form className={styles.formy} onSubmit={handleSubmit}>
           <div className={styles.infos}>
@@ -114,6 +115,7 @@ export const Register = () => {
         </form>
       </div>
     </Layout>
+    </div>
   );
 };
 

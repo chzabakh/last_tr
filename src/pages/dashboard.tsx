@@ -1,3 +1,4 @@
+
 import Leaderboard from "@/components/Sections/leaderboard";
 import Chat from "@/components/Sections/chat";
 import Image from "next/image";
@@ -5,8 +6,9 @@ import { useEffect, useState } from "react";
 import { useAuth } from "./auth_context";
 import { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
-import Cookies from "js-cookie";
 import Edit from "@/components/Sections/edit";
+import Cookies from 'js-cookie';
+import Place from '../../public/place.png'
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -22,8 +24,14 @@ type Me = {
 };
 
 const Dashboard = () => {
+
+
   const [item, setItem] = useState("1");
+  const [Preview, setPreview] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [username, setUser] = useState("")
+  const [token, setToken] = useState("")
+  const [provider, setProvider] = useState("")
   const [me, setMe] = useState<Me>({
     TwofaAutEnabled: false,
     avatarUrl: "none",
@@ -39,63 +47,63 @@ const Dashboard = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const getMe = async () => {
+  
+
+    const fetchData = async () => {
+      // const token = Cookies.get('token')
+      const token = Cookies.get('token')
+      alert(token)
+      console.log(token)
+      if (!token) {
+        router.push("/login");
+        return;
+      }
       try {
-        const res = await axios.get(`http://localhost:9000/users/me`, {
-          headers: {
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
-        });
-        setMe(res.data);
-      } catch (err) {
-        if (err instanceof AxiosError) {
-          router.push("/");
-          console.log(err.response?.data.message);
+        const headers = { Authorization: `Bearer ${token}` };
+        console.log(headers)
+        const res = await axios.get('http://localhost:9000/users/me',  { headers });
+        console.log(res.data)
+        setUser(res.data.nickname);
+  
+  
+        if (res.data.provider === "intra") {
+          setPreview(res.data.avatarUrl);
         } else {
-          router.push("/");
-          console.log("Unexpected error", err);
+          const avatarRes = await axios.get('http://localhost:9000/users/my-avatar', { headers, responseType: 'blob' });
+          const blob = new Blob([avatarRes.data], { type: 'image/png' });
+          const previewUrl = URL.createObjectURL(blob);
+          setPreview(previewUrl);
         }
+      } catch (err) {
+        console.error("Error fetching data:", err);
       }
     };
+  
+    fetchData();
+  }, [Cookies.get('token')]); // Dependency on the token
+  
+   
 
-    getMe();
-
-    return (): void => {};
-  }, []);
-
-  useEffect(() => {
-    const handleResize = (): void => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return (): void => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [windowWidth]);
-
-  // const { accessToken } = useAuth();
-
-  // console.log(accessToken);
   return (
+    
     <>
+    
       <div className="flex flex-row h-full">
         {windowWidth > 768 ? (
           <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
             <div>
-              {me.avatarUrl != "none" ? (
-                <Image
-                  className="object-cover flex-auto mx-auto rounded-[30px]"
-                  src={`/uploads/${me.avatarUrl}`}
-                  alt={me.avatarUrl}
-                  height={200}
-                  width={200}
-                  style={{ width: "auto", height: "auto" }}
-                />
-              ) : null}
+            
+              <Image
+              className="object-cover flex-auto mx-auto rounded-[30px]"
+              src={Preview || Place}
+              alt={me.avatarUrl}
+              height={200}
+              width={200}
+              priority={true}
+              />
+            
               <p className="font-serif text-center py-5 text-xl">
-                {me.nickname}
+                {username}
               </p>
             </div>
             <div className="w-full flex flex-col pt-[2rem]">
@@ -161,7 +169,7 @@ const Dashboard = () => {
               </button>
               <button
                 onClick={() => {
-                  Cookies.remove("token");
+                  Cookies.remove('token', { path: '/' });
                   router.push("/login");
                 }}
                 className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${

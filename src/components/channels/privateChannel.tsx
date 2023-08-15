@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import React, { ChangeEvent, useState } from 'react'
 import Select ,  { ActionMeta, MultiValue } from "react-select";
 
@@ -36,6 +37,43 @@ const PrivateChannel = () => {
   const [selectedOptions, setSelectedOptions] = useState<Friend[] | null>(null);
 
 
+
+  async function handleSubmit()
+  {
+    if (roomName) {
+      try {
+        const token = Cookies.get('token');
+        const headers = { Authorization: `Bearer ${token}` };
+        
+
+        const requestBody = {
+          isGroup: true,
+          isProtected: false, 
+          isPrivate: true, 
+          members: [], 
+          name: roomName,
+        };
+
+        const response = await axios.post('http://localhost:9000/chat/createroom/', requestBody, { headers });
+
+        if (response.status === 200) {
+          alert('Room Created');
+        } else {
+          alert('Failed to create room');
+        }
+      } catch (err: any) {
+        if (axios.isAxiosError(err) && err.response) {
+          const error = err.response.data.message || err.message;
+          alert(error);
+        } else {
+          alert(err.message);
+        }
+      }
+    }
+  }
+
+  //get friends from charaf
+  
   function handleName(e : ChangeEvent<HTMLInputElement>)
   {
     setChannelName(e.target.value);
@@ -77,7 +115,7 @@ const PrivateChannel = () => {
     <Select options={friends} onChange={setHandle} isMulti className='text-black bg-black/40' styles={customStyles}/>
 
     <button className="border-opacity-40 border-violet-400 hover:border-[#2dd4bf]
-     border-[3px] p-2 rounded-full w-[150px] self-center text-xs mt-3" >Create Channel</button>
+     border-[3px] p-2 rounded-full w-[150px] self-center text-xs mt-3" onClick={handleSubmit}>Create Channel</button>
     </>
 
   )
