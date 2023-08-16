@@ -18,10 +18,28 @@ const BrowseChannel = () => {
 
     async function getChannels() {
 
-        const token = Cookies.get('token')
-        const headers = { Authorization: `Bearer ${token}` };
-        const res = await axios.get('http://localhost:9000/chat/my-rooms',  { headers });
-        setRooms(res.data)
+        try{
+
+            const token = Cookies.get('token')
+            const headers = { Authorization: `Bearer ${token}` };
+            const res = await axios.get('http://localhost:9000/chat/my-rooms',  { headers });
+            setRooms(res.data)
+        }
+        catch(e)
+        {
+            if(axios.isAxiosError(e))
+            {
+                if(e.request)
+                    console.log("No response received!", e.request);
+                else if(e.response)
+                    console.log("Error status: ", e.response?.status);
+                    console.log("Error data: ", e.response?.data);
+            }
+            else
+            {
+                console.log("Error: ", e);
+            }
+        }
     }
 
   return (

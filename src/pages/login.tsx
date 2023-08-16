@@ -107,20 +107,14 @@ export const Login  : React.FC  = () => {
   }
   console.log("token globally: ", Cookies.get('token'))
   return (
-    <div className="flex flex-col justify-between max-w-full mx-[3rem] h-full max-h-full min-h-full relative">
     <Layout>
-      <div className="flex w-[100%] flex-col items-center gap-4 mx-auto justify-center relative">
-        <div className={styles.auth}>
+      <div className="flex h-full flex-col items-center mx-auto relative">
+        <div className="w-full flex flex-col items-center justify-center h-full">
         <a className={styles.button} onClick={openNewWindow}>
             <Image className={styles.logo} alt="" src={fourty} />
             <p className="text-xs sm:text-xl">Login with Intra</p>
           </a>
-          {/* <button className={styles.button}>
-            <Image className={styles.logoTwo} alt="" src={gog} />
-           <p className="text-xs sm:text-xl">Login with Google</p>
-          </button> */}
           <div className={styles.or}>Or</div>
-        </div>
         <form className={styles.formy} onSubmit={handleSubmit}>
           <div className={styles.infos}>
             <h1 className={styles.title}>Log In</h1>
@@ -151,9 +145,10 @@ export const Login  : React.FC  = () => {
           </div>
           <Link href="register">You do not have an account ? Sign Up.</Link>
         </form>
+        </div>
+
       </div>
     </Layout>
-    </div>
   );
 };
 

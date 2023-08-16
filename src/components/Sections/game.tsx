@@ -38,11 +38,13 @@ const Game = () => {
 
       
   return (
+    // <div className="w-full h-full flex flex-col justify-center items-center">
     <div className='w-[1100px] overflow-hidden h-[700px] bg-white/20 m-6 relative'>
         <Paddle top={leftPaddleTop} left={10} />
         <Paddle top={rightPaddleTop} left={GAME_WIDTH - 18} />
         <Ball top={ballPosition.top} left={ballPosition.left} />
     </div>
+    // </div>
   )
 }
 

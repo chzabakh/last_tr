@@ -6,10 +6,12 @@ import axios from 'axios';
 import TwoFac from './twoFac';
 import Cookies from 'js-cookie';
 import Place from '../../../public/Place.png'
+import { initialize } from 'next/dist/server/lib/render-server';
 
 const Edit = () => {
 
     const [showTwoFac, setShowTwoFac] = useState(false);
+    const [error, seterror] = useState<string | undefined>();
     const [Preview, setPreview] = useState("");
     const [Avatar, setAvatar] = useState<File | null>(null);
     const [Username, setUsername] = useState('');
@@ -19,20 +21,18 @@ const Edit = () => {
     const [oldpass, setoldpass] = useState('')
     const [isPassChanged, setIsPassChanged] = useState(false)
     const [isOldPassChanged, setIsOldPassChanged] = useState(false)
-    const [error, seterror] = useState("");
+    const [status, setStatus] = useState<"enabled" | "disabled">();
 
     
     useEffect(() => {
-      getAvatar();
-     
-    }, []);
+      async function initialize()
+      {
+        await getStatus();
+        await getAvatar();
 
-    // useEffect(() => {
-    //   getNick();
-     
-    // }, [Username]);
-    
-    // Function to handle the button click and show the <TwoFac> component
+      }
+      initialize();
+    }, []);
 
 
     function handleAuthClick() {
@@ -103,12 +103,7 @@ const Edit = () => {
 
 
     async function handleSaveChanges() {
-
-
-
       try {
-
-      
         if (isAvatarChanged && Avatar) {
           const Token =  Cookies.get('token')
           const headers = {
@@ -201,6 +196,66 @@ const Edit = () => {
       
     }
     
+
+
+  const getStatus = async () =>
+  {
+    try{
+
+        const Token = Cookies.get('token')
+        const headers = {Authorization: `Bearer ${Token}`}
+        const auth = await axios.get('http://localhost:9000/2fa/status', {headers});
+        console.log(auth.data)
+        auth.data === true ? setStatus("enabled") : setStatus("disabled");
+      }
+      catch(e)
+      {
+          if(axios.isAxiosError(e))
+          {
+              if(e.request)
+                  console.log("No response received!", e.request);
+              else if(e.response)
+                  console.log("Error status: ", e.response?.status);
+                  console.log("Error data: ", e.response?.data);
+          }
+          else
+          {
+              console.log("Error: ", e);
+          }
+          
+      }
+    
+  }
+
+
+
+  const handleDisable = async () =>
+  {
+    try{
+
+        const Token = Cookies.get('token')
+        const headers = {Authorization: `Bearer ${Token}`}
+        const auth = await axios.post('http://localhost:9000/2fa/disable', {},  {headers});
+      }
+      catch(e)
+      {
+          if(axios.isAxiosError(e))
+          {
+              if(e.request)
+                  console.log("No response received!", e.request);
+              else if(e.response)
+                  console.log("Error status: ", e.response?.status);
+                  console.log("Error data: ", e.response?.data);
+          }
+          else
+          {
+              console.log("Error: ", e);
+          }
+          
+      }
+    
+  }
+
   
   return (
     <>
@@ -244,7 +299,7 @@ const Edit = () => {
           <div className='flex flex-col justify-between'>
          
           <div className='flex justify-between'>
-              <button className='border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl ' onClick={handleAuthClick}> Activate auth</button>
+            {status === "enabled" ? <button className='border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl ' onClick={handleDisable}> Desactivate auth</button> : <button className='border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl ' onClick={handleAuthClick}> Activate auth</button>}
               <button className='border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white  p-3 rounded-2xl' onClick={handleSaveChanges} >Save changes</button>
               {error && <p>{error}</p> }
           </div>

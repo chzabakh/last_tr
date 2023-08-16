@@ -31,7 +31,7 @@ const PublicChannel = () => {
 
         const response = await axios.post('http://localhost:9000/chat/createroom/', requestBody, { headers });
 
-        if (response.status === 200) {
+        if (response.status === 201) {
           setChannelName('')   
         } else {
           setChannelName('')

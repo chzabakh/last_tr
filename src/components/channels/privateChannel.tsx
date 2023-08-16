@@ -56,7 +56,7 @@ const PrivateChannel = () => {
 
         const response = await axios.post('http://localhost:9000/chat/createroom/', requestBody, { headers });
 
-        if (response.status === 200) {
+        if (response.status === 201) {
           alert('Room Created');
         } else {
           alert('Failed to create room');
