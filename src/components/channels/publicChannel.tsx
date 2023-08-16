@@ -23,9 +23,6 @@ const PublicChannel = () => {
 
         const requestBody = {
           isGroup: true,
-          isProtected: false, 
-          isPrivate: false, 
-          members: [], 
           name: roomName,
         };
 
