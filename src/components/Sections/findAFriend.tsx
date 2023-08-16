@@ -1,10 +1,11 @@
-import { useAuth } from "@/pages/auth_context";
+// import { useAuth } from "@/pages/auth_context";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Dms from "./dms";
 import Messages from "./messages";
+import { useSocket } from "@/pages/socket_context";
 
 interface ChatProps {
   dmm: string;
@@ -42,6 +43,62 @@ interface Blockedpoeple {
   blockingUserNickname: string;
 }
 
+interface User {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  FirstLogin: boolean;
+  TwofaAutEnabled: boolean;
+  TwofaAutSecret: string | null;
+  avatarUrl: string;
+  email: string;
+  friendStatus: string;
+  hash: string;
+  nickname: string;
+  provider: string;
+  state: string;
+}
+
+interface Seen {
+  FirstLogin: boolean;
+  TwofaAutEnabled: boolean;
+  TwofaAutSecret: string | null;
+  avatarUrl: string;
+  createdAt: string;
+  email: string;
+  friendStatus: string;
+  hash: string;
+  id: number;
+  nickname: string;
+  provider: string;
+  state: string;
+  updatedAt: string;
+}
+
+interface Message {
+  content: string;
+  createdAt: string;
+  id: number;
+  recieverID: number;
+  roomID: string;
+  seen: Seen[];
+  sender: Sender;
+}
+
+export interface Chat {
+  id: number;
+  createdAt: string;
+  lastMessageAt: string;
+  messages: Message[];
+  name: string | null;
+  ownerID: number | null;
+  password: string | null;
+  uid: string;
+  users: User[];
+  isGroup: boolean | null;
+  isPrivate: boolean | null;
+}
+
 const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [item, setItem] = useState("6");
   const [reload, setReload] = useState(false);
@@ -54,6 +111,42 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [user1, setUser1] = useState("");
   const [user2, setUser2] = useState("");
   const [blockedlist, setBlockedlist] = useState<Blockedpoeple[]>([]);
+  const [con, setCon] = useState(false);
+  const { socket } = useSocket();
+  const [chatList, setChatList] = useState<Chat[]>([]);
+  const [chat, setChat] = useState<Chat>({
+    id: 0,
+    createdAt: '',
+    lastMessageAt: '',
+    messages: [],
+    name: null,
+    ownerID: null,
+    password: null,
+    uid: '',
+    users: [],
+    isGroup: null,
+    isPrivate: null,
+  });
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("friendRequest:new", (invitation: Invitation) => {
+        // console.log(";", message);
+        setInvites((cur) => [...cur, invitation]);
+      });
+
+      socket.on("friend:new", (friend: Friend) => {
+        // console.log(";", message);
+        setMyfriends((cur) => [...cur, friend]);
+      });
+
+      return () => {
+        socket.off("friendRequest:new");
+        socket.off("friend:new");
+        // socket?.disconnect();
+      };
+    }
+  }, [socket]);
 
   const updateItem = (newValue: string, newDm: string) => {
     setItem(newValue);
@@ -67,7 +160,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     state: "null",
     friendStatus: "null",
   });
-  const { login, accessToken } = useAuth();
+  // const { login, accessToken } = useAuth();
   const [invites, setInvites] = useState<Invitation[]>([]);
   const [myfriends, setMyfriends] = useState<Friend[]>([]);
 
@@ -350,6 +443,77 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     blockedUsers();
   }, [reload]);
 
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:9000/chat/my-chats`,
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
+        console.log("ddddddddd", response.data);
+        setChatList(response.data);
+        // setIsLoading(false);
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          console.log(err.response?.data.message);
+        } else {
+          console.log("Unexpected error", err);
+        }
+        // setIsLoading(false);
+      }
+    };
+    getMessages();
+  }, []);
+
+  const getChat = async (user: string) => {
+    console.log("ttttt", user);
+    console.log("qqqqqq", chatList);
+    try {
+      const me = await axios.get(`http://localhost:9000/users/me`, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      });
+
+      const conversations: Chat[] = chatList; /* Your array of conversations */
+
+      const player1Nickname = me.data.nickname;
+      const player2Nickname = user;
+
+      const conversationWithPlayers = conversations.find((conversation) => {
+        const participantNicknames = conversation.users.map(
+          (user) => user.nickname
+        );
+        return (
+          participantNicknames.includes(player1Nickname) &&
+          participantNicknames.includes(player2Nickname)
+        );
+      });
+
+      if (conversationWithPlayers) {
+        // Found the conversation with player1 and player2
+        // setCon(conversationWithPlayers);
+        setChat(conversationWithPlayers);
+        console.log("wwwwwww", conversationWithPlayers);
+        setDm("1");
+        // return conversationWithPlayers;
+      } else {
+        // No conversation found with player1 and player2.
+        return null;
+      }
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err.response?.data.message);
+      } else {
+        console.log("Unexpected error", err);
+      }
+    }
+  };
+
   const handleRemoveObject = (senderId: number) => {
     const newInvites = invites.filter((item) => item.senderID !== senderId); // Filter out the object with the specified ID
     setInvites(newInvites); // Update the state with the new array
@@ -451,6 +615,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         }
       );
       console.log("qwer", msg);
+      setCon(true);
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
@@ -464,7 +629,12 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     <>
       {dm == "1" ? (
         <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-          {/* <Dms dm={dm} updateItem={updateItem} /> */}
+              <Dms
+                dm={dm}
+                updateItem={updateItem}
+                chat={chat}
+                setChatList={setChatList}
+              />
           {/* <FindAFriend  dmm={dm} updateItemm={updateItem}/> */}
           {/* <Messages dm={dm} updateItem={updateItem} /> */}
         </div>
@@ -609,6 +779,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                               alt="friendReqPic"
                               height={200}
                               width={200}
+                              // src={`/poo.jpg`}
                               src={`/uploads/${invitation.sender.avatarUrl}`}
                             />
                           </div>
@@ -686,11 +857,12 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                           </div>
                         </div>
                         <span>{friend.nickname} :</span>
-                        <span>{friend.state}</span>
+                        <span>{friend.state}</span>ppppp
                         <button
                           onClick={() => {
-                            setDm("1");
+                            getChat(friend.nickname);
                             callDm(Number(friend.id));
+                            // setDm("1");
                           }}
                           className="absolute right-2"
                         >
@@ -743,12 +915,13 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                         <button
                           onClick={() => {
                             setItem("9");
+                            getChat(friend.nickname);
                             callDm(Number(friend.id));
                           }}
                           className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md py-4 rounded-[30px]"
                         >
                           Send Message
-                        </button>{" "}
+                        </button>
                       </>
                     ) : null}
                     <button

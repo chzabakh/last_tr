@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 
 import io, { Socket } from "socket.io-client";
+import { Chat } from "./findAFriend";
 
 interface User {
   id: number;
@@ -63,19 +64,19 @@ interface Message {
   sender: Sender;
 }
 
-interface Chat {
-  id: number;
-  createdAt: string;
-  lastMessageAt: string;
-  messages: Message[];
-  name: string | null;
-  ownerID: number | null;
-  password: string | null;
-  uid: string;
-  users: User[];
-  isGroup: boolean | null;
-  isPrivate: boolean | null;
-}
+// interface Chat {
+//   id: number;
+//   createdAt: string;
+//   lastMessageAt: string;
+//   messages: Message[];
+//   name: string | null;
+//   ownerID: number | null;
+//   password: string | null;
+//   uid: string;
+//   users: User[];
+//   isGroup: boolean | null;
+//   isPrivate: boolean | null;
+// }
 
 interface DmProps {
   dm: string;
@@ -138,7 +139,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
       // setAvatar(res.data.avatarUrl);
       // setNickname(res.data.nickname);
       console.log(reload);
-      // setInput("");
+      setInput("");
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
@@ -150,17 +151,35 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
 
   useEffect(() => {
     console.log("df");
-    if (!con) {
-      setCon(true);
-      const socket = io("http://localhost:9000/chat");
-      setSocket(socket);
-    }
+    // if (!con) {
+    // setCon(true);
+    const socket = io("http://localhost:9000/chat");
+    setSocket(socket);
+    const conversationId = chat.uid;
+    socket?.emit("joinRoom", { conversationId });
+    // }
+    return () => {
+      socket?.emit("leaveRoom", { conversationId });
+      socket.off("leaveRoom");
+      socket.disconnect();
+    };
   }, []);
 
   useEffect(() => {
+    if (socket) {
+      socket.on("message:new", (message: Message) => {
+        console.log(";", message);
+        setNewmsg((cur) => [...cur, message]);
+      });
+      return () => {
+        socket.off("message:new");
+        // socket?.disconnect();
+      };
+    }
+  }, [socket]);
+
+  useEffect(() => {
     // console.log(socket);
-    // const conversationId = chat.uid;
-    // socket?.emit("joinRoom", { conversationId });
     const getMe = async () => {
       try {
         const res = await axios.get(`http://localhost:9000/users/me`, {
@@ -267,20 +286,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList }) => {
     await blockUser();
   };
 
-  useEffect(() => {
-    if (socket)
-    {
-
-      socket.on("message:new", (message: Message) => {
-        setNewmsg((cur) => [...cur, message]);
-      });
-      return () => {
-        socket.off("message:new");
-        // socket?.disconnect();
-      };
-    }
-  }, []);
-console.log("objecttttttttttttttt");
+  console.log("objecttttttttttttttt");
   return (
     <>
       {profile ? (
