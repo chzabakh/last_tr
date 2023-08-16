@@ -8,7 +8,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div>
+    <div className="h-screen w-full relative ">
       <Navbar />
       {children}
       <Footer />

@@ -16,7 +16,7 @@ export default function Homepage() {
   };
   return (
     <Layout>
-      <div className="flex flex-row items-center justify-between  relative min-h-full  ">
+      <div className="flex flex-row items-center relative min-h-full max-h-full">
         <div className="flex justify-evenly flex-col w-[40%] h-[500px]">
           <TypeAnimation
             sequence={[

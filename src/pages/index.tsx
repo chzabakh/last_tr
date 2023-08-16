@@ -1,15 +1,11 @@
-import { Source_Code_Pro } from "next/font/google";
-import { createContext, useContext, useState } from "react";
-// import { AuthProvider } from "./socket_context";
 import Homepage from "./homepage";
 
-const sourceCodePro = Source_Code_Pro({ subsets: ["latin"] });
 export default function Home() {
   return (
     <>
-      <div className="containera">
-        <Homepage />
-      </div>
+    <div className="flex flex-col justify-between max-w-full mx-[4rem] h-screen  max-h-full relative ">
+      <Homepage />
+    </div>
     </>
   );
 }
