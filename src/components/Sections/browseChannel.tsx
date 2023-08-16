@@ -4,10 +4,21 @@ import React, {useEffect, useState} from 'react'
 import  Channels  from './channels';
 const BrowseChannel = () => {
 
+    const defaultStyle = {
+        transition: "opacity 0.5s",
+        opacity: 1
+      };
+      
+      const fadeOutStyle = {
+        transition: "opacity 0.5s",
+        opacity: 0
+      };
+
     const [back, setback] = useState(false)
     const [PublicRooms, setPublicRooms] = useState([]);
     const [ProtectedRooms, setProtectedRooms] = useState([]);
-
+    const [isprivate, setPrivate] = useState(false);
+    const [fadeOut, setFadeOut] = useState(false);
     useEffect(()=>
     {
        getPublicChannels();
@@ -18,9 +29,15 @@ const BrowseChannel = () => {
     {
         setback(true)
     }
+    const handleDelete = () => {
+        setFadeOut(true);
+        setTimeout(() => {
+          setPrivate(false);
+          setFadeOut(false); 
+        }, 500);
+      };
 
-
-    async function joinRoom()
+    async function joinPublicRoom()
     {
         try
         {
@@ -28,6 +45,39 @@ const BrowseChannel = () => {
             const headers = { Authorization: `Bearer ${token}` };
             const requestBody = {
                 isGroup: true,
+              };
+            const res = await axios.post('http://localhost:9000/chat/join-room', requestBody,  { headers });
+            console.log(res.data)
+            if(res.status === 201)
+                alert('done');
+            else    
+                alert('not done');                                                                                                                                                                                                                                                                                                                                                                            
+        }
+        catch(e)
+        {
+            if(axios.isAxiosError(e))
+            {
+                if(e.request)
+                    console.log("No response received!", e.request);
+                else if(e.response)
+                    console.log("Error status: ", e.response?.status);
+                    console.log("Error data: ", e.response?.data);
+            }
+            else
+            {
+                console.log("Error: ", e);
+            }
+        }
+    }
+
+    async function joinProtectedRoom()
+    {
+        try
+        {
+            const token = Cookies.get('token')
+            const headers = { Authorization: `Bearer ${token}` };
+            const requestBody = {
+                isProtected: true,
               };
             const res = await axios.post('http://localhost:9000/chat/join-room', requestBody,  { headers });
             console.log(res.data)
@@ -114,17 +164,26 @@ const BrowseChannel = () => {
                 
                     <div className="flex flex-col border-2 items-center justify-center gap-10 h-full  w-[77%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
                     <div className='flex flex-col items-center  h-[80%] w-[90%] gap-8'>
-                        <div className='flex justify-between gap-10 w-full'>
+                    <div className='flex justify-between gap-10 w-full'>
                     <button className='bg-black/20 self-start w-[100px] border-4 rounded-full' onClick={handleback}>Back</button>
-                    <button className='bg-black/20 self-start w-[200px] border-4 rounded-full' onClick={handleback}>Join Private </button>
-                        </div>
+                    <button className='bg-black/20 self-start w-[200px] border-4 rounded-full' onClick={() => setPrivate(true)}>Join Private </button>
+                    
+                    {isprivate && 
+                    <div 
+                        style={fadeOut ? fadeOutStyle : defaultStyle} 
+                        className='w-[300px] h-[300px] bg-white/40 rounded-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]'>
+                        <button onClick={handleDelete} className='bg-purple-500 m-3 text-white py-1 px-4 rounded-lg'>X</button>
+                    </div>
+                    }
+                     
+                    </div>
                     <div className=' w-full p-4 h-[100%] overflow-scroll'>
                         <p>Public Channels:</p>
                     <div className='grid grid-cols-3 gap-4 '>
                         {PublicRooms.map(channel => (
                             <div key={channel.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
                                 <h3 className='text-xl font-semibold'>{channel.name}</h3>
-                                <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinRoom}>Join</button>
+                                <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinPublicRoom}>Join</button>
                             </div>
                         ))}
                     </div>
@@ -135,7 +194,7 @@ const BrowseChannel = () => {
                         {ProtectedRooms.map(channel => (
                             <div key={channel.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
                                 <h3 className='text-xl font-semibold'>{channel.name}</h3>
-                                <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinRoom}>Join</button>
+                                <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinProtectedRoom}>Join</button>
                             </div>
                         ))}
                     </div> 
