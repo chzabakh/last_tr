@@ -171,8 +171,13 @@ const BrowseChannel = () => {
                     {isprivate && 
                     <div 
                         style={fadeOut ? fadeOutStyle : defaultStyle} 
-                        className='w-[300px] h-[300px] bg-white/40 rounded-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]'>
-                        <button onClick={handleDelete} className='bg-purple-500 m-3 text-white py-1 px-4 rounded-lg'>X</button>
+                        className='w-[300px] h-[300px] bg-white/40 rounded-lg absolute top-1/2 left-1/2 flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2  border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]'>
+                        <button onClick={handleDelete} className=' self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg'>X</button>
+                        <div className='flex flex-col gap-7 items-center'>
+                        <h2>Enter the room ID:</h2>
+                        <input type="password" className='bg-black/30 h-[20px] p-6 text-white mx-2'></input>
+                        </div>
+                        <button className='rounded-lg border-4 border-[#3b0764] w-[40%] self-center'>Enter</button>
                     </div>
                     }
                      
