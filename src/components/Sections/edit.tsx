@@ -32,6 +32,7 @@ const Edit = () => {
         await getAvatar();
 
       }
+      console.log(status)
       initialize();
     }, []);
 
@@ -84,8 +85,6 @@ const Edit = () => {
     async function getAvatar()
     {
       const token = Cookies.get('token')
-    
-      console.log("afyter: ", token )
       try {
         const headers = { Authorization: `Bearer ${token}` };
         const res = await axios.get('http://localhost:9000/users/me',  { headers });

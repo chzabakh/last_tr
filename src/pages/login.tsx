@@ -84,19 +84,38 @@ export const Login  : React.FC  = () => {
     console.log('token before: ', Cookies.get())
     if (authWindow) {
       const checkAuthComplete = setInterval(() => {
-        const token = Cookies.get('token');
-        console.log("tooooken lwlaaa", token)
+        const res = Cookies.get('token')?.replace('j:', '');
+        if (!res || res === "undefined") {
+          console.error('Token is not defined or is "undefined"');
+          return; 
+        }
+        let parsed;
+        try {
+          parsed = JSON.parse(res);
+        } catch (e) {
+          console.error('Failed to parse token:', e);
+          return; 
+        }
+        const token = parsed.access_token;
+        // console.log(token)
+        const isFirstLogin = parsed.isFirstLogin;       
+        // console.log("first logiin" , isFirstLogin)
+        // console.log("tooooken lwlaaa", token)
         if (token) {
           setToken(token);
           authWindow.close();
           // Cookies.set('token', token, {path: '/'});
           clearInterval(checkAuthComplete);
           Cookies.set('token', token, {path: '/'});   
-          console.log("token after setting cookies: ", Cookies.get('token'))       
-          Router.push('/dashboard'); 
+          console.log("token after setting cookies: ", Cookies.get('token'))
+          
+          if(isFirstLogin)
+              Router.push('/addInfos');
+          else
+              Router.push('/dashboard'); 
           // console.log("token after dashboard ", Cookies.get('token'))
         }
-        console.log("hgaaaaahia token" , token)
+        // console.log("hgaaaaahia token" , token)
       }, 500);
     } else {
       alert('Failed to open authentication window');

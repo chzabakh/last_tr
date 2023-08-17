@@ -25,6 +25,7 @@ const TwoFac: React.FC<TwoFacProps>  = ({handle}) => {
     {
       await getImage()
     }
+    console.log()
     initialize();
   },[])
 
@@ -59,8 +60,31 @@ const TwoFac: React.FC<TwoFacProps>  = ({handle}) => {
       const res = await axios.post('http://localhost:9000/2fa/verify', data, {headers});
       if(res.data === true)
       {
-        await Enable2Fac();
-        setActivate(true);
+        try{
+
+          const Token = Cookies.get('token')
+          const headers = {Authorization: `Bearer ${Token}`}
+          const auth = await axios.post('http://localhost:9000/2fa/enable', {}, {headers});
+          setActivate(true);
+          console.log("the data" , auth.data)
+          return true;
+        }
+        catch(e)
+        {
+            if(axios.isAxiosError(e))
+            {
+                if(e.request)
+                    console.log("No response received!", e.request);
+                else if(e.response)
+                    console.log("Error status: ", e.response?.status);
+                    console.log("Error data: ", e.response?.data);
+            }
+            else
+            {
+                console.log("Error: ", e);
+            }
+            return false;
+        }
       }
       else
       {
@@ -71,36 +95,6 @@ const TwoFac: React.FC<TwoFacProps>  = ({handle}) => {
     {
       console.log("error: ", e);
     }
-  }
-  
- 
-  const Enable2Fac = async () =>
-  {
-    try{
-
-        const Token = Cookies.get('token')
-        const headers = {Authorization: `Bearer ${Token}`}
-        const auth = await axios.post('http://localhost:9000/2fa/enable', {}, {headers});
-        console.log(auth.data)
-        return true;
-      }
-      catch(e)
-      {
-          if(axios.isAxiosError(e))
-          {
-              if(e.request)
-                  console.log("No response received!", e.request);
-              else if(e.response)
-                  console.log("Error status: ", e.response?.status);
-                  console.log("Error data: ", e.response?.data);
-          }
-          else
-          {
-              console.log("Error: ", e);
-          }
-          return false;
-      }
-    
   }
 
 
