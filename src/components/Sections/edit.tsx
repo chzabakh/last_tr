@@ -28,19 +28,20 @@ const Edit = () => {
     useEffect(() => {
       async function initialize()
       {
-        await getStatus();
         await getAvatar();
-
       }
-      console.log(status)
       initialize();
     }, []);
-
+    
+    useEffect(() =>
+    {
+      console.log("The satatus", status)
+      getStatus();
+    }, )
 
     function handleAuthClick() {
       setShowTwoFac(true);
     }
-
     
     async function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
       const file = e.target.files?.[0];
@@ -210,7 +211,7 @@ const Edit = () => {
         const Token = Cookies.get('token')
         const headers = {Authorization: `Bearer ${Token}`}
         const auth = await axios.get('http://localhost:9000/2fa/status', {headers});
-        console.log(auth.data)
+        console.log("STATUS  DATA" , auth.data)
         auth.data === true ? setStatus("enabled") : setStatus("disabled");
       }
       catch(e)
@@ -241,6 +242,7 @@ const Edit = () => {
         const Token = Cookies.get('token')
         const headers = {Authorization: `Bearer ${Token}`}
         const auth = await axios.post('http://localhost:9000/2fa/disable', {},  {headers});
+        alert('auth disabaled, refrech the page!');
       }
       catch(e)
       {

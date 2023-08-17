@@ -17,20 +17,12 @@ const TwoFac: React.FC<TwoFacProps>  = ({handle}) => {
   const [error, setError] = useState("")
   const [activate, setActivate] = useState(false)
   const [qr, setQr] = useState("")
-  const [show, setShow] = useState(false);
+  const [status, setStatus] = useState<"enabled" | "disabled">("disabled");
 
   useEffect(() => 
   {
-    async function initialize()
+    async function getImage()
     {
-      await getImage()
-    }
-    console.log()
-    initialize();
-  },[])
-
-  const getImage = async () =>
-  {
       try
       {
         const Token = Cookies.get('token') 
@@ -45,55 +37,93 @@ const TwoFac: React.FC<TwoFacProps>  = ({handle}) => {
       {
         alert(e)
       }
+    }
+    getImage();
+    getStatus();
+    
+  },[])
+
+
+
+  const getStatus = async () =>
+  {
+    try{
+
+        const Token = Cookies.get('token')
+        const headers = {Authorization: `Bearer ${Token}`}
+        const auth = await axios.get('http://localhost:9000/2fa/status', {headers});
+        console.log(auth.data)
+        auth.data === true ? setStatus("enabled") : setStatus("disabled");
+      }
+      catch(e)
+      {
+          if(axios.isAxiosError(e))
+          {
+              if(e.request)
+                  console.log("No response received!", e.request);
+              else if(e.response)
+                  console.log("Error status: ", e.response?.status);
+                  console.log("Error data: ", e.response?.data);
+          }
+          else
+          {
+              console.log("Error: ", e);
+          }
+          
+      }
+    
   }
+
 
   const submitCode = async () =>
   {
-    try
-    {
+
+    try{
       const Token = Cookies.get('token')
+      console.log('Token ', Token)
       const data = 
       {
         code : code,
       }
+      console.log(code)
       const headers = {Authorization: `Bearer ${Token}`, 'Content-Type': 'application/json'}
-      const res = await axios.post('http://localhost:9000/2fa/verify', data, {headers});
-      if(res.data === true)
+      const auth = await axios.post('http://localhost:9000/2fa/enable', {}, {headers});
+      setActivate(true);
+      setStatus("enabled");
+      console.log("the data" , auth.data)
+      try
       {
-        try{
-
-          const Token = Cookies.get('token')
-          const headers = {Authorization: `Bearer ${Token}`}
-          const auth = await axios.post('http://localhost:9000/2fa/enable', {}, {headers});
-          setActivate(true);
-          console.log("the data" , auth.data)
-          return true;
-        }
-        catch(e)
+       
+        const res = await axios.post('http://localhost:9000/2fa/verify', data, {headers});
+        console.log("DATA " , res.data);
+        if(res.data === true)
         {
-            if(axios.isAxiosError(e))
-            {
-                if(e.request)
-                    console.log("No response received!", e.request);
-                else if(e.response)
-                    console.log("Error status: ", e.response?.status);
-                    console.log("Error data: ", e.response?.data);
-            }
-            else
-            {
-                console.log("Error: ", e);
-            }
-            return false;
+        
+        }
+        else
+        {
+          setError("Wrong code. Please try again.");
         }
       }
-      else
+      catch(e)
       {
-        setError("Wrong code. Please try again.");
+        console.log("error: ", e);
       }
     }
     catch(e)
     {
-      console.log("error: ", e);
+        if(axios.isAxiosError(e))
+        {
+            if(e.request)
+                console.log("No response received!", e.request);
+            else if(e.response)
+                console.log("Error status: ", e.response?.status);
+                console.log("Error data: ", e.response?.data);
+        }
+        else
+        {
+            console.log("Error: ", e);
+        }
     }
   }
 
