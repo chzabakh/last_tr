@@ -17,7 +17,7 @@ const TwoFac: React.FC<TwoFacProps>  = ({handle}) => {
   const [error, setError] = useState("")
   const [activate, setActivate] = useState(false)
   const [qr, setQr] = useState("")
-  const [status, setStatus] = useState<"enabled" | "disabled">("disabled");
+ 
 
   useEffect(() => 
   {
@@ -38,41 +38,9 @@ const TwoFac: React.FC<TwoFacProps>  = ({handle}) => {
         alert(e)
       }
     }
-    getImage();
-    getStatus();
-    
+    getImage();    
   },[])
 
-
-
-  const getStatus = async () =>
-  {
-    try{
-
-        const Token = Cookies.get('token')
-        const headers = {Authorization: `Bearer ${Token}`}
-        const auth = await axios.get('http://localhost:9000/2fa/status', {headers});
-        console.log(auth.data)
-        auth.data === true ? setStatus("enabled") : setStatus("disabled");
-      }
-      catch(e)
-      {
-          if(axios.isAxiosError(e))
-          {
-              if(e.request)
-                  console.log("No response received!", e.request);
-              else if(e.response)
-                  console.log("Error status: ", e.response?.status);
-                  console.log("Error data: ", e.response?.data);
-          }
-          else
-          {
-              console.log("Error: ", e);
-          }
-          
-      }
-    
-  }
 
 
   const submitCode = async () =>
@@ -89,7 +57,6 @@ const TwoFac: React.FC<TwoFacProps>  = ({handle}) => {
       const headers = {Authorization: `Bearer ${Token}`, 'Content-Type': 'application/json'}
       const auth = await axios.post('http://localhost:9000/2fa/enable', {}, {headers});
       setActivate(true);
-      setStatus("enabled");
       console.log("the data" , auth.data)
       try
       {
@@ -160,7 +127,7 @@ return (
     {activate ? 
     <div className="my-20 h-[70%] gap-3 flex justify-center items-center flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
     <div className="flex items-center border-2 h-[90%] w-[70%]  lg:flex-row justify-center border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-       <p className='text-center w-full self-center bg-black '>Two factors Authentication is activated.<button>Go back</button></p>
+       <p className='text-center w-full justify-center items-center self-center'>Two factors Authentication is activated.  <button onClick={handle} className=' self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg'>Go Back</button></p>
       </div>
     </div>
     :  <>

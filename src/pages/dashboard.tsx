@@ -29,6 +29,7 @@ const Dashboard = () => {
   const [username, setUser] = useState("");
   const [token, setToken] = useState("");
   const [provider, setProvider] = useState("");
+  const [status, setStatus] = useState<"enabled" | "disabled">();
   const [me, setMe] = useState<Me>({
     TwofaAutEnabled: false,
     avatarUrl: "none",
@@ -42,6 +43,13 @@ const Dashboard = () => {
     updatedAt: "none",
   });
   const router = useRouter();
+
+
+  useEffect(() =>
+  {
+    getStatus();
+    
+  },[])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,6 +88,38 @@ const Dashboard = () => {
 
     fetchData();
   }, [Cookies.get("token")]); // Dependency on the token
+
+
+
+
+  const getStatus = async () =>
+  {
+    try{
+
+        const Token = Cookies.get('token')
+        const headers = {Authorization: `Bearer ${Token}`}
+        const auth = await axios.get('http://localhost:9000/2fa/status', {headers});
+        console.log(auth.data)
+        auth.data === true ? setStatus("enabled") : setStatus("disabled");
+      }
+      catch(e)
+      {
+          if(axios.isAxiosError(e))
+          {
+              if(e.request)
+                  console.log("No response received!", e.request);
+              else if(e.response)
+                  console.log("Error status: ", e.response?.status);
+                  console.log("Error data: ", e.response?.data);
+          }
+          else
+          {
+              console.log("Error: ", e);
+          }
+          
+      }
+    
+  }
 
   return (
     <>
