@@ -49,6 +49,8 @@ const BrowseChannel = () => {
         }, 500);
       };
 
+      console.log("PUBLIC ", PublicRooms);
+
     async function joinPublicRoom()
     {
         try
@@ -57,6 +59,7 @@ const BrowseChannel = () => {
             const headers = { Authorization: `Bearer ${token}` };
             const requestBody = {
                 isGroup: true,
+                // conversationId: 
               };
             const res = await axios.post('http://localhost:9000/chat/join-room', requestBody,  { headers });
             console.log(res.data)
@@ -213,7 +216,7 @@ const BrowseChannel = () => {
                     <div className='flex justify-between gap-10 w-full'>
                     <button className='bg-black/20 self-start w-[100px] border-4 rounded-full' onClick={handleback}>Back</button>
                     <button className='bg-black/20 self-start w-[200px] border-4 rounded-full' onClick={() => setPrivate(true)}>Join Private </button>
-                    
+                     
                     {isprivate && 
                     <div 
                         style={fadeOut ? fadeOutStyle : defaultStyle} 
@@ -246,7 +249,7 @@ const BrowseChannel = () => {
                             <div key={channel.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
                                 <h3 className='text-xl font-semibold'>{channel.name}</h3>
                                 
-                                {(pubJoined === true || email === channel.owner.email) ? <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={() => setChat(true)}>>Enter</button> : <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinPublicRoom}>Join</button>}
+                                {(pubJoined === true || email === channel.owner.email) ? <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={() => setChat(true)}>>Enter</button> : <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinProtectedRoom}>Join</button>}
                             </div>
                         ))}
                     </div> 

@@ -4,12 +4,20 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import Place from '../../../public/Place.png'
 import Router from 'next/router';
+import Edit from './edit';
+import { handleClientScriptLoad } from 'next/script';
 
-const TwoFac = () => {
+
+type TwoFacProps = {
+  handle: () => void;
+};
+
+const TwoFac: React.FC<TwoFacProps>  = ({handle}) => {
   const [code, setCode] = useState("");
   const [error, setError] = useState("")
   const [activate, setActivate] = useState(false)
   const [qr, setQr] = useState("")
+  const [show, setShow] = useState(false);
 
   useEffect(() => 
   {
@@ -122,11 +130,9 @@ const TwoFac = () => {
     </div>
   </>
 
-  
 
-
-  return (
-    <>
+return (
+  <>
     {activate ? 
     <div className="my-20 h-[70%] gap-3 flex justify-center items-center flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
     <div className="flex items-center border-2 h-[90%] w-[70%]  lg:flex-row justify-center border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
@@ -135,6 +141,7 @@ const TwoFac = () => {
     </div>
     :  <>
     <div className="my-20 h-[70%] gap-3 flex justify-center items-center flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+    <button onClick={handle} className=' self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg'>X</button>
     <div className="px-5 gap-10 items-center border-2 h-[90%] w-[70%] flex lg:flex-row  flex-col-reverse justify-between border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
         <Image
         src={qr || Place}

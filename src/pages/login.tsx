@@ -85,6 +85,7 @@ export const Login  : React.FC  = () => {
     if (authWindow) {
       const checkAuthComplete = setInterval(() => {
         const token = Cookies.get('token');
+        console.log("tooooken lwlaaa", token)
         if (token) {
           setToken(token);
           authWindow.close();
@@ -95,7 +96,7 @@ export const Login  : React.FC  = () => {
           Router.push('/dashboard'); 
           // console.log("token after dashboard ", Cookies.get('token'))
         }
-        console.log(token)
+        console.log("hgaaaaahia token" , token)
       }, 500);
     } else {
       alert('Failed to open authentication window');

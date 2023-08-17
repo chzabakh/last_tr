@@ -6,11 +6,12 @@ import axios from 'axios';
 import TwoFac from './twoFac';
 import Cookies from 'js-cookie';
 import Place from '../../../public/Place.png'
-import { initialize } from 'next/dist/server/lib/render-server';
+// import { initialize } from 'next/dist/server/lib/render-server';
 
 const Edit = () => {
 
     const [showTwoFac, setShowTwoFac] = useState(false);
+    const [back, setBack] = useState(false);
     const [error, seterror] = useState<string | undefined>();
     const [Preview, setPreview] = useState("");
     const [Avatar, setAvatar] = useState<File | null>(null);
@@ -195,6 +196,11 @@ const Edit = () => {
       }
       
     }
+
+  function handleBack()
+  {
+    setShowTwoFac(false)
+  }
     
 
 
@@ -309,7 +315,7 @@ const Edit = () => {
         </div>
 
       ) :    <div className="h-screen w-full md:w-[90%] flex mx-auto ">
-      {showTwoFac && <TwoFac />} </div>
+      {showTwoFac && <TwoFac handle={handleBack}/>} </div>
     }
   </>
   );
