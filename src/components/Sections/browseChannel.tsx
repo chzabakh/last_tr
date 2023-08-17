@@ -2,6 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import React, {useEffect, useState} from 'react'
 import  Channels  from './channels';
+import ChatRoom from './chatRoom';
 const BrowseChannel = () => {
 
     const defaultStyle = {
@@ -19,10 +20,21 @@ const BrowseChannel = () => {
     const [ProtectedRooms, setProtectedRooms] = useState([]);
     const [isprivate, setPrivate] = useState(false);
     const [fadeOut, setFadeOut] = useState(false);
+
+    const [pubJoined, setPubJoined] = useState(false);
+    const [privJoined, setPrivJoined] = useState(false);
+    const [chat, setChat] = useState(false);
+    const [email, setUserEmail] = useState("");
+
     useEffect(()=>
     {
-       getPublicChannels();
-       getProtectedChannels();
+        async function initialize()
+        {
+            await getUser();
+            await getPublicChannels();
+            await getProtectedChannels();
+        }
+        initialize();
     },[])
     
     function handleback()
@@ -48,6 +60,7 @@ const BrowseChannel = () => {
               };
             const res = await axios.post('http://localhost:9000/chat/join-room', requestBody,  { headers });
             console.log(res.data)
+            setPubJoined(true);
             if(res.status === 201)
                 alert('done');
             else    
@@ -81,6 +94,7 @@ const BrowseChannel = () => {
               };
             const res = await axios.post('http://localhost:9000/chat/join-room', requestBody,  { headers });
             console.log(res.data)
+            setPrivJoined(true);
             if(res.status === 201)
                 alert('done');
             else    
@@ -129,6 +143,35 @@ const BrowseChannel = () => {
         }
     }
 
+    async function getUser() {
+
+        try{
+
+            const token = Cookies.get('token')
+            const headers = { Authorization: `Bearer ${token}` };
+            const res = await axios.get('http://localhost:9000/users/me',  { headers });
+            setUserEmail(res.data.email);
+            console.log(email);
+            console.log(res.data.email)
+        }
+        catch(e)
+        {
+            if(axios.isAxiosError(e))
+            {
+                if(e.request)
+                    console.log("No response received!", e.request);
+                else if(e.response)
+                    console.log("Error status: ", e.response?.status);
+                    console.log("Error data: ", e.response?.data);
+            }
+            else
+            {
+                console.log("Error: ", e);
+            }
+        }
+    }
+
+
     async function getProtectedChannels() {
 
         try{
@@ -155,6 +198,9 @@ const BrowseChannel = () => {
         }
     }
 
+    if(chat) {
+            return <ChatRoom />;  
+    }
   return (
     back === true ? <Channels /> : (
     <>
@@ -188,7 +234,7 @@ const BrowseChannel = () => {
                         {PublicRooms.map(channel => (
                             <div key={channel.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
                                 <h3 className='text-xl font-semibold'>{channel.name}</h3>
-                                <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinPublicRoom}>Join</button>
+                                {(pubJoined === true || email === channel.owner.email) ? <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={() => setChat(true)}>Enter</button> : <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinPublicRoom}>Join</button>}
                             </div>
                         ))}
                     </div>
@@ -199,7 +245,8 @@ const BrowseChannel = () => {
                         {ProtectedRooms.map(channel => (
                             <div key={channel.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
                                 <h3 className='text-xl font-semibold'>{channel.name}</h3>
-                                <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinProtectedRoom}>Join</button>
+                                
+                                {(pubJoined === true || email === channel.owner.email) ? <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={() => setChat(true)}>>Enter</button> : <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinPublicRoom}>Join</button>}
                             </div>
                         ))}
                     </div> 

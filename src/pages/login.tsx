@@ -10,9 +10,6 @@ import fourty from "../../public/fourty.png";
 import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
 import Router, { useRouter } from 'next/router';
-import { useAuth } from "./auth_context";
-import { createPortal } from "react-dom";
-import addInfos from "./addInfos";
 import Cookies from 'js-cookie';
 
 export const Login  : React.FC  = () => {
