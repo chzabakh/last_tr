@@ -23,12 +23,14 @@ const Edit = () => {
     const [isPassChanged, setIsPassChanged] = useState(false)
     const [isOldPassChanged, setIsOldPassChanged] = useState(false)
     const [status, setStatus] = useState<"enabled" | "disabled">();
+    const [provider, setProvider] = useState<"intra" | "email" >();
 
     
     useEffect(() => {
       async function initialize()
       {
         await getAvatar();
+        await getUser();
       }
       initialize();
     }, []);
@@ -43,6 +45,35 @@ const Edit = () => {
       setShowTwoFac(true);
     }
     
+
+    async function getUser() {
+
+      try{
+
+          const token = Cookies.get('token')
+          const headers = { Authorization: `Bearer ${token}` };
+          const res = await axios.get('http://localhost:9000/users/me',  { headers });
+          // setUserEmail(res.data.email);
+          setProvider(res.data.provider);
+          // console.log(email);
+          // console.log(res.data.email)
+      }
+      catch(e)
+      {
+          if(axios.isAxiosError(e))
+          {
+              if(e.request)
+                  console.log("No response received!", e.request);
+              else if(e.response)
+                  console.log("Error status: ", e.response?.status);
+                  console.log("Error data: ", e.response?.data);
+          }
+          else
+          {
+              console.log("Error: ", e);
+          }
+      }
+  }
     async function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
       const file = e.target.files?.[0];
       if (file) {
@@ -291,15 +322,12 @@ const Edit = () => {
           <div className='w-[50%]'>Change username:</div>
           <input className="p-2 rounded-lg w-[50%] text-white bg-black/20" value={Username} type="text" placeholder='Type new username' onChange={handleNickChange} />
           </div>
-          <div className='flex w-full flex-row '>
-          <div className='  w-[50%]'>Change email:</div>
-          <input className="p-2 rounded-lg w-[50%] text-white bg-black/20" type="text" placeholder='Type new email'/>
-          </div>
-          <div className=''>Change password: </div>
+          {provider === "email" ?    <><div className=''>Change password: </div>
           <div  className='flex flex-row justify-center flex-wrap'>
               <input className="p-2 rounded-lg text-white m-4 bg-black/20" type="password" placeholder='Type old password'  onChange={handleOldPassChange}/>
               <input  className="p-2 rounded-lg text-white m-4 bg-black/20 mb-5" type="password" placeholder='Type new password' onChange={handlePassChange}/>
-          </div>
+          </div></> : null}
+       
           </div>
   
   
