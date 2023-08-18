@@ -48,8 +48,7 @@ const Dashboard = () => {
   useEffect(() =>
   {
     getStatus();
-    
-  },[])
+  },)
 
   useEffect(() => {
     const fetchData = async () => {

@@ -11,6 +11,7 @@ import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
 import Router, { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
+import activate from "./activate";
 
 export const Login  : React.FC  = () => {
 
@@ -18,6 +19,7 @@ export const Login  : React.FC  = () => {
   const router = useRouter();
 
   const [authWindow, setAuthWin] = useState<Window | null>(null);
+  const [twoAuth, setTwoAuth] = useState(false);
   const [token, setToken] = useState(""); 
  
   const [status, setStatus] = useState("0");
@@ -28,6 +30,12 @@ export const Login  : React.FC  = () => {
     password: "",
   });
   
+
+  useEffect(() =>
+  {
+    getUser();
+
+  },)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
@@ -41,24 +49,58 @@ export const Login  : React.FC  = () => {
     await postData(data);
   };
 
+
+  async function getUser() {
+
+    try{
+
+        const token = Cookies.get('token')
+        const headers = { Authorization: `Bearer ${token}` };
+        const res = await axios.get('http://localhost:9000/users/me',  { headers });
+        // setUserEmail(res.data.email);
+        res.data.TwofaAutEnabled === true ?  setTwoAuth(true) : setTwoAuth(false);
+      
+        console.log("HAAAHOWA" , twoAuth)
+        // console.log(email);
+        console.log(res.data.email)
+    }
+    catch(e)
+    {
+        if(axios.isAxiosError(e))
+        {
+            if(e.request)
+                console.log("No response received!", e.request);
+            else if(e.response)
+                console.log("Error status: ", e.response?.status);
+                console.log("Error data: ", e.response?.data);
+        }
+        else
+        {
+            console.log("Error: ", e);
+        }
+    }
+}
+
   const postData = async (data: { email: string; password: string }) => {
     try {
       const res = await axios.post("http://localhost:9000/auth/login", data);
+      console.log("HACH JAY", res)
       const tok = res.data.access_token;
       const verify = res.data.isFirstLogin;
-      // localStorage.setItem("token", tok);
       Cookies.set('token', tok , { path: '/'});
 
-      // login(tok);         
-      //check if the infos are set with the added value in response
-      //let us pretend that is actually not set
       if(verify)
       {
         router.push('/addInfos');
       }
       else
       {
-        router.push('/dashboard');
+        if(twoAuth === true)
+        {
+          router.push('/activate')
+        }
+        else
+          router.push('/dashboard');
       }
      }
       catch (err) {
@@ -112,7 +154,17 @@ export const Login  : React.FC  = () => {
           if(isFirstLogin)
               Router.push('/addInfos');
           else
-              Router.push('/dashboard'); 
+          {
+            if(twoAuth === true)
+            {
+              alert('activate')
+              router.push('/activate')
+            }
+            else
+            {
+              router.push('/dashboard');
+            }
+          }
           // console.log("token after dashboard ", Cookies.get('token'))
         }
         // console.log("hgaaaaahia token" , token)
