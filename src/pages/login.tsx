@@ -84,7 +84,7 @@ export const Login  : React.FC  = () => {
   const postData = async (data: { email: string; password: string }) => {
     try {
       const res = await axios.post("http://localhost:9000/auth/login", data);
-      console.log("HACH JAY", res)
+      console.log("HACH JAYyyyyyyy", res)
       const tok = res.data.access_token;
       const verify = res.data.isFirstLogin;
       Cookies.set('token', tok , { path: '/'});
@@ -95,11 +95,11 @@ export const Login  : React.FC  = () => {
       }
       else
       {
-        if(twoAuth === true)
-        {
-          router.push('/activate')
-        }
-        else
+        // if(twoAuth === true)
+        // {
+        //   router.push('/activate')
+        // }
+        // else
           router.push('/dashboard');
       }
      }
@@ -127,6 +127,7 @@ export const Login  : React.FC  = () => {
     if (authWindow) {
       const checkAuthComplete = setInterval(() => {
         const res = Cookies.get('token')?.replace('j:', '');
+        console.log("RESPOOONSE: ", res)
         if (!res || res === "undefined") {
           console.error('Token is not defined or is "undefined"');
           return; 
@@ -140,7 +141,8 @@ export const Login  : React.FC  = () => {
         }
         const token = parsed.access_token;
         // console.log(token)
-        const isFirstLogin = parsed.isFirstLogin;       
+        const isFirstLogin = parsed.isFirstLogin;  
+        const isTwoFactorEnabled = parsed.isTwoFactorEnabled;   
         // console.log("first logiin" , isFirstLogin)
         // console.log("tooooken lwlaaa", token)
         if (token) {
@@ -155,15 +157,15 @@ export const Login  : React.FC  = () => {
               Router.push('/addInfos');
           else
           {
-            if(twoAuth === true)
-            {
-              alert('activate')
-              router.push('/activate')
-            }
-            else
-            {
+            // if(isTwoFactorEnabled === true)
+            // {
+            //   // alert('activate')
+            //   router.push('/activate')
+            // }
+            // else
+            // {
               router.push('/dashboard');
-            }
+            // }
           }
           // console.log("token after dashboard ", Cookies.get('token'))
         }

@@ -6,6 +6,58 @@ import  Channels  from './channels';
 import ChatRoom from './chatRoom';
 const BrowseChannel = () => {
 
+
+    interface owner 
+    {
+        FirstLogin: boolean,
+        TwoFaAuthEnabled: boolean,
+        TwofaAuthSecret: string,
+        avatarUrl: string,
+        createdaAt: string,
+        email: string,
+        friendStatus: string,
+        hash: string,
+        id: number,
+        nickname: string,
+        provider: string,
+        state: string,
+        updatedAt: string,
+    }
+    interface user {
+        TwofaAutEnabled: boolean,
+        TwofaAutSecret : boolean,
+        avatarUrl: string,
+        createdAt: string,
+        email: string,
+        friendStatus: string,
+        id: number,
+        nickname: string,
+        provider: string,
+        state: string,
+        updatedAt: string,
+    }
+
+    interface channel{
+        createdAt: string,
+        id: number,
+        isGroup: boolean,
+        isPrivate: boolean,
+        isPrivateKey: boolean,
+        isProtected: boolean,
+        lastMessageAt: string,
+        name: string,
+        owner: owner,
+        ownerID: number,
+        password: string,
+        uid: string, 
+        users: user[],
+    }
+
+    interface JoinedRoom {
+        id: number;
+        name: string;
+    }
+
     const defaultStyle = {
         transition: "opacity 0.5s",
         opacity: 1
@@ -17,12 +69,12 @@ const BrowseChannel = () => {
       };
 
     const [back, setback] = useState(false)
-    const [PublicRooms, setPublicRooms] = useState([]);
-    const [ProtectedRooms, setProtectedRooms] = useState([]);
+    const [PublicRooms, setPublicRooms] = useState<channel[]>([]);
+    const [ProtectedRooms, setProtectedRooms] = useState<channel[]>([]);
     const [isprivate, setPrivate] = useState(false);
     const [fadeOut, setFadeOut] = useState(false);
 
-    const [joinedRooms, setJoinedRooms] = useState([]);
+    const [joinedRooms, setJoinedRooms] = useState<JoinedRoom[]>([]);
     const [privJoined, setPrivJoined] = useState(false);
     const [chat, setChat] = useState(false);
     const [email, setUserEmail] = useState("");
@@ -35,6 +87,7 @@ const BrowseChannel = () => {
         {
             await getUser();
             await getPublicChannels();
+            console.log(PublicRooms);
             await getProtectedChannels();
         }
         initialize();
@@ -54,22 +107,33 @@ const BrowseChannel = () => {
 
       console.log("PUBLIC ", PublicRooms);
 
-    async function joinPublicRoom(id)
+    async function joinPublicRoom(id : number)
     {
         try
         {
             
             const token = Cookies.get('token')
             const headers = { Authorization: `Bearer ${token}` };
-            const room = PublicRooms.find(channel => channel.id === id);
-            const conversationId = room.uid;
+            const room = PublicRooms.find((channel : channel) => channel.id === id);
+            let conversationId : string;
+            if(room)
+                conversationId = room.uid;
+            else
+            {
+                alert('No id');
+                return ;
+            }
+            console.log(conversationId)
             const requestBody = {
                 isGroup: true,
-                conversationId,
+                conversationId, 
               };
             const res = await axios.post('http://localhost:9000/chat/join-room', requestBody,  { headers });
-            console.log(res.data)
-            setPubJoined(true);                                                                                                                                                                                                                                                                                                                                                                          
+            if(res.status === 201)
+                alert("room joined")
+            else
+                alert(res.status)
+            setJoinedRooms((prev : JoinedRoom[]) => [...prev, {id, name: room.name}]);                                                                                                                                                                                                                                                                                        
         }
         catch(e)
         {
@@ -86,6 +150,12 @@ const BrowseChannel = () => {
                 console.log("Error: ", e);
             }
         }
+    }
+
+    async function handlePublicRoom(Channel: channel)
+    {
+        await joinPublicRoom(Channel.id);
+        
     }
 
     async function joinProtectedRoom()
@@ -233,10 +303,15 @@ const BrowseChannel = () => {
                     <div className=' w-full p-4 h-[100%] overflow-scroll'>
                         <p>Public Channels:</p>
                     <div className='grid grid-cols-3 gap-4 '>
-                        {PublicRooms.map(channel => (
-                            <div key={channel.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
-                                <h3 className='text-xl font-semibold'>{channel.name}</h3>
-                                {(joinedRooms.includes(channel.id) || email === channel.owner.email) ? <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={() => setChat(true)}>Enter</button> : <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinPublicRoom(channel.id)}>Join</button>}
+                        {
+                       
+                        PublicRooms.map((ChannelName: channel) => (
+                            <div key={ChannelName.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
+                                <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
+                                {((joinedRooms.some(room => room.id === ChannelName.id && room.name === ChannelName.name)) || email === ChannelName.owner.email) ? 
+                                <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
+                                onClick={() => setChat(true)}>Enter</button> : <button className=' text-white border-4 border-[#7e22ce] rounded-full 
+                                px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={() =>handlePublicRoom(ChannelName)}>Join</button>}
                             </div>
                         ))}
                     </div>
@@ -244,13 +319,12 @@ const BrowseChannel = () => {
                     <div className=' w-full p-4 h-[100%] overflow-scroll'>
                         <p>Protected Channels:</p>
                     <div className='grid grid-cols-3 gap-4 '>
-                        {ProtectedRooms.map(channel => (
-                            <div key={channel.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
-                                <h3 className='text-xl font-semibold'>{channel.name}</h3>
-                                
-                                {(joinedRooms.includes(channel.id) || email === channel.owner.email) ? <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={() => setChat(true)}>>Enter</button> : <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinProtectedRoom}>Join</button>}
+                        {/* {ProtectedRooms.map((channelName: channel) => (
+                            <div key={channelName.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
+                                <h3 className='text-xl font-semibold'>{channelName.name}</h3>
+                                {(joinedRooms.includes(channelName.id) || email === channelName.owner.email) ? <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={() => setChat(true)}>>Enter</button> : <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' onClick={joinProtectedRoom}>Join</button>}
                             </div>
-                        ))}
+                        ))} */}
                     </div> 
                     </div>
                     </div>

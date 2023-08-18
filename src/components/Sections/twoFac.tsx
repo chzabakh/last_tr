@@ -21,60 +21,50 @@ const TwoFac: React.FC<TwoFacProps>  = ({handle}) => {
 
   useEffect(() => 
   {
-    async function getImage()
-    {
-      try
-      {
-        const Token = Cookies.get('token') 
-        const headers = {Authorization: `Bearer ${Token}`}
-        console.log("The function to get the code is called")
-        const res = await axios.post('http://localhost:9000/2fa/Generate', {}, {headers, responseType: 'blob',});
-        const blob = new Blob([res.data], { type: 'image/png' });
-        const previewUrl = URL.createObjectURL(blob);
-        setQr(previewUrl)
-      }
-      catch(e)
-      {
-        alert(e)
-      }
-    }
     getImage();    
   },[])
 
-
+  async function getImage()
+  {
+    try
+    {
+      const Token = Cookies.get('token') 
+      const headers = {Authorization: `Bearer ${Token}`}
+      console.log("The function to get the code is called")
+      const res = await axios.post('http://localhost:9000/2fa/generate', {}, {headers, responseType: 'blob',});
+      const blob = new Blob([res.data], { type: 'image/png' });
+      const previewUrl = URL.createObjectURL(blob);
+      setQr(previewUrl)
+    }
+    catch(e)
+    {
+      alert(e)
+    }
+  }
 
   const submitCode = async () =>
   {
 
     try{
       const Token = Cookies.get('token')
-      console.log('Token ', Token)
       const data = 
       {
-        code : code,
+        code: +code,
       }
-      console.log(code)
+      
       const headers = {Authorization: `Bearer ${Token}`, 'Content-Type': 'application/json'}
-      const auth = await axios.post('http://localhost:9000/2fa/enable', {}, {headers});
-      setActivate(true);
-      console.log("the data" , auth.data)
-      try
+      console.log(data, data.code, typeof(data.code))
+      const res = await axios.post('http://localhost:9000/2fa/verify', data, {headers});
+      if(res.data)
       {
-       
-        const res = await axios.post('http://localhost:9000/2fa/verify', data, {headers});
-        console.log("DATA " , res.data);
-        if(res.data === true)
-        {
-        
-        }
-        else
-        {
-          setError("Wrong code. Please try again.");
-        }
+        const auth = await axios.post('http://localhost:9000/2fa/enable', {}, {headers});
+        console.log(auth)
+        setActivate(true);
+        alert('jeue')  
       }
-      catch(e)
+      else
       {
-        console.log("error: ", e);
+        setError("Wrong code. Please try again.");
       }
     }
     catch(e)
@@ -147,7 +137,7 @@ return (
             </div>
             <div className='flex flex-col lg:gap-4  gap-1 justify-between'>
                <p className='text-xs'>Scan the QR Code and enter the code:</p> 
-                <input className="lg:p-5 p-3 rounded-2xl bg-black/40" type="text" placeholder='Enter the digits' onChange={(e: ChangeEvent<HTMLInputElement>) => setCode(e.target.value)}></input>
+                <input className="lg:p-5 p-3 rounded-2xl bg-black/40" type="text" placeholder='Enter the digits' onChange={(e: ChangeEvent<HTMLInputElement>) => setCode(e.target.value.replace(/\s+/g, ''))}></input>
                 {error && <p className='text-xs self-center text-red-700'>{error}</p>}
                 <button className='border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl w-[70%] self-center' onClick={submitCode}>Activate</button>
             </div>
