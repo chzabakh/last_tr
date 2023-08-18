@@ -79,10 +79,12 @@ const BrowseChannel = () => {
     const [privJoined, setPrivJoined] = useState(false);
     const [chat, setChat] = useState(false);
     const [email, setUserEmail] = useState("");
-    const [hide, setHide] = useState(false)
+    const [hide, setHide] = useState(false);
+    const [id, setId] = useState("")
 
     useEffect(() => {
         console.log("Joined rooms has changed:", joinedRooms);
+        console.log("Joined rooms has changed:", PublicRooms);
     }, [joinedRooms]);
     
 
@@ -162,12 +164,68 @@ const BrowseChannel = () => {
         }
     }
 
+
+    async function LeaveRoom(id : number)
+    {
+        try
+        {
+            const token = Cookies.get('token')
+            const headers = { Authorization: `Bearer ${token}` };
+            const room = PublicRooms.find((channel : channel) => channel.id === id);
+            let conversationId : string;
+            if(room)
+                conversationId = room.uid;
+            else
+            {
+                alert('No id');
+                return ;
+            }
+            console.log("Conversional id: ", conversationId)
+            const requestBody = {
+                isGroup: true,
+                conversationId,
+                id,
+            };
+            const res = await axios.post('http://localhost:9000/chat/leave-room', requestBody,  { headers });
+            if (res.status === 201)
+            {
+                console.log("Room Left!");
+                console.log(res.data); // Assuming the backend sends the created room details
+            }
+            const isRoomAlreadyJoined = joinedRooms.some((room : JoinedRoom) => room.id === id);
+            if (!isRoomAlreadyJoined) {
+                setJoinedRooms((prev : JoinedRoom[]) => [...prev, {id, name: room.name}]);
+            } else {
+                console.log("You've already joined this room.");
+            }                                                                                                                                                                                                                                                                                                               
+        }
+        catch(e)
+        {
+            if(axios.isAxiosError(e))
+            {
+                if(e.request)
+                    console.log("No response received!", e.request);
+                else if(e.response)
+                    console.log("Error status: ", e.response?.status);
+                    console.log("Error data: ", e.response?.data);
+            }
+            else
+            {
+                console.log("Error: ", e);
+            }
+        }
+    }
     async function handlePublicRoom(id: number)
     {
         await joinPublicRoom(id);
         setHide(true)
     }
 
+    async function handleLeaveRoom(id: number)
+    {
+        await LeaveRoom(id);
+        setHide(true)
+    }
     // async function joinProtectedRoom()
     // {
     //     try
@@ -232,6 +290,7 @@ const BrowseChannel = () => {
             const headers = { Authorization: `Bearer ${token}` };
             const res = await axios.get('http://localhost:9000/users/me',  { headers });
             setUserEmail(res.data.email);
+            setId(res.data.id)
             console.log(email);
             console.log(res.data.email)
         }
@@ -319,12 +378,19 @@ const BrowseChannel = () => {
                             <div key={ChannelName.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
                                 <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
                                 {/* ((joinedRooms.some(room => room.id === ChannelName.id && room.name === ChannelName.name)) || email === ChannelName.owner.email)  */}
-                                {!hide ? 
+                                {hide ? 
                                 // <button className=' text-white border-4 border-[#7e22ce] rounded-full px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
                                 // onClick={() => setChat(true)}>Enter</button> : 
+                                <>
                                 <button className=' text-white border-4 border-[#7e22ce] rounded-full 
                                 px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                                onClick={() =>handlePublicRoom(ChannelName.id)}>Join</button> : null}
+                                onClick={() =>handlePublicRoom(ChannelName.id)}>Join</button>
+                                
+                                </>
+                               : <button className=' text-white border-4 border-[#7e22ce] rounded-full 
+                               px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
+                               onClick={() =>handleLeaveRoom(ChannelName.id)}>Leave</button>}
+                           
                             </div>
                         ))}
                     </div>
