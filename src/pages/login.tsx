@@ -13,6 +13,7 @@ import Router, { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import activate from "./activate";
 
+
 export const Login  : React.FC  = () => {
 
   
@@ -84,7 +85,6 @@ export const Login  : React.FC  = () => {
   const postData = async (data: { email: string; password: string }) => {
     try {
       const res = await axios.post("http://localhost:9000/auth/login", data);
-      console.log("HACH JAYyyyyyyy", res)
       const tok = res.data.access_token;
       const verify = res.data.isFirstLogin;
       Cookies.set('token', tok , { path: '/'});

@@ -8,6 +8,8 @@ import axios, { AxiosError } from "axios";
 import Edit from "@/components/Sections/edit";
 import Cookies from "js-cookie";
 import Place from "../../public/place.png";
+import { RouterProvider } from "react-router-dom";
+import Loading from "./loading";
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -23,6 +25,7 @@ type Me = {
 };
 
 const Dashboard = () => {
+  
   const [item, setItem] = useState("1");
   const [Preview, setPreview] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -30,6 +33,7 @@ const Dashboard = () => {
   const [token, setToken] = useState("");
   const [provider, setProvider] = useState("");
   const [status, setStatus] = useState<"enabled" | "disabled">();
+  const [delayedLoading, setDelayedLoading] = useState(true);
   const [me, setMe] = useState<Me>({
     TwofaAutEnabled: false,
     avatarUrl: "none",
@@ -42,56 +46,70 @@ const Dashboard = () => {
     state: "none",
     updatedAt: "none",
   });
+  const [isLoading, setLoading] = useState(true);
+  const [isIn, setIn] = useState(false);
   const router = useRouter();
 
 
-  useEffect(() =>
-  {
-    getStatus();
-  },)
 
   useEffect(() => {
-    const fetchData = async () => {
-      // const token = Cookies.get('token')
-      const token = Cookies.get("token");
-      // alert(token);
-      console.log(token);
-      if (!token) {
-        router.push("/login");
-        return;
-      }
+    const token = Cookies.get("token");
+    if (token) {
+        setIn(true);
+        setLoading(false);
+    } else {
+        setLoading(false);
+    }
+  }, []);
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+      setDelayedLoading(false);
+  }, 15000); 
+  return () => clearTimeout(timer);
+}, []);
+
+
+useEffect(() => {
+  if (!isIn) {
+    const timer = setTimeout(() => {
+      <Loading/>
+  }, 15000); 
+  router.push('/login');
+  return () => clearTimeout(timer); 
+  }
+}, [isIn]);
+
+useEffect(() => {
+  const token = Cookies.get("token"); 
+
+  const fetchData = async () => {
       try {
-        const headers = { Authorization: `Bearer ${token}` };
-        console.log(headers);
-        const res = await axios.get("http://localhost:9000/users/me", {
-          headers,
-        });
-        console.log(res.data);
-        setUser(res.data.nickname);
-
-        if (res.data.provider === "intra") {
-          setPreview(res.data.avatarUrl);
-        } else {
-          const avatarRes = await axios.get(
-            "http://localhost:9000/users/my-avatar",
-            { headers, responseType: "blob" }
-          );
-          const blob = new Blob([avatarRes.data], { type: "image/png" });
-          const previewUrl = URL.createObjectURL(blob);
-          setPreview(previewUrl);
-        }
+          const headers = { Authorization: `Bearer ${token}` };
+          const res = await axios.get("http://localhost:9000/users/me", { headers });
+          setUser(res.data.nickname);
+          
+          if (res.data.provider === "intra") {
+              setPreview(res.data.avatarUrl);
+          } else {
+              const avatarRes = await axios.get("http://localhost:9000/users/my-avatar", { headers, responseType: "blob" });
+              const blob = new Blob([avatarRes.data], { type: "image/png" });
+              const previewUrl = URL.createObjectURL(blob);
+              setPreview(previewUrl);
+          }
       } catch (err) {
-        console.error("Error fetching data:", err);
-      }
-    };
+          console.error("Error fetching data:", err);
+      }                                          
+  };
 
-    fetchData();
-  }, [Cookies.get("token")]); // Dependency on the token
+  fetchData();
+}, [Cookies.get("token")]);
 
+useEffect(() => {
+  getStatus();
+}, []);
 
-
-
-  const getStatus = async () =>
+const getStatus = async () =>
   {
     try{
 
@@ -120,6 +138,13 @@ const Dashboard = () => {
     
   }
 
+
+// Render part
+
+if (delayedLoading || isLoading) {
+  return <Loading />;
+} else {
+  // Rest of your component JSX or return
   return (
     <>
       <SocketProvider>
@@ -228,5 +253,9 @@ const Dashboard = () => {
       </SocketProvider>
     </>
   );
+}
+
+
+  
 };
 export default Dashboard;
