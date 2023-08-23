@@ -45,3 +45,10 @@
   background-color: rgba(178, 112, 241, 1);
   transition: 0.5s;
 }
+
+@media (max-width: 768px) {
+  .links
+  {
+    visibility: hidden;
+  }
+}

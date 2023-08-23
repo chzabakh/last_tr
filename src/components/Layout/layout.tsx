@@ -8,7 +8,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="h-screen w-full relative ">
+    <div className="flex flex-col justify-between h-full max-h-full">
       <Navbar />
       {children}
       <Footer />

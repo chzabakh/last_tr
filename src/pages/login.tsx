@@ -176,14 +176,20 @@ export const Login  : React.FC  = () => {
     }
     // console.log("Cookie after getting out of function ", Cookies.get('token'))
   }
-  console.log("token globally: ", Cookies.get('token'))
+
+
   return (
+    <>
+     <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
+     <div id="stars"></div>
+      <div id="stars1"></div>
+      </div>
+    <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen max-h-screen">
     <Layout>
-      <div className="flex h-full flex-col items-center mx-auto relative">
-        <div className="w-full flex flex-col items-center justify-center h-full">
-        <a className={styles.button} onClick={openNewWindow}>
+        <div className="w-full flex flex-col items-center justify-center x-auto max-h-full h-full">
+        <a className={styles.button} onClick={openNewWindow}> 
             <Image className={styles.logo} alt="" src={fourty} />
-            <p className="text-xs sm:text-xl">Login with Intra</p>
+            <p className="sm:text-lg">Login with Intra</p>
           </a>
           <div className={styles.or}>Or</div>
         <form className={styles.formy} onSubmit={handleSubmit}>
@@ -217,9 +223,9 @@ export const Login  : React.FC  = () => {
           <Link href="register">You do not have an account ? Sign Up.</Link>
         </form>
         </div>
-
-      </div>
     </Layout>
+    </div>
+    </>
   );
 };
 

@@ -16,8 +16,8 @@ export default function Homepage() {
   };
   return (
     <Layout>
-      <div className="flex flex-row items-center relative min-h-full max-h-full">
-        <div className="flex justify-evenly flex-col w-[40%] h-[500px]">
+      <div className="flex flex-row items-center max-h-full">
+        <div className="flex justify-evenly flex-col md:w-[40%] h-[500px] sm:w-[100%]">
           <TypeAnimation
             sequence={[
               "Welcome to the online Pong Game!",
@@ -35,8 +35,8 @@ export default function Homepage() {
           </p>
           <SmallButton url="login" text="Play now" />
         </div>
-        <div className={`w-[50%] flex justify-items-end justify-end ${styles['item2']}`}>
-          <Image alt="" src={bg} className="h-[650px] w-[700px]" />
+        <div className={`w-[50%] flex justify-items-end justify-end  ${styles['item2']}`}>
+          <Image alt="" src={bg} className="h-[650px] w-[700px] hidden md:block" />
         </div>
       </div>
     </Layout>
