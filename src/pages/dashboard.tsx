@@ -33,7 +33,6 @@ const Dashboard = () => {
   const [token, setToken] = useState("");
   const [provider, setProvider] = useState("");
   const [status, setStatus] = useState<"enabled" | "disabled">();
-  const [delayedLoading, setDelayedLoading] = useState(true);
   const [me, setMe] = useState<Me>({
     TwofaAutEnabled: false,
     avatarUrl: "none",
@@ -46,6 +45,7 @@ const Dashboard = () => {
     state: "none",
     updatedAt: "none",
   });
+  const [delayedLoading, setDelayedLoading] = useState(true);
   const [isLoading, setLoading] = useState(true);
   const [isIn, setIn] = useState(false);
   const router = useRouter();
@@ -65,20 +65,17 @@ const Dashboard = () => {
 useEffect(() => {
   const timer = setTimeout(() => {
       setDelayedLoading(false);
-  }, 15000); 
+  }, 1500); 
   return () => clearTimeout(timer);
 }, []);
 
 
 useEffect(() => {
-  if (!isIn) {
-    const timer = setTimeout(() => {
-      <Loading/>
-  }, 15000); 
-  router.push('/login');
-  return () => clearTimeout(timer); 
+  if (!isIn) { // false 
+  if (!isLoading && !delayedLoading) // false , true
+    router.push('/login');
   }
-}, [isIn]);
+}, [isIn, isLoading, delayedLoading]);
 
 useEffect(() => {
   const token = Cookies.get("token"); 
@@ -143,7 +140,7 @@ const getStatus = async () =>
 
 if (delayedLoading || isLoading) {
   return <Loading />;
-} else {
+} 
   // Rest of your component JSX or return
   return (
     <>
@@ -253,9 +250,6 @@ if (delayedLoading || isLoading) {
       </SocketProvider>
     </>
   );
-}
-
-
   
 };
 export default Dashboard;
