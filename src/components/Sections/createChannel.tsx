@@ -32,7 +32,7 @@ const CreateChannel = () => {
       ) : (
         <>
           {
-            <div className="flex p-1 h-[90%] flex-col  px-2 border-2 items-center gap-2 w-[90%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
+            <div className="flex p-1 h-[90%] flex-col  px-2 border-2 items-center gap-2 w-[90%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#360b6b33] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
               <button
                 className="self-start hover:border-[#2dd4bf] hover:transition  w-[100px] border-[3px] border-opacity-40 border-violet-400 rounded-full"
                 onClick={handleback}

@@ -299,8 +299,8 @@ const Edit = () => {
     <>
     {
       !showTwoFac ? (
-        <div className="my-20 h-[80%] gap-3 justify-center flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-        <div className="border-2 flex overflow-scroll flex-col justify-between  h-[97%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+        <div className="my-20 h-[80%] gap-3 justify-center flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white/20 bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+        <div className="border-2 flex overflow-scroll flex-col justify-between  h-[97%] border-opacity-30 border-violet-400 bg-opacity-7 bg-gradient-to-l from-[#4f117f33] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <div className='flex'>
               <div className="flex-1 w-[50%]">Change the Avatar:</div>
             <div className='w-[50%]'>

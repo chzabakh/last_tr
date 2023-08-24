@@ -22,7 +22,7 @@ const Channels = () => {
           {activeComponent === "browse" && <BrowseChannel />}
         </>
       ) : (
-        <div className="flex px-20 gap-5 border-2 items-center justify-between h-full  w-[77%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
+        <div className="flex px-20 gap-5 border-2 items-center justify-between h-full  w-[77%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#49126e33] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
           <button className="border-opacity-40  min-w-[100px] border-violet-400 hover:border-[#2dd4bf]
   border-[3px] p-2 rounded-full w-[150px] self-center text-xs" onClick={handleCreate}>
             Create a channel

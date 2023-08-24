@@ -144,6 +144,10 @@ if (delayedLoading || isLoading) {
   // Rest of your component JSX or return
   return (
     <>
+      <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
+      <div id="stars"></div>
+      <div id="stars1"></div>
+      </div>
       <SocketProvider>
         <div className="flex flex-row h-full">
           {windowWidth > 768 ? (
@@ -165,8 +169,8 @@ if (delayedLoading || isLoading) {
               <div className="w-full flex flex-col pt-[2rem]">
                 <button
                   onClick={() => setItem("1")}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "1" ? "text-[#D6B3F1] bg-white" : ""
+                  className={`hover:text-[#D6B3F1]  hover:border-2 hover:rounded-lg py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                    item === "1" ? "text-[#D6B3F1] " : ""
                   }
               
               ${item !== "1" ? "hover:bg-white/30" : ""}
@@ -177,8 +181,8 @@ if (delayedLoading || isLoading) {
                 </button>
                 <button
                   onClick={() => setItem("2")}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "2" ? "text-[#D6B3F1] bg-white" : ""
+                  className={`hover:text-[#D6B3F1] py-5 hover:border-2 hover:rounded-lg text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                    item === "2" ? "text-[#D6B3F1] " : ""
                   }
               
               ${item !== "2" ? "hover:bg-white/30" : ""}
@@ -189,8 +193,8 @@ if (delayedLoading || isLoading) {
                 </button>
                 <button
                   onClick={() => setItem("3")}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "3" ? "text-[#D6B3F1] bg-white" : ""
+                  className={`hover:text-[#D6B3F1]  py-5 hover:border-2  hover:rounded-lg text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                    item === "3" ? "text-[#D6B3F1] " : ""
                   }
               
               ${item !== "3" ? "hover:bg-white/30" : ""}
@@ -201,8 +205,8 @@ if (delayedLoading || isLoading) {
                 </button>
                 <button
                   onClick={() => setItem("4")}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "4" ? "text-[#D6B3F1] bg-white" : ""
+                  className={`hover:text-[#D6B3F1]  py-5 hover:border-2 hover:rounded-lg  text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                    item === "4" ? "text-[#D6B3F1] " : ""
                   }
               
               ${item !== "4" ? "hover:bg-white/30" : ""}
@@ -213,8 +217,8 @@ if (delayedLoading || isLoading) {
                 </button>
                 <button
                   onClick={() => setItem("5")}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "5" ? "text-[#D6B3F1] bg-white" : ""
+                  className={`hover:text-[#D6B3F1]  py-5 hover:border-2 hover:rounded-lg  text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                    item === "5" ? "text-[#D6B3F1] " : ""
                   }
               
               ${item !== "5" ? "hover:bg-white/30" : ""}
@@ -228,8 +232,8 @@ if (delayedLoading || isLoading) {
                     Cookies.remove("token", { path: "/" });
                     router.push("/login");
                   }}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "6" ? "text-[#D6B3F1] bg-white" : ""
+                  className={`hover:text-[#D6B3F1]  py-5 hover:border-2 hover:rounded-lg  text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                    item === "6" ? "text-[#D6B3F1] " : ""
                   }
               
               ${item !== "6" ? "hover:bg-white/30" : ""}
