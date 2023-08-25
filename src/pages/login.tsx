@@ -98,11 +98,11 @@ export const Login  : React.FC  = () => {
       }
       else
       {
-        if(twoFac === true)
-        {
-          router.push('/activate')
-        }
-        else
+        // if(twoFac === true)
+        // {
+        //   router.push('/activate')
+        // }
+        // else
           router.push('/dashboard');
       }
      }

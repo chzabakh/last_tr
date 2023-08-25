@@ -73,6 +73,7 @@ const BrowseChannel = () => {
     const [ProtectedRooms, setProtectedRooms] = useState<channel[]>([]);
     const [isprivate, setPrivate] = useState(false);
     const [fadeOut, setFadeOut] = useState(false);
+    const [roomId, setRoomId] = useState("");
 
     // const [joinedRooms, setJoinedRooms] = useState<JoinedRoom[]>([]);
     const [privJoined, setPrivJoined] = useState(false);
@@ -193,6 +194,43 @@ const BrowseChannel = () => {
     }
 
 
+    async function joinPrivate(uid : string)
+    {
+        try
+        {
+            console.log("USER UID: " , uid)
+            const token = Cookies.get('token')
+            const headers = { Authorization: `Bearer ${token}` };
+
+            const requestBody = {
+                isPrivate: true,
+                conversationId: roomId, 
+            };
+            // console.log(requestBody);
+            const res = await axios.post('http://localhost:9000/chat/join-room', requestBody,  { headers });
+            if (res.status === 201)
+            {
+                setChat(true);
+                console.log("Room successfully joined!");
+                console.log(res.data); // Assuming the backend sends the created room details
+            }                                                                                                                                                                                                                                                                                                           
+        }
+        catch(e)
+        {
+            if(axios.isAxiosError(e))
+            {
+                if(e.request)
+                    console.log("No response received!", e.request);
+                else if(e.response)
+                    console.log("Error status: ", e.response?.status);
+                    console.log("Error data: ", e.response?.data);
+            }
+            else
+            {
+                console.log("Error: ", e);
+            }
+        }
+    }
     async function LeaveRoomProtect(uid : string)
     {
         try
@@ -351,6 +389,12 @@ const BrowseChannel = () => {
     }
 
 
+    async function joinprivate()
+    {
+
+    }
+
+
     async function getProtectedChannels() {
 
         try{
@@ -401,9 +445,9 @@ const BrowseChannel = () => {
                         <button onClick={handleDelete} className=' self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg'>X</button>
                         <div className='flex flex-col gap-7 items-center'>
                         <h2>Enter the room ID:</h2>
-                        <input type="password" className='bg-black/30 h-[20px] p-6 text-white mx-2'></input>
+                        <input type="password" className='bg-black/30 h-[20px] p-6 text-white mx-2' onChange={(e) => setRoomId(e.target.value)}></input>
                         </div>
-                        <button className='rounded-lg border-4 border-[#3b0764] w-[40%] self-center'>Enter</button>
+                        <button className='rounded-lg border-4 border-[#3b0764] w-[40%] self-center' onClick={joinPrivate}>Enter</button>
                     </div>
                     }
                      
