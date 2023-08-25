@@ -62,11 +62,15 @@ const activate = () => {
       <div className="h-[35rem] w-[50rem] gap-3 flex justify-center items-center
        flex-col  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white
         bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-            <div className='flex flex-col justify-center flex-1 lg:gap-20'>
-            <div className='self-center lg:text-2xl text-md font-extrabold'>
+
+            <div className='flex flex-col justify-center gap-7'>
+              
+            <div className='self-center text-xl text-md font-extrabold'>
+
                 <h1>Enable Two Factor</h1>
             </div>
-            <div className='flex flex-col lg:gap-4  gap-1 justify-between'>
+
+            <div className='flex flex-col gap-6 justify-between'>
                <p className='text-xs'>Enter the code in your Auth App:</p> 
                 <input className="lg:p-5 p-3 rounded-2xl bg-black/40" type="text" placeholder='Enter the digits' onChange={(e: ChangeEvent<HTMLInputElement>) => setCode(e.target.value)}></input>
                 <button className='border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl w-[70%] self-center' onClick={submitCode}>Submit</button>
