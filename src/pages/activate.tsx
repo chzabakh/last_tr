@@ -18,35 +18,26 @@ const activate = () => {
 
   const submitCode = async () =>
   {
-
     try{
       const Token = Cookies.get('token')
-      console.log('Token ', Token)
       const data = 
       {
-        code : code,
+        code: +code,
       }
-
+      
       const headers = {Authorization: `Bearer ${Token}`, 'Content-Type': 'application/json'}
-      const auth = await axios.post('http://localhost:9000/2fa/enable', {}, {headers});
-      console.log("the data" , auth.data)
-      try
+      // console.log(data, data.code, typeof(data.code))
+      const res = await axios.post('http://localhost:9000/2fa/verify', data, {headers});
+      if(res.data)
       {
-       
-        const res = await axios.post('http://localhost:9000/2fa/verify', data, {headers});
-        console.log("DATA " , res.data);
-        if(res.data === true)
-        {
-            Router.push('/dashboard')
-        }
-        else
-        {
-          setError("Wrong code. Please try again.");
-        }
+        const auth = await axios.post('http://localhost:9000/2fa/enable', {}, {headers});
+        console.log(auth)
+        // setActivate(true);
+        // alert('jeue')  
       }
-      catch(e)
+      else
       {
-        console.log("error: ", e);
+        setError("Wrong code. Please try again.");
       }
     }
     catch(e)

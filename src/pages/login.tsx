@@ -130,7 +130,7 @@ export const Login  : React.FC  = () => {
     if (authWindow) {
       const checkAuthComplete = setInterval(() => {
         const res = Cookies.get('token')?.replace('j:', '');
-        // console.log("RESPOOONSE: ", res)
+        console.log("RESPOOONSE: ", res)
         if (!res || res === "undefined") {
           console.error('Token is not defined or is "undefined"');
           return; 
@@ -144,15 +144,11 @@ export const Login  : React.FC  = () => {
           return; 
         }
         const token = parsed.access_token;
-        // console.log(token)
         const isFirstLogin = parsed.isFirstLogin;  
         const isTwoFactorEnabled = parsed.isTwoFactorEnabled;   
-        // console.log("first logiin" , isFirstLogin)
-        // console.log("tooooken lwlaaa", token)
         if (token) {
           setToken(token);
           authWindow.close();
-          // Cookies.set('token', token, {path: '/'});
           clearInterval(checkAuthComplete);
           Cookies.set('token', token, {path: '/'});   
           console.log("token after setting cookies: ", Cookies.get('token'))
@@ -163,7 +159,6 @@ export const Login  : React.FC  = () => {
           {
             if(isTwoFactorEnabled === true)
             {
-              // alert('activate')
               router.push('/activate')
             }
             else
@@ -171,14 +166,11 @@ export const Login  : React.FC  = () => {
               router.push('/dashboard');
             }
           }
-          // console.log("token after dashboard ", Cookies.get('token'))
         }
-        // console.log("hgaaaaahia token" , token)
       }, 500);
     } else {
       alert('Failed to open authentication window');
     }
-    // console.log("Cookie after getting out of function ", Cookies.get('token'))
   }
 
 
