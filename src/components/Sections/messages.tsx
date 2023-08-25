@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import Dmpreview from "../messages/dmpreview";
+import { useSocket } from "@/pages/socket_context";
 
 interface User {
   id: number;
@@ -83,12 +84,53 @@ interface ChatProps {
 const Messages: React.FC<ChatProps> = ({ dm, updateItem }) => {
   const [chatList, setChatList] = useState<Chat[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [lastmsg, setLastmsg] = useState<string>();
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("conversation:new", (chat: Chat) => {
+        // console.log(";", message);
+        setChatList((cur) => [...cur, chat]);
+        // setLastmsg(lastmsg);
+      });
+      socket.on("conversation:update", (updatedChat: Chat) => {
+        // console.log(";", message);
+        // setChatList((cur) => [...cur, chat]);
+        // setLastmsg(lastmsg);
+        setChatList((cur) => {
+          return cur.map((current) => {
+            console.log("wer", current.uid);
+            if (current.uid === updatedChat.uid) {
+              return {
+                ...current,
+                messages: updatedChat.messages,
+              };
+            }
+            return current;
+          });
+        });
+      });
+
+      // socket.on("friend:new", (friend: Friend) => {
+      //   // console.log(";", message);
+      //   setMyfriends((cur) => [...cur, friend]);
+      // });
+
+      return () => {
+        socket.off("conversation:new");
+        socket.off("conversation:update");
+        // socket.off("friend:new");
+        // socket?.disconnect();
+      };
+    }
+  }, [socket]);
 
   useEffect(() => {
     const getMessages = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/chat/my-chats`,
+          `http://10.30.163.120:9000/chat/my-chats`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
@@ -119,6 +161,8 @@ const Messages: React.FC<ChatProps> = ({ dm, updateItem }) => {
           {chatList
             ? chatList.map((chat, index) => (
                 <Dmpreview
+                  lastmsg={lastmsg as string}
+                  setLastmsg={setLastmsg}
                   key={index}
                   dm={dm}
                   updateItem={updateItem}

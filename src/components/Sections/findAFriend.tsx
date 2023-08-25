@@ -19,11 +19,13 @@ type Friend = {
   email: string;
   state: string;
   friendStatus: string;
+  provider: string;
 };
 
 interface Sender {
   nickname: string;
   avatarUrl: string;
+  provider: string;
 }
 
 interface Invitation {
@@ -114,15 +116,17 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [con, setCon] = useState(false);
   const { socket } = useSocket();
   const [chatList, setChatList] = useState<Chat[]>([]);
+  const [other, setOther] = useState<User>();
+
   const [chat, setChat] = useState<Chat>({
     id: 0,
-    createdAt: '',
-    lastMessageAt: '',
+    createdAt: "",
+    lastMessageAt: "",
     messages: [],
     name: null,
     ownerID: null,
     password: null,
-    uid: '',
+    uid: "",
     users: [],
     isGroup: null,
     isPrivate: null,
@@ -139,10 +143,27 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         // console.log(";", message);
         setMyfriends((cur) => [...cur, friend]);
       });
+      socket.on("friend:remove", (friendNickname: string) => {
+        setMyfriends((curr) => {
+          const exist = curr.findIndex((item) => {
+            if (item.nickname === friendNickname) return 0;
+            return 1;
+          });
+
+          // console.log("EXIST", exist);
+          if (exist !== -1) {
+            const updatedItems = [...curr];
+            updatedItems.splice(exist, 1); // Remove the existing conversation
+            return updatedItems;
+          }
+          return curr;
+        });
+      });
 
       return () => {
         socket.off("friendRequest:new");
         socket.off("friend:new");
+        socket.off("friend:remove");
         // socket?.disconnect();
       };
     }
@@ -159,6 +180,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     email: "null",
     state: "null",
     friendStatus: "null",
+    provider: "null",
   });
   // const { login, accessToken } = useAuth();
   const [invites, setInvites] = useState<Invitation[]>([]);
@@ -218,7 +240,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     try {
       console.log("input: [" + myinput + "]");
       const me = await axios
-        .get(`http://localhost:9000/users/me`, {
+        .get(`http://10.30.163.120:9000/users/me`, {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
@@ -226,7 +248,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         .catch((err) => {});
       console.log("this is me", me);
       const res = await axios.get(
-        `http://localhost:9000/users/${myinput}/profile`,
+        `http://10.30.163.120:9000/users/${myinput}/profile`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -251,6 +273,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           email: "null",
           state: "null",
           friendStatus: "null",
+          provider: "null",
         });
       } else {
         setFriend(res.data);
@@ -285,7 +308,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const addUser = async () => {
     try {
       const me = await axios
-        .get(`http://localhost:9000/users/me`, {
+        .get(`http://10.30.163.120:9000/users/me`, {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
@@ -293,7 +316,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         .catch((err) => {});
       console.log("chchchch:", input);
       const sendFriendReq = await axios.post(
-        `http://localhost:9000/users/${me?.data.nickname}/send-friend-request`,
+        `http://10.30.163.120:9000/users/${me?.data.nickname}/send-friend-request`,
         {
           recipientUserName: `${input}`,
         },
@@ -317,7 +340,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     try {
       console.log("ff");
       const cancel = await axios.post(
-        `http://localhost:9000/users/${username}/cancel-request`,
+        `http://10.30.163.120:9000/users/${username}/cancel-request`,
         {},
         {
           headers: {
@@ -338,7 +361,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     try {
       console.log(username);
       const remove = await axios.delete(
-        `http://localhost:9000/users/${username}`,
+        `http://10.30.163.120:9000/users/remove-friend/${username}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -367,7 +390,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const blockUser = async () => {
     try {
       const block = await axios.post(
-        `http://localhost:9000/users/${toblk}/block-user`,
+        `http://10.30.163.120:9000/users/${toblk}/block-user`,
         {},
         {
           headers: {
@@ -397,7 +420,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     const invitations = async () => {
       try {
         const res: AxiosResponse<Invitation[]> = await axios.get(
-          `http://localhost:9000/users/friend-request-list`,
+          `http://10.30.163.120:9000/users/friend-request-list`,
 
           {
             headers: {
@@ -406,7 +429,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           }
         );
         setInvites(res.data);
-        // console.log("ww", res.data);
+        console.log("wwwwWWWW", res.data);
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -419,7 +442,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     const blockedUsers = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:9000/users/blockedusers`,
+          `http://10.30.163.120:9000/users/blockedusers`,
 
           {
             headers: {
@@ -447,7 +470,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     const getMessages = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/chat/my-chats`,
+          `http://10.30.163.120:9000/chat/my-chats`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
@@ -469,50 +492,50 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     getMessages();
   }, []);
 
-  const getChat = async (user: string) => {
-    console.log("ttttt", user);
-    console.log("qqqqqq", chatList);
-    try {
-      const me = await axios.get(`http://localhost:9000/users/me`, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-      });
+  // const getChat = async (user: string) => {
+  //   console.log("ttttt", user);
+  //   console.log("qqqqqq", chatList);
+  //   try {
+  //     const me = await axios.get(`http://10.30.163.120:9000/users/me`, {
+  //       headers: {
+  //         Authorization: `Bearer ${Cookies.get("token")}`,
+  //       },
+  //     });
 
-      const conversations: Chat[] = chatList; /* Your array of conversations */
+  //     const conversations: Chat[] = chatList; /* Your array of conversations */
 
-      const player1Nickname = me.data.nickname;
-      const player2Nickname = user;
+  //     const player1Nickname = me.data.nickname;
+  //     const player2Nickname = user;
 
-      const conversationWithPlayers = conversations.find((conversation) => {
-        const participantNicknames = conversation.users.map(
-          (user) => user.nickname
-        );
-        return (
-          participantNicknames.includes(player1Nickname) &&
-          participantNicknames.includes(player2Nickname)
-        );
-      });
+  //     const conversationWithPlayers = conversations.find((conversation) => {
+  //       const participantNicknames = conversation.users.map(
+  //         (user) => user.nickname
+  //       );
+  //       return (
+  //         participantNicknames.includes(player1Nickname) &&
+  //         participantNicknames.includes(player2Nickname)
+  //       );
+  //     });
 
-      if (conversationWithPlayers) {
-        // Found the conversation with player1 and player2
-        // setCon(conversationWithPlayers);
-        setChat(conversationWithPlayers);
-        console.log("wwwwwww", conversationWithPlayers);
-        setDm("1");
-        // return conversationWithPlayers;
-      } else {
-        // No conversation found with player1 and player2.
-        return null;
-      }
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        console.log(err.response?.data.message);
-      } else {
-        console.log("Unexpected error", err);
-      }
-    }
-  };
+  //     if (conversationWithPlayers) {
+  //       // Found the conversation with player1 and player2
+  //       // setCon(conversationWithPlayers);
+  //       setChat(conversationWithPlayers);
+  //       console.log("wwwwwww", conversationWithPlayers);
+  //       // setDm("1");
+  //       // return conversationWithPlayers;
+  //     } else {
+  //       // No conversation found with player1 and player2.
+  //       return null;
+  //     }
+  //   } catch (err) {
+  //     if (err instanceof AxiosError) {
+  //       console.log(err.response?.data.message);
+  //     } else {
+  //       console.log("Unexpected error", err);
+  //     }
+  //   }
+  // };
 
   const handleRemoveObject = (senderId: number) => {
     const newInvites = invites.filter((item) => item.senderID !== senderId); // Filter out the object with the specified ID
@@ -526,7 +549,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     if (action === "accept") {
       try {
         const acceptFriend = await axios.post(
-          `http://localhost:9000/users/friend-request/${nickname}/accept`,
+          `http://10.30.163.120:9000/users/friend-request/${nickname}/accept`,
           {},
           {
             headers: {
@@ -547,7 +570,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       try {
         console.log("ppppp");
         const denyFriend = await axios.post(
-          `http://localhost:9000/users/${nickname}/reject`,
+          `http://10.30.163.120:9000/users/${nickname}/reject`,
           {},
           {
             headers: {
@@ -577,7 +600,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const friendsList = async () => {
     try {
       const me = await axios
-        .get(`http://localhost:9000/users/me`, {
+        .get(`http://10.30.163.120:9000/users/me`, {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
@@ -585,7 +608,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         .catch((err) => {});
 
       const sendFriendReq = await axios.get(
-        `http://localhost:9000/users/friendlist`,
+        `http://10.30.163.120:9000/users/friendlist`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -606,7 +629,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const callDm = async (userID: number) => {
     try {
       const msg = await axios.post(
-        `http://localhost:9000/chat/createroom`,
+        `http://10.30.163.120:9000/chat/createroom`,
         { userID: userID },
         {
           headers: {
@@ -616,6 +639,33 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       );
       console.log("qwer", msg);
       setCon(true);
+      setChat(msg.data);
+
+
+      const getOther = async () => {
+        try {
+          const res = await axios.get(
+          `http://10.30.163.120:9000/chat/${msg.data.uid}/other-user`,
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+          );
+          setOther(res.data);
+          console.log("rrrrrrrrr", res.data, chat.uid, "end");
+        } catch (err) {
+          if (err instanceof AxiosError) {
+            console.log(err.response?.data.message);
+          } else {
+            console.log("Unexpected error", err);
+          }
+        }
+      };
+
+
+      getOther();
+      setDm("1");
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
@@ -624,17 +674,20 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       }
     }
   };
+  
 
   return (
     <>
-      {dm == "1" ? (
+      {dm == "1" && chat && other ? (
         <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-              <Dms
-                dm={dm}
-                updateItem={updateItem}
-                chat={chat}
-                setChatList={setChatList}
-              />
+          <Dms
+            dm={dm}
+            updateItem={updateItem}
+            chat={chat}
+            setChatList={setChatList}
+            other={other}
+            setOther={setOther}
+          />
           {/* <FindAFriend  dmm={dm} updateItemm={updateItem}/> */}
           {/* <Messages dm={dm} updateItem={updateItem} /> */}
         </div>
@@ -698,13 +751,23 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                   </svg>
                 </button>
-                <Image
-                  className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
-                  src={`/uploads/${friend.avatarUrl}`}
-                  alt="pdp"
-                  height={200}
-                  width={200}
-                />
+                {friend.provider === "email" ? (
+                  <Image
+                    className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
+                    src={`/uploads/${friend.avatarUrl}`}
+                    alt="pdp"
+                    height={200}
+                    width={200}
+                  />
+                ) : (
+                  <Image
+                    className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
+                    src={`${friend.avatarUrl}`}
+                    alt="pdp"
+                    height={200}
+                    width={200}
+                  />
+                )}
                 <p className="font-serif text-center py-5 text-xl">
                   {friend.nickname}
                 </p>
@@ -775,13 +838,20 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                       >
                         <div className="chat-image avatar my-auto mx-3">
                           <div className="w-14 rounded-full">
+                            {invitation.sender.provider === "email" ?
                             <Image
-                              alt="friendReqPic"
-                              height={200}
-                              width={200}
-                              // src={`/poo.jpg`}
-                              src={`/uploads/${invitation.sender.avatarUrl}`}
+                            alt="friendReqPic"
+                            height={200}
+                            width={200}
+                            src={`/uploads/${invitation.sender.avatarUrl}`}
+                            /> :
+                            <Image
+                            alt="friendReqPic"
+                            height={200}
+                            width={200}
+                            src={`${invitation.sender.avatarUrl}`}
                             />
+                          }
                           </div>
                         </div>
                         <p className="mx-3 text-xl">
@@ -848,19 +918,27 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                       >
                         <div className="chat-image avatar my-auto mx-3">
                           <div className="w-14 rounded-full">
+                            {friend.provider === "email" ?
                             <Image
-                              alt="friendReqPic"
-                              height={200}
-                              width={200}
-                              src={`/uploads/${friend.avatarUrl}`}
+                            alt="friendReqPic"
+                            height={200}
+                            width={200}
+                            src={`/${friend.avatarUrl}`}
+                            /> : 
+                            <Image
+                            alt="friendReqPic"
+                            height={200}
+                            width={200}
+                            src={`${friend.avatarUrl}`}
                             />
+                          }
                           </div>
                         </div>
                         <span>{friend.nickname} :</span>
-                        <span>{friend.state}</span>ppppp
+                        <span>{friend.state}</span>
                         <button
                           onClick={() => {
-                            getChat(friend.nickname);
+                            // getChat(friend.nickname);
                             callDm(Number(friend.id));
                             // setDm("1");
                           }}
@@ -893,13 +971,23 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
             <>
               <div className="absolute z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-[100%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                 <div className="w-[40%]">
-                  <Image
+                  {friend.provider === "email" ?
+                    <Image
                     className="object-cover mx-auto rounded-[20px]"
                     src={`/uploads/${friend.avatarUrl}`}
                     alt="pdp"
                     height={200}
                     width={200}
-                  />
+                    />
+                    :
+                    <Image
+                    className="object-cover mx-auto rounded-[20px]"
+                    src={`${friend.avatarUrl}`}
+                    alt="pdp"
+                    height={200}
+                    width={200}
+                    />
+                  }
                   <p className="font-serif text-center py-5 text-xs">
                     {friend.nickname}
                   </p>
@@ -915,7 +1003,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                         <button
                           onClick={() => {
                             setItem("9");
-                            getChat(friend.nickname);
+                            // getChat(friend.nickname);
                             callDm(Number(friend.id));
                           }}
                           className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md py-4 rounded-[30px]"

@@ -1,3 +1,5 @@
+import axios, { AxiosError } from "axios";
+import Cookies from "js-cookie";
 import React, {
   ReactNode,
   createContext,
@@ -29,11 +31,21 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:9000/global");
-    setSocket(newSocket);
+    axios
+      .get(`http://10.30.163.120:9000/users/me`, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      })
+      .then((res) => {
+        var newSocket = io("http://10.30.163.120:9000/global", {
+          query: res.data,
+        });
+        setSocket(newSocket);
+      });
 
     return () => {
-      newSocket.disconnect();
+      socket?.disconnect();
     };
   }, []);
 

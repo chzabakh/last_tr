@@ -1,44 +1,34 @@
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import React, {useEffect, useState} from 'react'
+import axios from "axios";
+import Cookies from "js-cookie";
+import React, { useEffect, useState } from "react";
 
 const ChatRoom = () => {
+  useEffect(() => {
+    getFriends();
+  }, []);
 
-    useEffect(() =>
-    {
-        getFriends();
-
-    }, [])
-
-    async function getFriends()
-    {
-        try
+  async function getFriends() {
+    try {
+      const token = Cookies.get("token");
+      const headers = { Authorization: `Bearer ${token}` };
+      const res = await axios.post(
+        "http://10.30.163.120:9000/users/friendlist",
         {
-            const token = Cookies.get('token')
-            const headers = { Authorization: `Bearer ${token}` };
-            const res = await axios.post('http://localhost:9000/users/friendlist', { headers });
-            console.log(res.data);
-            
+          headers,
         }
-        catch(e)
-        {
-            if(axios.isAxiosError(e))
-            {
-                if(e.request)
-                    console.log("No response received!", e.request);
-                else if(e.response)
-                    console.log("Error status: ", e.response?.status);
-                    console.log("Error data: ", e.response?.data);
-            }
-            else
-            {
-                console.log("Error: ", e);
-            }
-        }
+      );
+      console.log(res.data);
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
+      } else {
+        console.log("Error: ", e);
+      }
     }
-  return (
-    <div>ChatRoom</div>
-  )
-}
+  }
+  return <div>ChatRoom</div>;
+};
 
-export default ChatRoom
+export default ChatRoom;

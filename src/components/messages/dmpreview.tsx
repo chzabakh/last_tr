@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Dms from "../Sections/dms";
+import axios, { AxiosError } from "axios";
+import Cookies from "js-cookie";
 
 interface User {
   id: number;
@@ -75,6 +77,8 @@ interface Chat {
 }
 
 interface MessageProps {
+  lastmsg: string;
+  setLastmsg: (newValue: string) => void;
   dm: string;
   updateItem: (newValue: string, newDm: string) => void;
   chat: Chat;
@@ -82,6 +86,8 @@ interface MessageProps {
 }
 
 const Dmpreview: React.FC<MessageProps> = ({
+  lastmsg,
+  setLastmsg,
   dm,
   updateItem,
   chat,
@@ -92,20 +98,48 @@ const Dmpreview: React.FC<MessageProps> = ({
   // console.log("here " + dm )
   // },[dm]
   // )
+  const [other, setOther] = useState<User>();
 
   useEffect(() => {
+    setLastmsg(chat.messages[chat.messages.length - 1]?.content);
     console.log("cht", chat);
+  }, [chat]);
+
+  useEffect(() => {
+    const getOther = async () => {
+      try {
+        const res = await axios.get(
+          `http://10.30.163.120:9000/chat/${chat.uid}/other-user`,
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
+        setOther(res.data);
+        console.log("rty", res.data, chat.uid, "end");
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          console.log(err.response?.data.message);
+        } else {
+          console.log("Unexpected error", err);
+        }
+      }
+    };
+    getOther();
   }, []);
 
   return (
     <>
-      {dm == chat.id.toString() ? (
+      {dm == chat.id.toString() && other ? (
         // <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
         <Dms
           dm={dm}
           updateItem={updateItem}
           chat={chat}
           setChatList={setChatList}
+          other={other}
+          setOther={setOther}
         />
       ) : (
         //  </div>
@@ -118,26 +152,37 @@ const Dmpreview: React.FC<MessageProps> = ({
         >
           <div className="flex flex-col chat-image avatar -z-10">
             <div className="w-10 rounded-full">
-              <Image
-                src={`/uploads/${chat.users[0].avatarUrl}`}
-                width={100}
-                height={100}
-                alt="friend"
-              />
+              {other?.provider === "email" ? (
+                <Image
+                  src={`/${other.avatarUrl}`}
+                  width={100}
+                  height={100}
+                  alt="friend"
+                />
+              ) : null}
+              {other?.provider === "intra" ? (
+                <Image
+                  src={`${other?.avatarUrl}`}
+                  width={100}
+                  height={100}
+                  alt="friend"
+                />
+              ) : null}
             </div>
           </div>
           {!chat.messages[chat.messages.length - 1]?.content ? (
             <div className="flex flex-col flex-grow">
-              <p className="text-xs italic text-left">{chat.users[0].nickname}</p>
+              <p className="text-xs italic text-left">{other?.nickname}</p>
               <p className="italic text-xs xs:lg lg:text-xl text-left">
                 You are new friends, Start chatting now!
               </p>
             </div>
           ) : (
             <div className="flex flex-col flex-grow">
-              <p className="text-xs italic text-left">{chat.users[0].nickname}</p>
+              <p className="text-xs italic text-left">{other?.nickname}</p>
               <p className="text-xs xs:text-lg lg:text-xl text-left">
-                {chat.messages[chat.messages.length - 1]?.content}
+                {/* {chat.messages[chat.messages.length - 1]?.content} */}
+                {lastmsg}
               </p>
             </div>
           )}

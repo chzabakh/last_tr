@@ -66,9 +66,12 @@ const Edit = () => {
     try {
       const Token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${Token}` };
-      const res = await axios.get("http://localhost:9000/users/me/${Preview}", {
-        headers,
-      });
+      const res = await axios.get(
+        "http://10.30.163.120:9000/users/me/${Preview}",
+        {
+          headers,
+        }
+      );
       const avatar = res.data.avatarUrl;
       //p1.png
       console.log(res.data);
@@ -83,7 +86,7 @@ const Edit = () => {
     try {
       const Token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${Token}` };
-      const res = await axios.get("http://localhost:9000/users/me", {
+      const res = await axios.get("http://10.30.163.120:9000/users/me", {
         headers,
       });
       const nickname = res.data.nickname;
@@ -106,11 +109,15 @@ const Edit = () => {
         data.append("avatar", Avatar);
 
         try {
-          await axios.patch("http://localhost:9000/users/upload/avatar", data, {
-            headers: {
-              ...headers,
-            },
-          });
+          await axios.patch(
+            "http://10.30.163.120:9000/users/upload/avatar",
+            data,
+            {
+              headers: {
+                ...headers,
+              },
+            }
+          );
 
           alert("Avatar updated!");
         } catch (err: any) {
@@ -129,7 +136,7 @@ const Edit = () => {
           const headers = { Authorization: `Bearer ${Token}` };
           const data = { nickname: Username };
           await axios.patch(
-            "http://localhost:9000/users/me/settings/change-username",
+            "http://10.30.163.120:9000/users/me/settings/change-username",
             data,
             { headers }
           );
@@ -153,7 +160,7 @@ const Edit = () => {
             new_password: pass,
           };
           await axios.patch(
-            "http://localhost:9000/users/me/settings/new-password",
+            "http://10.30.163.120:9000/users/me/settings/new-password",
             data,
             { headers }
           );
