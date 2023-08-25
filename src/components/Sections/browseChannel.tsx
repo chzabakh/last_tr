@@ -128,6 +128,7 @@ const BrowseChannel = () => {
             const res = await axios.post('http://localhost:9000/chat/join-room', requestBody,  { headers });
             if (res.status === 201)
             {
+                setHide(true);
                 console.log("Room successfully joined!");
                 console.log(res.data); // Assuming the backend sends the created room details
             }                                                                                                                                                                                                                                                                                                           
@@ -157,12 +158,15 @@ const BrowseChannel = () => {
             const token = Cookies.get('token')
             const headers = { Authorization: `Bearer ${token}` };
             const requestBody = {
+                isGroup: true,
                 conversationId: uid,
             };
+            console.log(requestBody)
+            console.log("auiiiid", uid)
             const res = await axios.post('http://localhost:9000/chat/leave-room', requestBody,  { headers });
             if (res.status === 201)
             {
-
+                setHide(false);
                 console.log("Room Left!");
                 console.log(res.data);
                 setHide(true);
@@ -312,40 +316,30 @@ const BrowseChannel = () => {
                     </div>
                     <div className=' w-full p-4 h-[100%] overflow-scroll'>
                         <p>Public Channels:</p>
-                    <div className='grid grid-cols-3 gap-4 '>
+                    <div className='grid grid-cols6 gap-4'>
                         {
                        
                         PublicRooms.map((ChannelName: channel) => (
                             <div key={ChannelName.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
                                 <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
                             {
-                                !hide ? 
+                                ((hide) || ((hide) && (email === ChannelName.owner.email))) ? 
                                 //we have a state called hide, when it is off it means that the user did not join the room yet, so we only get join, then when he does , an enter and leavebutton appear
                                 <>
-                                <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                                px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                                onClick={() =>handlePublicRoom(ChannelName)}>Join</button>
+                                        <div className='flex justify-between'>
+                                        <button className=' text-white border-4 border-[#7e22ce] rounded-full 
+                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
+                                        onClick={() =>handleLeaveRoom(ChannelName)}>Leave</button>
+                                            <button className=' text-white border-4 border-[#7e22ce] rounded-full 
+                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
+                                        onClick={() => setChat(true)}>Enter</button>
+                                        </div>
                                 </>
                                :
                                <>
-                               {email === ChannelName.owner.email? 
-                               <>
                                 <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                               px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                               onClick={() => setChat(true)}>Enter</button>
-                                <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                               px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                               >Delete Channel</button>
-                               </> : 
-                               <>
-                               <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                               px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                               onClick={() =>handleLeaveRoom(ChannelName)}>Leave</button>
-                                <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                               px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                               onClick={() => setChat(true)}>Enter</button>
-                               </>
-                               }
+                                px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
+                                onClick={() =>handlePublicRoom(ChannelName)}>Join</button>
                                </> 
                             }
                             </div>
