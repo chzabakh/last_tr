@@ -20,7 +20,6 @@ export const Login  : React.FC  = () => {
   const router = useRouter();
 
   const [authWindow, setAuthWin] = useState<Window | null>(null);
-  const [twoAuth, setTwoAuth] = useState(false);
   const [token, setToken] = useState(""); 
  
   const [status, setStatus] = useState("0");
@@ -34,9 +33,14 @@ export const Login  : React.FC  = () => {
 
   useEffect(() =>
   {
-    getUser();
+    async function initialize()
+    {
+      await getUser();
 
-  },)
+    }
+    initialize();
+
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
@@ -58,12 +62,6 @@ export const Login  : React.FC  = () => {
         const token = Cookies.get('token')
         const headers = { Authorization: `Bearer ${token}` };
         const res = await axios.get('http://localhost:9000/users/me',  { headers });
-        // setUserEmail(res.data.email);
-        res.data.TwofaAutEnabled === true ?  setTwoAuth(true) : setTwoAuth(false);
-      
-        console.log("HAAAHOWA" , twoAuth)
-        // console.log(email);
-        console.log(res.data.email)
     }
     catch(e)
     {
@@ -86,7 +84,12 @@ export const Login  : React.FC  = () => {
     try {
       const res = await axios.post("http://localhost:9000/auth/login", data);
       const tok = res.data.access_token;
+
       const verify = res.data.isFirstLogin;
+      const twoFac = res.data.isTwoFactorEnabled;
+
+      console.log("DATAAA", res);
+      // const two = res.data.two
       Cookies.set('token', tok , { path: '/'});
 
       if(verify)
@@ -95,11 +98,11 @@ export const Login  : React.FC  = () => {
       }
       else
       {
-        // if(twoAuth === true)
-        // {
-        //   router.push('/activate')
-        // }
-        // else
+        if(twoFac === true)
+        {
+          router.push('/activate')
+        }
+        else
           router.push('/dashboard');
       }
      }
@@ -158,15 +161,15 @@ export const Login  : React.FC  = () => {
               Router.push('/addInfos');
           else
           {
-            // if(isTwoFactorEnabled === true)
-            // {
-            //   // alert('activate')
-            //   router.push('/activate')
-            // }
-            // else
-            // {
+            if(isTwoFactorEnabled === true)
+            {
+              // alert('activate')
+              router.push('/activate')
+            }
+            else
+            {
               router.push('/dashboard');
-            // }
+            }
           }
           // console.log("token after dashboard ", Cookies.get('token'))
         }
