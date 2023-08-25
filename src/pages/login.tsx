@@ -127,13 +127,14 @@ export const Login  : React.FC  = () => {
     if (authWindow) {
       const checkAuthComplete = setInterval(() => {
         const res = Cookies.get('token')?.replace('j:', '');
-        console.log("RESPOOONSE: ", res)
+        // console.log("RESPOOONSE: ", res)
         if (!res || res === "undefined") {
           console.error('Token is not defined or is "undefined"');
           return; 
         }
         let parsed;
         try {
+          console.log("RES :", res);
           parsed = JSON.parse(res);
         } catch (e) {
           console.error('Failed to parse token:', e);
