@@ -1,10 +1,93 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import React, {useEffect, useState} from 'react'
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 const ChatRoom = () => {
 
+
+const options = [
+  'Bane',
+  'Mute',
+  'Kick',
+  'Send Private Message',
+  'Invite to Game',
+  'See Profile',
+];
+
+const ITEM_HEIGHT = 48;
+
     const [friends, setFriends] = useState([]);
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+
+
+    async function handleBane()
+    {
+      alert("bane");
+    }
+
+    async function handleMute()
+    {
+      alert("Mute");
+    }
+
+
+    async function handleKick()
+    {
+      alert("Kick")
+    }
+
+    async function handleMessage()
+    {
+      alert("Message");
+    }
+
+    async function handleInvite()
+    {
+      alert("Invite")
+    }
+
+
+    async function handleProfile()
+    {
+      alert ("Profile")
+    }
+    
+
+    const handleOptions = (option : string) => {
+      switch(option)
+      {
+        case ("Bane"):
+          handleBane();
+          break;
+        case ("Mute"):
+          handleMute();
+          break;
+        case ("Kick"):
+          handleKick();
+          break;
+        case ("Send Private Message"):
+          handleMessage();
+          break;
+        case ("Invite to Game"):
+          handleInvite();
+          break;
+        case ("See Profile"):
+          handleProfile();
+          break;
+      }
+    };
 
     useEffect(() =>
     {
@@ -52,20 +135,46 @@ const ChatRoom = () => {
                 {/* {chat.users[0].nickname} STATUS: Playing */}
               </p>
               <div className="flex flex-col gap-9  h-[80%] w-full justify-center">
-                <div className='text-xs self-center'>Group members:</div>
-                {/* {
-                  friends.map(friend =>{
-                    return <div className='text-white'>{friend.nickname}</div>
-                  })
-                } */}
+                <div className='text-lg self-center'>Group members:</div>
+              
                 <div className='flex gap-4 flex-col'>
                   <div className='flex flex-row justify-between w-full'>
                   <div>Oumaima </div> 
-                    <div className='flex cursor-pointer gap-1'><div className='rounded-full w-1 h-1 bg-white my-3'></div><div className='rounded-full w-1 h-1 bg-white my-3'></div><div className='rounded-full w-1 h-1 bg-white my-3'></div></div>
+                  <IconButton
+                  style={{color: "white"}}
+                  aria-label="more"
+                  id="long-button"
+                  aria-controls={open ? 'long-menu' : undefined}
+                  aria-expanded={open ? 'true' : undefined}
+                  aria-haspopup="true"
+                  onClick={handleClick}
+                >
+                  <MoreHorizIcon />
+                </IconButton>
+                <Menu
+                  id="long-menu"
+                  MenuListProps={{
+                    'aria-labelledby': 'long-button',
+                  }}
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  PaperProps={{
+                    style: {
+                      maxHeight: ITEM_HEIGHT * 4.5,
+                      width: '20ch',
+                      backgroundColor: '#3c005a', 
+                      color: 'white'
+                    },
+                  }}
+                >
+                  {options.map((option) => (
+                    <MenuItem key={option} selected={option === 'Pyxis'} onClick={() => handleOptions(option)}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Menu>
                   </div>
-                  <div className='flex flex-row justify-between w-full'>
-                <div>Charaf </div><div className='flex gap-1 cursor-pointer'><div className='rounded-full w-1 h-1 bg-white my-3'></div><div className='rounded-full w-1 h-1 bg-white my-3'></div><div className='rounded-full w-1 h-1 bg-white my-3'></div></div>
-                </div>
                 </div>
               </div>
             </div>
