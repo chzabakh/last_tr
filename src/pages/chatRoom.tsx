@@ -18,9 +18,9 @@ const ChatRoom = () => {
         {
             const token = Cookies.get('token')
             const headers = { Authorization: `Bearer ${token}` };
-            const res = await axios.post('http://localhost:9000/users/friendlist', { headers });
+            const res = await axios.get('http://localhost:9000/users/friendlist', { headers });
+            console.log({nickname : "oumaima"});
             setFriends(res.data)
-            console.log(res.data);
             
         }
         catch(e)
@@ -41,35 +41,44 @@ const ChatRoom = () => {
     }
   return (
     <>
-       <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4">
-          <div className="w-[400px] flex flex-xol justify-center">
-            <div className="w-[50%] mt-10">
-              <div className="chat-image avatar mx-auto">
+       <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400  bg-[#571d86]  bg-blur-md backdrop-filter backdrop-blur-md p-4">
+          <div className="w-[40%] flex flex-xol justify-center">
+            <div className="w-[90%] mt-2">
+              <div className="chat-image avatar mx-auto ">
                 <div className="w-50 rounded-full">
-                
-                </div>
+              </div>
               </div>
               <p className="text-center">
                 {/* {chat.users[0].nickname} STATUS: Playing */}
               </p>
-              <div className="flex flex-col">
-                <h2>Group members:</h2>
-                {
+              <div className="flex flex-col gap-9  h-[80%] w-full justify-center">
+                <div className='text-xs self-center'>Group members:</div>
+                {/* {
                   friends.map(friend =>{
-                    return <div>{friend.nickname}</div>
+                    return <div className='text-white'>{friend.nickname}</div>
                   })
-                }
+                } */}
+                <div className='flex gap-4 flex-col'>
+                  <div className='flex flex-row justify-between w-full'>
+                  <div>Oumaima </div> 
+                    <div className='flex cursor-pointer gap-1'><div className='rounded-full w-1 h-1 bg-white my-3'></div><div className='rounded-full w-1 h-1 bg-white my-3'></div><div className='rounded-full w-1 h-1 bg-white my-3'></div></div>
+                  </div>
+                  <div className='flex flex-row justify-between w-full'>
+                <div>Charaf </div><div className='flex gap-1 cursor-pointer'><div className='rounded-full w-1 h-1 bg-white my-3'></div><div className='rounded-full w-1 h-1 bg-white my-3'></div><div className='rounded-full w-1 h-1 bg-white my-3'></div></div>
+                </div>
+                </div>
               </div>
             </div>
           </div>
-          <div className="border border-opacity-30 border-violet-400 h-full my-0 mr-5 w-[1px]"></div>
-          <div className="flex flex-col p-0 m-0 justify-center w-full h-full pt-5">
-            <div className="mb-16 overflow-auto " />
-             
+          <div className="border border-opacity-30 border-violet-400 h-full my-0 mr-5 w-[1px] "></div>
+          <div className='flex flex-col w-[60%]'>
+          <div className="flex flex-col  p-0 m-0 justify-start w-full h-full pt-">
+          <div className="mb-16 overflow-auto" />
+             ekwjhfbwkfjbewf
             </div>
-            <div className="flex absolute bottom-4 w-[45%] lg:w-[50%] xl:w-[60%] border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
+            <div className="flex bottom-4 w-full border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
               <input
-                className="w-full bg-transparent pl-3 py-4 focus:outline-none"
+                className="w-[100%] bg-transparent pl-3 py-4 focus:outline-none"
                 onKeyDown={(e) => {
                 //   handleKeyDown(e);
                   // setReload(!reload);
@@ -102,6 +111,7 @@ const ChatRoom = () => {
                 </svg>
               </button>
             </div>
+          </div>
           </div>
         {/* </div> */}
         </>

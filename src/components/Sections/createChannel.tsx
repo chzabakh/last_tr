@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import PublicChannel from "../channels/publicChannel";
 import PrivateChannel from "../channels/privateChannel";
-import BrowseChannel from "./browseChannel";
+// import BrowseChannel from "./browseChannel";
 import ProtectedChannel from "../channels/protectedChannel";
 import Channels from "./channels";
 import Description from "../channels/description";

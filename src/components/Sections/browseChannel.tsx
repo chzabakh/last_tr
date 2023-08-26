@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import React, {useEffect, useState} from 'react'
 import PrivateChannel from '../../../last_transcendance/src/components/channels/privateChannel';
 import  Channels  from './channels';
-import ChatRoom from './chatRoom';
+import ChatRoom from '../../pages/chatRoom';
 const BrowseChannel = () => {
 
     interface owner 
@@ -53,10 +53,6 @@ const BrowseChannel = () => {
         users: user[],
     }
 
-    interface JoinedRoom {
-        id: number;
-        name: string;
-    }
 
     const defaultStyle = {
         transition: "opacity 0.5s",
@@ -194,11 +190,10 @@ const BrowseChannel = () => {
     }
 
 
-    async function joinPrivate(uid : string)
+    async function joinPrivate()
     {
         try
         {
-            console.log("USER UID: " , uid)
             const token = Cookies.get('token')
             const headers = { Authorization: `Bearer ${token}` };
 
@@ -206,7 +201,7 @@ const BrowseChannel = () => {
                 isPrivate: true,
                 conversationId: roomId, 
             };
-            // console.log(requestBody);
+
             const res = await axios.post('http://localhost:9000/chat/join-room', requestBody,  { headers });
             if (res.status === 201)
             {
@@ -389,11 +384,6 @@ const BrowseChannel = () => {
     }
 
 
-    async function joinprivate()
-    {
-
-    }
-
 
     async function getProtectedChannels() {
 
@@ -481,7 +471,8 @@ const BrowseChannel = () => {
                                </> 
                             }
                             </div>
-                        ))}
+                        ))
+                        }
                     </div>
                     </div>
                     <div className=' w-full p-4 h-[100%] overflow-scroll'>
