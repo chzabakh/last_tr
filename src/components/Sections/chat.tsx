@@ -13,7 +13,8 @@ const Chat = () => {
     setItem(newValue);
     setDm(newDm);
   };
-  console.log("myItem", item);
+
+  
   return (
     <>
       <div className="min-h-[500px] items-center justify-center my-20 h-[80%] gap-3 flex flex-row w-[85%] mx-[2rem] border-2  border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">

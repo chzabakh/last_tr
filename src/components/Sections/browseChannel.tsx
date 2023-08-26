@@ -411,12 +411,11 @@ const BrowseChannel = () => {
         }
     }
 
-    if(chat) {
-            return <ChatRoom />;  
-    }
+
 
   return (
     back === true ? <Channels /> : (
+        chat ? <ChatRoom /> :
     <>
         {
             <>

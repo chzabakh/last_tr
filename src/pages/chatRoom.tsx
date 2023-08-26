@@ -16,7 +16,7 @@ const optionsMember = [
   'Send Private Message',
   'Invite to Game',
   'See Profile',
-  'Set New Admins'
+  'Set New Admin'
 ];
 
 
@@ -87,6 +87,11 @@ const ITEM_HEIGHT = 30;
       alert ("Admin")
     }
     
+    async function handlePassword()
+    {
+      alert ("Password")
+    }
+    
 
     const handleOptions = (option : string) => {
       switch(option)
@@ -120,7 +125,7 @@ const ITEM_HEIGHT = 30;
       switch(option)
       {
         case ("Add passowrd"):
-          handleBane();
+          handlePassword();
           break;
 
       }
@@ -161,7 +166,7 @@ const ITEM_HEIGHT = 30;
     }
   return (
     <>
-       <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400  bg-[#571d86]  bg-blur-md backdrop-filter backdrop-blur-md p-4">
+       <div className="absolute top-0 z-2 flex justify-evenly border-2 rounded-3xl  border-opacity-30 w-[99.9%] h-full border-violet-400  bg-[#571d86]  bg-blur-md backdrop-filter backdrop-blur-md p-4">
           <div className="w-[40%] flex flex-xol justify-center">
             <div className="w-[90%] mt-2">
               <div className="chat-image avatar mx-auto ">
@@ -220,8 +225,8 @@ const ITEM_HEIGHT = 30;
           <div className="border border-opacity-30 border-violet-400 h-full my-0 mr-5 w-[1px] "></div>
           <div className='flex flex-col w-[60%]'>
           <div className="flex flex-col  p-0 m-0 justify-start w-full h-full pt-">
-            <div className='flex flex-row justify-between bg-black/20'>
-             <div className='self-center w-[60%] bg-black/20 flex felx-row justify-end'>
+            <div className='flex flex-row justify-between'>
+             <div className='self-center w-[60%]  flex felx-row justify-end'>
               Channel Name
             </div>
             <IconButton
