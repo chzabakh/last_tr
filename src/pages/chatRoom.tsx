@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useTransition} from 'react'
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -9,27 +9,45 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 const ChatRoom = () => {
 
 
-const options = [
+const optionsMember = [
   'Bane',
   'Mute',
   'Kick',
   'Send Private Message',
   'Invite to Game',
   'See Profile',
+  'Set New Admins'
 ];
 
-const ITEM_HEIGHT = 48;
+
+const optionsChannel = [
+  'Add password',
+];
+
+const ITEM_HEIGHT = 30;
 
     const [friends, setFriends] = useState([]);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
       setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
       setAnchorEl(null);
     };
 
+    const [anchorElement, setAnchorElement] = React.useState<null | HTMLElement>(null);
+    const openIt = Boolean(anchorElement);
+
+    const handleClickChannel = (event: React.MouseEvent<HTMLElement>) => {
+      setAnchorElement(event.currentTarget);
+    };
+    
+    const handleCloseChannel = () => {
+      setAnchorElement(null);
+    };
 
 
     async function handleBane()
@@ -63,6 +81,11 @@ const ITEM_HEIGHT = 48;
     {
       alert ("Profile")
     }
+
+    async function handleAdmin()
+    {
+      alert ("Admin")
+    }
     
 
     const handleOptions = (option : string) => {
@@ -86,6 +109,20 @@ const ITEM_HEIGHT = 48;
         case ("See Profile"):
           handleProfile();
           break;
+        case("Set As Admin"):
+          handleAdmin();
+          break;
+      }
+    };
+
+
+    const handleOptionsChannel = (option : string) => {
+      switch(option)
+      {
+        case ("Add passowrd"):
+          handleBane();
+          break;
+
       }
     };
 
@@ -165,11 +202,12 @@ const ITEM_HEIGHT = 48;
                       width: '20ch',
                       backgroundColor: '#3c005a', 
                       color: 'white'
+                      // useTransition: '2sec'
                     },
                   }}
                 >
-                  {options.map((option) => (
-                    <MenuItem key={option} selected={option === 'Pyxis'} onClick={() => handleOptions(option)}>
+                  {optionsMember.map((option) => (
+                    <MenuItem key={option}  onClick={() => handleOptions(option)}>
                       {option}
                     </MenuItem>
                   ))}
@@ -182,8 +220,47 @@ const ITEM_HEIGHT = 48;
           <div className="border border-opacity-30 border-violet-400 h-full my-0 mr-5 w-[1px] "></div>
           <div className='flex flex-col w-[60%]'>
           <div className="flex flex-col  p-0 m-0 justify-start w-full h-full pt-">
+            <div className='flex flex-row justify-between bg-black/20'>
+             <div className='self-center w-[60%] bg-black/20 flex felx-row justify-end'>
+              Channel Name
+            </div>
+            <IconButton
+                  style={{color: "white"}}
+                  aria-label="more-again"
+                  id="long-button-channel"
+                  aria-controls={openIt ? 'long-menu-channel' : undefined}
+                  aria-expanded={openIt ? 'true' : undefined}
+                  aria-haspopup="true"
+                  onClick={handleClickChannel}
+                >
+                  <MoreHorizIcon />
+                </IconButton>
+                <Menu
+                  id="long-menu-channel"
+                  MenuListProps={{
+                    'aria-labelledby': 'long-button-channel',
+                  }}
+                  anchorEl={anchorElement}
+                  open={openIt}
+                  onClose={handleCloseChannel}
+                  PaperProps={{
+                    style: {
+                      maxHeight: ITEM_HEIGHT * 4.5,
+                      width: '20ch',
+                      backgroundColor: '#3c005a', 
+                      color: 'white'
+                    },
+                  }}
+                >
+                  {optionsChannel.map((optionTwo) => (
+                    <MenuItem key={optionTwo}  onClick={() => handleOptionsChannel(optionTwo)}>
+                      {optionTwo}
+                    </MenuItem>
+                  ))}
+                </Menu>
+            </div>
+
           <div className="mb-16 overflow-auto" />
-             ekwjhfbwkfjbewf
             </div>
             <div className="flex bottom-4 w-full border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
               <input
