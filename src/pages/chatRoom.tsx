@@ -129,7 +129,7 @@ const ITEM_HEIGHT = 30;
           break;
 
       }
-    };
+  };
 
     useEffect(() =>
     {

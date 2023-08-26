@@ -40,6 +40,7 @@ const PublicChannel = () => {
           const error = err.response.data.message || err.message;
           alert(error);
         } else {
+          
           alert(err.message);
         }
       }

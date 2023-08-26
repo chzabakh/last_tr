@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import Place from "../../public/place.png";
 import { RouterProvider } from "react-router-dom";
 import Loading from "./loading";
+import Play from "@/components/Sections/play";
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -249,6 +250,7 @@ if (delayedLoading || isLoading) {
             {item === "1" ? <Leaderboard /> : null}
             {item === "2" ? <Chat /> : null}
             {item == "5" ? <Edit /> : null}
+            {item == "3" ? <Play /> : null}
           </div>
         </div>
       </SocketProvider>
