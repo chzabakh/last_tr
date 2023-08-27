@@ -23,7 +23,7 @@ const PublicChannel = () => {
         };
 
         const response = await axios.post(
-          "http://10.30.163.120:9000/chat/createroom/",
+          "http://localhost:9000/chat/createroom/",
           requestBody,
           { headers }
         );

@@ -24,7 +24,7 @@ const addInfos = () => {
     try {
       const Token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${Token}` };
-      const res = await axios.get("http://10.30.163.120:9000/users/my-avatar", {
+      const res = await axios.get("http://localhost:9000/users/my-avatar", {
         headers,
         responseType: "blob",
       });
@@ -63,15 +63,11 @@ const addInfos = () => {
         data.append("avatar", Avatar);
 
         try {
-          await axios.patch(
-            "http://10.30.163.120:9000/users/upload/avatar",
-            data,
-            {
-              headers: {
-                ...headers,
-              },
-            }
-          );
+          await axios.patch("http://localhost:9000/users/upload/avatar", data, {
+            headers: {
+              ...headers,
+            },
+          });
 
           alert("Avatar updated!");
         } catch (err: any) {
@@ -90,7 +86,7 @@ const addInfos = () => {
           const headers = { Authorization: `Bearer ${Token}` };
           const data = { nickname: Username };
           await axios.patch(
-            "http://10.30.163.120:9000/users/me/settings/change-username",
+            "http://localhost:9000/users/me/settings/change-username",
             data,
             { headers }
           );

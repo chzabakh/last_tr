@@ -98,7 +98,14 @@ type Friend = {
   provider: string;
 };
 
-const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setOther }) => {
+const Dms: React.FC<DmProps> = ({
+  dm,
+  updateItem,
+  chat,
+  setChatList,
+  other,
+  setOther,
+}) => {
   const [input, setInput] = useState("");
   const [nickname, setNickname] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -109,6 +116,8 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
   const [profile, setProfile] = useState(false);
   const [socket, setSocket] = useState<Socket>();
   const [con, setCon] = useState(false);
+  const [pdp, setPdp] = useState<string>();
+  const [otherpdp, setOtherpdp] = useState<string>();
   // const [myinput, setMyinput] = useState("");
   const [friend, setFriend] = useState<Friend>({
     avatarUrl: "null",
@@ -130,7 +139,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
     e.preventDefault();
     try {
       const res = await axios.post(
-        `http://10.30.163.120:9000/chat/send-message`,
+        `http://localhost:9000/chat/send-message`,
         {
           RoomId: chat.uid,
           message: input,
@@ -158,7 +167,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
     console.log("df");
     // if (!con) {
     // setCon(true);
-    const socket = io("http://10.30.163.120:9000/chat");
+    const socket = io("http://localhost:9000/chat");
     setSocket(socket);
     const conversationId = chat.uid;
     socket?.emit("joinRoom", { conversationId });
@@ -187,13 +196,36 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
     // console.log(socket);
     const getMe = async () => {
       try {
-        const res = await axios.get(`http://10.30.163.120:9000/users/me`, {
+        const res = await axios.get(`http://localhost:9000/users/me`, {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
         });
         setAvatar(res.data.avatarUrl);
         setNickname(res.data.nickname);
+
+        const response = await axios.get(
+          `http://localhost:9000/users/${res.data.id}/avatar`,
+          {
+            responseType: "blob",
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
+        setPdp(URL.createObjectURL(response.data));
+
+        const responseother = await axios.get(
+          `http://localhost:9000/users/${other.id}/avatar`,
+          {
+            responseType: "blob",
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
+        setOtherpdp(URL.createObjectURL(response.data));
+
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -206,7 +238,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
     const getFriend = async () => {
       try {
         const res = await axios.get(
-          `http://10.30.163.120:9000/users/${chat.users[1].nickname}/profile`,
+          `http://localhost:9000/users/${chat.users[1].nickname}/profile`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
@@ -226,7 +258,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
     const getMessages = async () => {
       try {
         const res = await axios.get(
-          `http://10.30.163.120:9000/chat/${chat.uid}/messages`,
+          `http://localhost:9000/chat/${chat.uid}/messages`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
@@ -267,7 +299,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
   const blockUser = async () => {
     try {
       const block = await axios.post(
-        `http://10.30.163.120:9000/users/${input}/block-user`,
+        `http://localhost:9000/users/${input}/block-user`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -291,13 +323,17 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
     await blockUser();
   };
 
+  useEffect(() => {
+
+  },[])
+
   // useEffect(() => {
   //   // if (!other){
 
   //     const getOther = async () => {
   //       try {
   //         const res = await axios.get(
-  //         `http://10.30.163.120:9000/chat/${chat.uid}/other-user`,
+  //         `http://localhost:9000/chat/${chat.uid}/other-user`,
   //         {
   //           headers: {
   //             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -324,23 +360,23 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
       {profile ? (
         <div className="absolute z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-[100%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <div className="w-[40%]">
-          {other.provider === "email" ?
-                    <Image
-                    className="object-cover mx-auto rounded-[20px]"
-                    src={`/uploads/${other.avatarUrl}`}
-                    alt="pdp"
-                    height={200}
-                    width={200}
-                  />
-                    :
-                    <Image
-              className="object-cover mx-auto rounded-[20px]"
-              src={`${other.avatarUrl}`}
-              alt="pdp"
-              height={200}
-              width={200}
-            />
-                  }
+            {other.provider === "email" ? (
+              <Image
+                className="object-cover mx-auto rounded-[20px]"
+                src={`/uploads/${other.avatarUrl}`}
+                alt="pdp"
+                height={200}
+                width={200}
+              />
+            ) : (
+              <Image
+                className="object-cover mx-auto rounded-[20px]"
+                src={`${other.avatarUrl}`}
+                alt="pdp"
+                height={200}
+                width={200}
+              />
+            )}
             <p className="font-serif text-center py-5 text-xs">
               {other.nickname}
             </p>
@@ -386,15 +422,15 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
             <div className="w-[50%] mt-10">
               <div className="chat-image avatar mx-auto">
                 <div className="w-50 rounded-full">
-                  {avatar && other?.provider === "email" ? (
+                  {other?.provider === "email" && pdp ? (
                     <Image
-                      src={`/uploads/${other.avatarUrl}`}
+                      src={pdp || ''}
                       width={200}
                       height={200}
                       alt="friend"
                     />
                   ) : null}
-                  {avatar && other?.provider === "intra" ? (
+                  {other?.provider === "intra" ? (
                     <Image
                       src={`${other.avatarUrl}`}
                       width={200}
@@ -404,12 +440,9 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
                   ) : null}
                 </div>
               </div>
-              {
-                other ?
-                <p className="text-center">
-                {other?.nickname} STATUS: Playing
-              </p>: null
-              }
+              {other ? (
+                <p className="text-center">{other?.nickname} STATUS: Playing</p>
+              ) : null}
               <div className="flex flex-col">
                 <button className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-full py-1 my-3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                   Invite to a game
@@ -444,9 +477,17 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
                       <div className="chat chat-end">
                         <div className="chat-image avatar">
                           <div className="w-10 rounded-full">
-                            {chat.sender.avatarUrl ? (
+                            {pdp && chat.sender.provider === "email" ? (
                               <Image
-                                src={`/uploads/${chat.sender.avatarUrl}`}
+                                src={pdp || ''}
+                                width={100}
+                                height={100}
+                                alt="me"
+                              />
+                            ) : null}
+                            {chat.sender.provider === "intra" ? (
+                              <Image
+                                src={`${chat.sender.avatarUrl}`}
                                 width={100}
                                 height={100}
                                 alt="me"
@@ -460,12 +501,20 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
                       <div className="chat chat-start">
                         <div className="chat-image avatar">
                           <div className="w-10 rounded-full">
-                            {avatar ? (
+                          {pdp && chat.sender.provider === "email" ? (
                               <Image
-                                src={`/uploads/${chat.sender.avatarUrl}`}
+                                src={pdp || ''}
                                 width={100}
                                 height={100}
-                                alt="friend"
+                                alt="me"
+                              />
+                            ) : null}
+                            {chat.sender.provider === "intra" ? (
+                              <Image
+                                src={`${chat.sender.avatarUrl}`}
+                                width={100}
+                                height={100}
+                                alt="me"
                               />
                             ) : null}
                           </div>

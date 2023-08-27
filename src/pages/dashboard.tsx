@@ -56,7 +56,7 @@ const Dashboard = () => {
       try {
         const headers = { Authorization: `Bearer ${token}` };
         console.log(headers);
-        const res = await axios.get("http://10.30.163.120:9000/users/me", {
+        const res = await axios.get("http://localhost:9000/users/me", {
           headers,
         });
         console.log(res.data);
@@ -66,9 +66,10 @@ const Dashboard = () => {
           setPreview(res.data.avatarUrl);
         } else {
           const avatarRes = await axios.get(
-            "http://10.30.163.120:9000/users/my-avatar",
+            "http://localhost:9000/users/my-avatar",
             { headers, responseType: "blob" }
           );
+          console.log(avatarRes.data);
           const blob = new Blob([avatarRes.data], { type: "image/png" });
           const previewUrl = URL.createObjectURL(blob);
           setPreview(previewUrl);

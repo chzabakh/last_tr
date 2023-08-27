@@ -42,7 +42,7 @@ const BrowseChannel = () => {
         isGroup: true,
       };
       const res = await axios.post(
-        "http://10.30.163.120:9000/chat/join-room",
+        "http://localhost:9000/chat/join-room",
         requestBody,
         { headers }
       );
@@ -68,7 +68,7 @@ const BrowseChannel = () => {
         isProtected: true,
       };
       const res = await axios.post(
-        "http://10.30.163.120:9000/chat/join-room",
+        "http://localhost:9000/chat/join-room",
         requestBody,
         { headers }
       );
@@ -89,12 +89,9 @@ const BrowseChannel = () => {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
-      const res = await axios.get(
-        "http://10.30.163.120:9000/chat/isGroup/all",
-        {
-          headers,
-        }
-      );
+      const res = await axios.get("http://localhost:9000/chat/isGroup/all", {
+        headers,
+      });
       console.log(res.data);
       setPublicRooms(res.data);
     } catch (e) {
@@ -113,7 +110,7 @@ const BrowseChannel = () => {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
       const res = await axios.get(
-        "http://10.30.163.120:9000/chat/isProtected/all",
+        "http://localhost:9000/chat/isProtected/all",
         { headers }
       );
       setProtectedRooms(res.data);

@@ -24,7 +24,7 @@ const TwoFac = () => {
       const headers = { Authorization: `Bearer ${Token}` };
       console.log("The function to get the code is called");
       const res = await axios.post(
-        "http://10.30.163.120:9000/2fa/Generate",
+        "http://localhost:9000/2fa/Generate",
         {},
         { headers, responseType: "blob" }
       );
@@ -46,13 +46,9 @@ const TwoFac = () => {
         Authorization: `Bearer ${Token}`,
         "Content-Type": "application/json",
       };
-      const res = await axios.post(
-        "http://10.30.163.120:9000/2fa/verify",
-        data,
-        {
-          headers,
-        }
-      );
+      const res = await axios.post("http://localhost:9000/2fa/verify", data, {
+        headers,
+      });
       if (res.data === true) {
         await Enable2Fac();
         setActivate(true);
@@ -69,7 +65,7 @@ const TwoFac = () => {
       const Token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${Token}` };
       const auth = await axios.post(
-        "http://10.30.163.120:9000/2fa/enable",
+        "http://localhost:9000/2fa/enable",
         {},
         { headers }
       );

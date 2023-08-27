@@ -40,10 +40,7 @@ export const Login: React.FC = () => {
 
   const postData = async (data: { email: string; password: string }) => {
     try {
-      const res = await axios.post(
-        "http://10.30.163.120:9000/auth/login",
-        data
-      );
+      const res = await axios.post("http://localhost:9000/auth/login", data);
       const tok = res.data.access_token;
       const verify = res.data.isFirstLogin;
       // localStorage.setItem("token", tok);
@@ -71,7 +68,7 @@ export const Login: React.FC = () => {
 
   function openNewWindow() {
     const authWindow = window.open(
-      "http://10.30.163.120:9000/auth/42/login",
+      "http://localhost:9000/auth/42/login",
       "_blank",
       "width=350,height=450"
     );

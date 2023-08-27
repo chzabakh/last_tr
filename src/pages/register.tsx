@@ -38,7 +38,7 @@ export const Register = () => {
     password: string;
   }) => {
     axios
-      .post("http://10.30.163.120:9000/auth/register", data)
+      .post("http://localhost:9000/auth/register", data)
       .then((res: any) => {
         console.log(res);
         setStatus("1");
