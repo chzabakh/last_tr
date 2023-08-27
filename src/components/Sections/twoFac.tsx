@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react'
 import Image from 'next/image'
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import Place from '../../../public/Place.png'
+import Place from '../../../public/place.png'
 import Router from 'next/router';
 import Edit from './edit';
 import { handleClientScriptLoad } from 'next/script';
