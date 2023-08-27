@@ -130,7 +130,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
     e.preventDefault();
     try {
       const res = await axios.post(
-        `http://10.30.163.120:9000/chat/send-message`,
+        `http://localhost:9000/chat/send-message`,
         {
           RoomId: chat.uid,
           message: input,
@@ -158,7 +158,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
     console.log("df");
     // if (!con) {
     // setCon(true);
-    const socket = io("http://10.30.163.120:9000/chat");
+    const socket = io("http://localhost:9000/chat");
     setSocket(socket);
     const conversationId = chat.uid;
     socket?.emit("joinRoom", { conversationId });
@@ -187,7 +187,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
     // console.log(socket);
     const getMe = async () => {
       try {
-        const res = await axios.get(`http://10.30.163.120:9000/users/me`, {
+        const res = await axios.get(`http://localhost:9000/users/me`, {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
@@ -206,7 +206,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
     const getFriend = async () => {
       try {
         const res = await axios.get(
-          `http://10.30.163.120:9000/users/${chat.users[1].nickname}/profile`,
+          `http://localhost:9000/users/${chat.users[1].nickname}/profile`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
@@ -226,7 +226,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
     const getMessages = async () => {
       try {
         const res = await axios.get(
-          `http://10.30.163.120:9000/chat/${chat.uid}/messages`,
+          `http://localhost:9000/chat/${chat.uid}/messages`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
@@ -267,7 +267,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
   const blockUser = async () => {
     try {
       const block = await axios.post(
-        `http://10.30.163.120:9000/users/${input}/block-user`,
+        `http://localhost:9000/users/${input}/block-user`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -297,7 +297,7 @@ const Dms: React.FC<DmProps> = ({ dm, updateItem, chat, setChatList, other, setO
   //     const getOther = async () => {
   //       try {
   //         const res = await axios.get(
-  //         `http://10.30.163.120:9000/chat/${chat.uid}/other-user`,
+  //         `http://localhost:9000/chat/${chat.uid}/other-user`,
   //         {
   //           headers: {
   //             Authorization: `Bearer ${Cookies.get("token")}`,

@@ -109,7 +109,7 @@ const Dmpreview: React.FC<MessageProps> = ({
     const getOther = async () => {
       try {
         const res = await axios.get(
-          `http://10.30.163.120:9000/chat/${chat.uid}/other-user`,
+          `http://localhost:9000/chat/${chat.uid}/other-user`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,

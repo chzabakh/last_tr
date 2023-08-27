@@ -2,7 +2,7 @@ import { SocketProvider } from '@/pages/socket_context';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import React, {useEffect, useState} from 'react'
-import PrivateChannel from '../../../last_transcendance/src/components/channels/privateChannel';
+// import PrivateChannel from '../../../last_transcendance/src/components/channels/privateChannel';
 import  Channels  from './channels';
 import ChatRoom from '../../pages/chatRoom';
 const BrowseChannel = () => {
@@ -64,7 +64,8 @@ const BrowseChannel = () => {
         opacity: 0
       };
 
-    const [back, setback] = useState(false)
+    const [back, setback] = useState(false);
+    const [rooms, setRooms] = useState([]);
     const [PublicRooms, setPublicRooms] = useState<channel[]>([]);
     const [ProtectedRooms, setProtectedRooms] = useState<channel[]>([]);
     const [isprivate, setPrivate] = useState(false);
@@ -76,11 +77,21 @@ const BrowseChannel = () => {
     const [chat, setChat] = useState(false);
     const [email, setUserEmail] = useState("");
     const [hide, setHide] = useState(false);
-    const [id, setId] = useState("")
+    const [id, setId] = useState("");
+    const [password, setPassword] = useState("");
+    const [enterPass, setEnterPass] = useState(false);
+    const [roomPass, setRoomPass] = useState("");
 
+
+    //EXPLANATION OF THIS VARIABLE: BECAUSE I NEED TO SEND THE PROTECTED CHANNEL FROM OUTSIDE THE MAPPING SECTION
+    //I ACTUALLY STORE THE CHANNEL IN A STATE AND THEN WHEN THE PASSWORD IS SET , I SEND IT TO THE HANDLER.
+    const [channel, setChannel] = useState<channel>()
+
+
+    //this is not a good way but yeah we should do this in sockets
     useEffect(() => {
-        console.log("All the public rooms", PublicRooms);
-    }, [PublicRooms]);
+        getAllRooms();
+    }, [rooms]);
     
 
     useEffect(()=>
@@ -108,6 +119,32 @@ const BrowseChannel = () => {
         }, 500);
       };
 
+
+      async function getAllRooms()
+      {
+          try
+          {
+              const token = Cookies.get('token')
+              const headers = { Authorization: `Bearer ${token}` };
+              const res = await axios.get('http://localhost:9000/chat/my-rooms', { headers });            
+              setRooms(res.data)
+            }
+          catch(e)
+          {
+              if(axios.isAxiosError(e))
+              {
+                  if(e.request)
+                      console.log("No response received!", e.request);
+                  else if(e.response)
+                      console.log("Error status: ", e.response?.status);
+                      console.log("Error data: ", e.response?.data);
+              }
+              else
+              {
+                  console.log("Error: ", e);
+              }
+          }
+      }
 
 
     async function joinPublicRoom(uid : string)
@@ -153,20 +190,25 @@ const BrowseChannel = () => {
 
     async function joinProtectRoom(uid : string)
     {
+        
         try
         {
-            console.log("USER UID: " , uid)
+            // console.log("USER UID: " , uid)
+            console.log("entered the join protect")
             const token = Cookies.get('token')
             const headers = { Authorization: `Bearer ${token}` };
 
             const requestBody = {
                 isProtected: true,
-                conversationId: uid, 
+                conversationId: uid,
+                password: roomPass
             };
-            // console.log(requestBody);
+            alert(roomPass);
             const res = await axios.post('http://localhost:9000/chat/join-room', requestBody,  { headers });
+            console.log(res.data)
             if (res.status === 201)
             {
+                console.log("responnnnnnse" , res.status)
                 setHide(true);
                 console.log("Room successfully joined!");
                 console.log(res.data); // Assuming the backend sends the created room details
@@ -180,11 +222,11 @@ const BrowseChannel = () => {
                     console.log("No response received!", e.request);
                 else if(e.response)
                     console.log("Error status: ", e.response?.status);
-                    console.log("Error data: ", e.response?.data);
+                   alert(e.response?.data);
             }
             else
             {
-                console.log("Error: ", e);
+                alert(e);
             }
         }
     }
@@ -315,9 +357,10 @@ const BrowseChannel = () => {
     }
   
 
-    async function handleProtectRoom(Channel : channel)
+    async function handleProtectRoom(Channel : channel | undefined)
     {
-        await joinProtectRoom(Channel.uid);
+        if(Channel)
+            await joinProtectRoom(Channel.uid);
         // console.log("THE CHANNEL ID:" ,Channel.id);
     }
 
@@ -439,6 +482,26 @@ const BrowseChannel = () => {
                         <button className='rounded-lg border-4 border-[#3b0764] w-[40%] self-center' onClick={joinPrivate}>Enter</button>
                     </div>
                     }
+
+                    {enterPass && 
+                    <div 
+                        style={fadeOut ? fadeOutStyle : defaultStyle} 
+                        className='w-[300px] h-[300px]] absolute top-1/2 left-1/2 flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2  border-opacity-10 border-violet-400 bg-opacity-1 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]'>
+                        <button onClick={handleDelete} className=' self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg'>X</button>
+                        <div className='flex flex-col gap-7 items-center'>
+                        <h2>Enter the room ID:</h2>
+                        <input type="password" className='bg-black/30 h-[20px] p-6 text-white mx-2' onChange={(e) => setRoomPass(e.target.value)}></input>
+                        </div>
+                        <button className='rounded-lg border-4 border-[#3b0764] w-[40%] self-center' 
+                        onClick={() => 
+                        {
+                        setEnterPass(false)
+                        handleProtectRoom(channel)
+                        }}>
+                            Enter
+                        </button>
+                    </div>
+                    }
                      
                     </div>
                     <p>Public Channels:</p>
@@ -450,7 +513,9 @@ const BrowseChannel = () => {
                             <div key={ChannelName.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
                                 <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
                             {
-                                ((hide) || ((hide) && (email === ChannelName.owner.email))) ?
+
+                                rooms.find(((name: channel)=> {(name.uid === ChannelName.uid)}))  || (email === ChannelName.owner.email) ?
+
                                 //we have a state called hide, when it is off it means that the user did not join the room yet, so we only get join, then when he does , an enter and leavebutton appear
                                 <>
                                         <div className='flex justify-between'>
@@ -483,7 +548,7 @@ const BrowseChannel = () => {
                            <div key={ChannelName.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
                                <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
                            {
-                               ((hide) || ((hide) && (email === ChannelName.owner.email))) ? 
+                              rooms.find(((name: channel)=> {(name.uid === ChannelName.uid)}))  || (email === ChannelName.owner.email) ? 
                                //we have a state called hide, when it is off it means that the user did not join the room yet, so we only get join, then when he does , an enter and leavebutton appear
                                <>
                                        <div className='flex justify-between'>
@@ -499,7 +564,10 @@ const BrowseChannel = () => {
                               <>
                                <button className=' text-white border-4 border-[#7e22ce] rounded-full 
                                px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                               onClick={() =>handleProtectRoom(ChannelName)}>Join</button>
+                               onClick={() =>{
+                                setEnterPass(true);
+                                setChannel(ChannelName)
+                                }}>Join</button>
                               </> 
                            }
                            </div>

@@ -72,7 +72,7 @@ const Channels = () => {
   useEffect(() =>
   {
     getMyChannels();
-  })
+  }, [])
   
   async function getMyChannels() {
 
@@ -155,7 +155,7 @@ async function handleLeaveRoomPrivate(Channel : channel)
         <>
         <div className="flex flex-col p-20 gap-1 border-2  justify-between h-full  w-[77%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#49126e33] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
           <div className="">
-            <div>My created channels:</div>
+            <div>My joined channels:</div>
             <div className="grid grid-cols6 gap-4">
                   {
                     PrivateRooms.map((ChannelName: channel) => (

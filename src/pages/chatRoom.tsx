@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import Channels from '../../last_transcendance/src/components/Sections/channels';
+// import Channels from './channels';
 import BrowseChannel from '@/components/Sections/browseChannel';
 
 const ChatRoom = () => {
@@ -28,7 +28,7 @@ const optionsChannel = [
 
 const ITEM_HEIGHT = 30;
 
-    const [friends, setFriends] = useState([]);
+    const [rooms, setRooms] = useState([]);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const [back, setBack] = useState(false);
@@ -50,6 +50,7 @@ const ITEM_HEIGHT = 30;
     
     const handleCloseChannel = () => {
       setAnchorElement(null);
+      console.log(rooms)
     };
 
 
@@ -136,21 +137,20 @@ const ITEM_HEIGHT = 30;
 
     useEffect(() =>
     {
-        getFriends();
+       getAllRooms();
 
-    }, [])
+    })
 
-    async function getFriends()
+
+    async function getAllRooms()
     {
         try
         {
             const token = Cookies.get('token')
             const headers = { Authorization: `Bearer ${token}` };
-            const res = await axios.get('http://localhost:9000/users/friendlist', { headers });
-            console.log({nickname : "oumaima"});
-            setFriends(res.data)
-            
-        }
+            const res = await axios.get('http://localhost:9000/chat/my-rooms', { headers });            
+            setRooms(res.data)
+          }
         catch(e)
         {
             if(axios.isAxiosError(e))
@@ -167,6 +167,7 @@ const ITEM_HEIGHT = 30;
             }
         }
     }
+
   return (
     back ? <BrowseChannel /> : (
     <>

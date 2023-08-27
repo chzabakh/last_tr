@@ -133,7 +133,10 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   });
 
   useEffect(() => {
+
+    console.log("hana dkhalt")
     if (socket) {
+      console.log("hyhy")
       socket.on("friendRequest:new", (invitation: Invitation) => {
         // console.log(";", message);
         setInvites((cur) => [...cur, invitation]);
@@ -240,7 +243,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     try {
       console.log("input: [" + myinput + "]");
       const me = await axios
-        .get(`http://10.30.163.120:9000/users/me`, {
+        .get(`http://localhost:9000/users/me`, {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
@@ -248,14 +251,14 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         .catch((err) => {});
       console.log("this is me", me);
       const res = await axios.get(
-        `http://10.30.163.120:9000/users/${myinput}/profile`,
+        `http://localhost:9000/users/${myinput}/profile`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
         }
       );
-      console.log(res.data);
+      console.log("tttttttttttttttttttttt",res.data);
       setToblk(input);
       // console.log("this: ",me?.data.nickname);
       // hasBlocked(me?.data.nickname, input, blockedlist);///////////////////
@@ -308,7 +311,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const addUser = async () => {
     try {
       const me = await axios
-        .get(`http://10.30.163.120:9000/users/me`, {
+        .get(`http://localhost:9000/users/me`, {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
@@ -316,7 +319,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         .catch((err) => {});
       console.log("chchchch:", input);
       const sendFriendReq = await axios.post(
-        `http://10.30.163.120:9000/users/${me?.data.nickname}/send-friend-request`,
+        `http://localhost:9000/users/${me?.data.nickname}/send-friend-request`,
         {
           recipientUserName: `${input}`,
         },
@@ -340,7 +343,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     try {
       console.log("ff");
       const cancel = await axios.post(
-        `http://10.30.163.120:9000/users/${username}/cancel-request`,
+        `http://localhost:9000/users/${username}/cancel-request`,
         {},
         {
           headers: {
@@ -361,7 +364,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     try {
       console.log(username);
       const remove = await axios.delete(
-        `http://10.30.163.120:9000/users/remove-friend/${username}`,
+        `http://localhost:9000/users/remove-friend/${username}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -390,7 +393,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const blockUser = async () => {
     try {
       const block = await axios.post(
-        `http://10.30.163.120:9000/users/${toblk}/block-user`,
+        `http://localhost:9000/users/${toblk}/block-user`,
         {},
         {
           headers: {
@@ -420,7 +423,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     const invitations = async () => {
       try {
         const res: AxiosResponse<Invitation[]> = await axios.get(
-          `http://10.30.163.120:9000/users/friend-request-list`,
+          `http://localhost:9000/users/friend-request-list`,
 
           {
             headers: {
@@ -442,7 +445,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     const blockedUsers = async () => {
       try {
         const res = await axios.get(
-          `http://10.30.163.120:9000/users/blockedusers`,
+          `http://localhost:9000/users/blockedusers`,
 
           {
             headers: {
@@ -470,7 +473,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     const getMessages = async () => {
       try {
         const response = await axios.get(
-          `http://10.30.163.120:9000/chat/my-chats`,
+          `http://localhost:9000/chat/my-chats`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
@@ -496,7 +499,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   //   console.log("ttttt", user);
   //   console.log("qqqqqq", chatList);
   //   try {
-  //     const me = await axios.get(`http://10.30.163.120:9000/users/me`, {
+  //     const me = await axios.get(`http://localhost:9000/users/me`, {
   //       headers: {
   //         Authorization: `Bearer ${Cookies.get("token")}`,
   //       },
@@ -549,7 +552,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     if (action === "accept") {
       try {
         const acceptFriend = await axios.post(
-          `http://10.30.163.120:9000/users/friend-request/${nickname}/accept`,
+          `http://localhost:9000/users/friend-request/${nickname}/accept`,
           {},
           {
             headers: {
@@ -570,7 +573,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       try {
         console.log("ppppp");
         const denyFriend = await axios.post(
-          `http://10.30.163.120:9000/users/${nickname}/reject`,
+          `http://localhost:9000/users/${nickname}/reject`,
           {},
           {
             headers: {
@@ -600,7 +603,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const friendsList = async () => {
     try {
       const me = await axios
-        .get(`http://10.30.163.120:9000/users/me`, {
+        .get(`http://localhost:9000/users/me`, {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
@@ -608,7 +611,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         .catch((err) => {});
 
       const sendFriendReq = await axios.get(
-        `http://10.30.163.120:9000/users/friendlist`,
+        `http://localhost:9000/users/friendlist`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -629,7 +632,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const callDm = async (userID: number) => {
     try {
       const msg = await axios.post(
-        `http://10.30.163.120:9000/chat/createroom`,
+        `http://localhost:9000/chat/createroom`,
         { userID: userID },
         {
           headers: {
@@ -645,7 +648,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       const getOther = async () => {
         try {
           const res = await axios.get(
-          `http://10.30.163.120:9000/chat/${msg.data.uid}/other-user`,
+          `http://localhost:9000/chat/${msg.data.uid}/other-user`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
