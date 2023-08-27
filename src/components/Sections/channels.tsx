@@ -142,10 +142,9 @@ async function handleLeaveRoomPrivate(Channel : channel)
     await LeaveRoomPrivate(Channel.uid);
 }
 
-if(chat) {
-  return <ChatRoom />;  
-}
   return (
+
+    chat ?  <ChatRoom /> : (
     <>
       {activeComponent ? (
         <>
@@ -191,6 +190,7 @@ if(chat) {
         </>
       )}
     </>
+    )
   );
 };
 

@@ -5,6 +5,8 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import Channels from '../../last_transcendance/src/components/Sections/channels';
+import BrowseChannel from '@/components/Sections/browseChannel';
 
 const ChatRoom = () => {
 
@@ -29,6 +31,7 @@ const ITEM_HEIGHT = 30;
     const [friends, setFriends] = useState([]);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+    const [back, setBack] = useState(false);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
       setAnchorEl(event.currentTarget);
@@ -165,17 +168,12 @@ const ITEM_HEIGHT = 30;
         }
     }
   return (
+    back ? <BrowseChannel /> : (
     <>
        <div className="absolute top-0 z-2 flex justify-evenly border-2 rounded-3xl  border-opacity-30 w-[99.9%] h-full border-violet-400  bg-[#571d86]  bg-blur-md backdrop-filter backdrop-blur-md p-4">
           <div className="w-[40%] flex flex-xol justify-center">
             <div className="w-[90%] mt-2">
-              <div className="chat-image avatar mx-auto ">
-                <div className="w-50 rounded-full">
-              </div>
-              </div>
-              <p className="text-center">
-                {/* {chat.users[0].nickname} STATUS: Playing */}
-              </p>
+          <button className='border-2 p-2 rounded-lg' onClick={() => setBack(true)}>Back</button>
               <div className="flex flex-col gap-9  h-[80%] w-full justify-center">
                 <div className='text-lg self-center'>Group members:</div>
               
@@ -306,6 +304,7 @@ const ITEM_HEIGHT = 30;
           </div>
         {/* </div> */}
         </>
+    )
   )
 }
 
