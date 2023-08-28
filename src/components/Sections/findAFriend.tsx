@@ -6,24 +6,26 @@ import Cookies from "js-cookie";
 import Dms from "./dms";
 import Messages from "./messages";
 import { useSocket } from "@/pages/socket_context";
+import { useRouter } from "next/navigation";
 
 interface ChatProps {
   dmm: string;
   updateItemm: (newValue: string, newDm: string) => void;
 }
 
-type Friend = {
+interface Friend {
   avatarUrl: string;
-  id: string;
+  id: number;
   nickname: string;
   email: string;
   state: string;
   friendStatus: string;
   provider: string;
-};
+}
 
 interface Sender {
   nickname: string;
+  id: number;
   avatarUrl: string;
   provider: string;
 }
@@ -117,6 +119,10 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const { socket } = useSocket();
   const [chatList, setChatList] = useState<Chat[]>([]);
   const [other, setOther] = useState<User>();
+  const [loading, setLoading] = useState(false);
+  const [plus, setPlus] = useState(1);
+  const router = useRouter();
+  const [resetFriends, setResetFriends] = useState<boolean>(false);
 
   const [chat, setChat] = useState<Chat>({
     id: 0,
@@ -141,7 +147,10 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
 
       socket.on("friend:new", (friend: Friend) => {
         // console.log(";", message);
+        // setLoading(true);
+
         setMyfriends((cur) => [...cur, friend]);
+        // setLoading(false);
       });
       socket.on("friend:remove", (friendNickname: string) => {
         setMyfriends((curr) => {
@@ -175,7 +184,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   };
   const [friend, setFriend] = useState<Friend>({
     avatarUrl: "null",
-    id: "null",
+    id: -1,
     nickname: "null",
     email: "null",
     state: "null",
@@ -284,7 +293,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         alert("User not found!");
         setFriend({
           avatarUrl: "null",
-          id: "notfound",
+          id: -1,
           nickname: "null",
           email: "null",
           state: "null",
@@ -483,7 +492,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     invitations();
     friendsList();
     blockedUsers();
-  }, [reload]);
+  }, [reload, resetFriends]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -556,6 +565,8 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   //   }
   // };
 
+  console.log(friendsimages);
+
   const handleRemoveObject = (senderId: number) => {
     const newInvites = invites.filter((item) => item.senderID !== senderId); // Filter out the object with the specified ID
     setInvites(newInvites); // Update the state with the new array
@@ -566,6 +577,8 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     console.log("as", invites);
     console.log(senderId);
     if (action === "accept") {
+      setLoading(true);
+      console.log("true");
       try {
         const acceptFriend = await axios.post(
           `http://localhost:9000/users/friend-request/${nickname}/accept`,
@@ -578,6 +591,10 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         );
         // console.log(acceptFriend);
         handleRemoveObject(senderId);
+        setLoading(false);
+        setPlus(plus + 1);
+        console.log("false");
+        callDm(senderId);
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -618,6 +635,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
 
   const friendsList = async () => {
     try {
+      setLoading(true);
       const me = await axios
         .get(`http://localhost:9000/users/me`, {
           headers: {
@@ -635,6 +653,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         }
       );
       setMyfriends(sendFriendReq.data);
+      setLoading(false);
       console.log("haa", sendFriendReq.data);
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -711,19 +730,23 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       try {
         const avatarURLs = await Promise.all(avatarPromises);
         setFriendsimages(avatarURLs);
+        console.log("INVITE IMAGES", friendsimages);
       } catch (error) {
         console.error(error);
       }
     }
     fetchAvatars();
-  }, [myfriends]);
+    setPlus(plus + 1);
+    console.log("jkl");
+  }, [myfriends, loading]);
 
   useEffect(() => {
     async function fetchAvatars() {
       const avatarPromises = invites.map(async (user) => {
         if (invites) {
+          console.log("HELLOW", user.senderID);
           const response = await axios.get(
-            `http://localhost:9000/users/${user.id}/avatar`,
+            `http://localhost:9000/users/${user.senderID}/avatar`,
             {
               responseType: "blob",
               headers: {
@@ -737,6 +760,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       try {
         const avatarURLs = await Promise.all(avatarPromises);
         setInvitesimages(avatarURLs);
+        console.log("INVITE IMAGES", invitesimages);
         console.log(avatarURLs.length);
       } catch (error) {
         console.error(error);
@@ -790,9 +814,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                 </svg>
               </button>
             </div>
-            {friend.id != "notfound" &&
-            friend.id != "null" &&
-            myswitch == "search" ? (
+            {friend.id != -1 && friend.id != -1 && myswitch == "search" ? (
               <div className="flex flex-col border-2 border-opacity-30 mx-auto w-[70%] max-h-[500px] flex-grow min-h[400px] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                 <button
                   className="w-2"
@@ -800,7 +822,6 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                     setMyswitch("list");
                     setReload(!reload);
                     console.log(reload);
-                    // setDm("1");
                     // updateItem("1", "6")
                   }}
                   style={{
@@ -902,7 +923,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                 <div className="min-w[400px] flex qflex-wrap flex-col 2xl:flex-row h-[90%] overflow-auto">
                   <div className="mb-5 2xl:mb-0 qmx-auto min-w[350px] 2xl:w-[50%] overflow-auto h-[100%]">
                     <p className="mb-10">Received invites: </p>
-                    {invites.map((invitation, index) => (
+                    {invites.map((invitation, i) => (
                       <div
                         className="min-w[350px] flex items-center mx-1 h-20 my-5 border-2 border-purple-500 relative bg-gray-500 rounded-lg"
                         key={invitation.senderID}
@@ -911,13 +932,15 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                           <div className="w-14 rounded-full">
                             {invitation.sender.provider === "email" &&
                             invitesimages ? (
-                              <Image
-                                key={index}
-                                alt="friendReqPic"
-                                height={200}
-                                width={200}
-                                src={invitesimages[index] || "/jjjj.png"}
-                              />
+                              <>
+                                <Image
+                                  // key={i}
+                                  alt="1"
+                                  height={200}
+                                  width={200}
+                                  src={invitesimages[i] || "/jjjj.png"}
+                                />
+                              </>
                             ) : (
                               <Image
                                 alt="friendReqPic"
@@ -992,22 +1015,27 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                       >
                         <div className="chat-image avatar my-auto mx-3">
                           <div className="w-14 rounded-full">
-                            {friend.provider === "email" && friendsimages ? (
-                              <Image
-                                key={index}
-                                alt="friendReqPic"
-                                height={200}
-                                width={200}
-                                src={friendsimages[index] || "/jjjj.png"}
-                              />
-                            ) : (
+                            {friend.provider === "email" &&
+                            friendsimages &&
+                            !loading ? (
+                              <>
+                                <Image
+                                  key={index}
+                                  alt="friendReqPic"
+                                  height={200}
+                                  width={200}
+                                  src={friendsimages[index] || "/jjjj.png"}
+                                />
+                              </>
+                            ) : null}
+                            {friend.provider === "intra" && !loading ? (
                               <Image
                                 alt="friendReqPic"
                                 height={200}
                                 width={200}
                                 src={`${friend.avatarUrl}`}
                               />
-                            )}
+                            ) : null}
                           </div>
                         </div>
                         <span>{friend.nickname} :</span>
@@ -1016,7 +1044,6 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                           onClick={() => {
                             // getChat(friend.nickname);
                             callDm(Number(friend.id));
-                            // setDm("1");
                           }}
                           className="absolute right-2"
                         >

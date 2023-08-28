@@ -23,7 +23,7 @@ type Me = {
 };
 
 const Dashboard = () => {
-  const [item, setItem] = useState("1");
+  const [item, setItem] = useState("2");
   const [Preview, setPreview] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [username, setUser] = useState("");
