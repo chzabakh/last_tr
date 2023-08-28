@@ -99,6 +99,7 @@ const Dmpreview: React.FC<MessageProps> = ({
   // },[dm]
   // )
   const [other, setOther] = useState<User>();
+  const [pdp, setPdp] = useState<string | undefined>();
 
   useEffect(() => {
     setLastmsg(chat.messages[chat.messages.length - 1]?.content);
@@ -117,6 +118,18 @@ const Dmpreview: React.FC<MessageProps> = ({
           }
         );
         setOther(res.data);
+
+        const response = await axios.get(
+          `http://localhost:9000/users/${res.data.id}/avatar`,
+          {
+            responseType: "blob",
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
+        setPdp(URL.createObjectURL(response.data));
+
         console.log("rty", res.data, chat.uid, "end");
       } catch (err) {
         if (err instanceof AxiosError) {
@@ -152,9 +165,9 @@ const Dmpreview: React.FC<MessageProps> = ({
         >
           <div className="flex flex-col chat-image avatar -z-10">
             <div className="w-10 rounded-full">
-              {other?.provider === "email" ? (
+              {other?.provider === "email" && pdp ? (
                 <Image
-                  src={`/${other.avatarUrl}`}
+                  src={pdp || ''}
                   width={100}
                   height={100}
                   alt="friend"

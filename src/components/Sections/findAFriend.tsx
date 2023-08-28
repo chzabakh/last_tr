@@ -133,10 +133,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   });
 
   useEffect(() => {
-
-    console.log("hana dkhalt")
     if (socket) {
-      console.log("hyhy")
       socket.on("friendRequest:new", (invitation: Invitation) => {
         // console.log(";", message);
         setInvites((cur) => [...cur, invitation]);
@@ -188,6 +185,9 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   // const { login, accessToken } = useAuth();
   const [invites, setInvites] = useState<Invitation[]>([]);
   const [myfriends, setMyfriends] = useState<Friend[]>([]);
+  const [friendsimages, setFriendsimages] = useState<(string | undefined)[]>();
+  const [invitesimages, setInvitesimages] = useState<(string | undefined)[]>();
+  const [searchimage, setSearchimage] = useState<(string | undefined)>();
 
   // console.log(invites);
 
@@ -258,7 +258,20 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           },
         }
       );
-      console.log("tttttttttttttttttttttt",res.data);
+
+      const response = await axios.get(
+        `http://localhost:9000/users/${res.data.id}/avatar`,
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      setSearchimage(URL.createObjectURL(response.data));
+
+
+      console.log(res.data);
       setToblk(input);
       // console.log("this: ",me?.data.nickname);
       // hasBlocked(me?.data.nickname, input, blockedlist);///////////////////
@@ -644,16 +657,15 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       setCon(true);
       setChat(msg.data);
 
-
       const getOther = async () => {
         try {
           const res = await axios.get(
-          `http://localhost:9000/chat/${msg.data.uid}/other-user`,
-          {
-            headers: {
-              Authorization: `Bearer ${Cookies.get("token")}`,
-            },
-          }
+            `http://localhost:9000/chat/${msg.data.uid}/other-user`,
+            {
+              headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`,
+              },
+            }
           );
           setOther(res.data);
           console.log("rrrrrrrrr", res.data, chat.uid, "end");
@@ -666,7 +678,6 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         }
       };
 
-
       getOther();
       setDm("1");
     } catch (err) {
@@ -677,7 +688,58 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       }
     }
   };
-  
+
+  useEffect(() => {
+    async function fetchAvatars() {
+      const avatarPromises = myfriends.map(async (user) => {
+        if (myfriends) {
+          const response = await axios.get(
+            `http://localhost:9000/users/${user.id}/avatar`,
+            {
+              responseType: "blob",
+              headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`,
+              },
+            }
+          );
+          return URL.createObjectURL(response.data);
+        }
+      });
+      try {
+        const avatarURLs = await Promise.all(avatarPromises);
+        setFriendsimages(avatarURLs);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchAvatars();
+  }, [myfriends]);
+
+  useEffect(() => {
+    async function fetchAvatars() {
+      const avatarPromises = invites.map(async (user) => {
+        if (invites) {
+          const response = await axios.get(
+            `http://localhost:9000/users/${user.id}/avatar`,
+            {
+              responseType: "blob",
+              headers: {
+                Authorization: `Bearer ${Cookies.get("token")}`,
+              },
+            }
+          );
+          return URL.createObjectURL(response.data);
+        }
+      });
+      try {
+        const avatarURLs = await Promise.all(avatarPromises);
+        setInvitesimages(avatarURLs);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchAvatars();
+  }, [invites]);
 
   return (
     <>
@@ -754,10 +816,10 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                   </svg>
                 </button>
-                {friend.provider === "email" ? (
+                {friend.provider === "email" && searchimage? (
                   <Image
                     className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
-                    src={`/uploads/${friend.avatarUrl}`}
+                    src={searchimage || ''}
                     alt="pdp"
                     height={200}
                     width={200}
@@ -834,27 +896,30 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                 <div className="min-w[400px] flex qflex-wrap flex-col 2xl:flex-row h-[90%] overflow-auto">
                   <div className="mb-5 2xl:mb-0 qmx-auto min-w[350px] 2xl:w-[50%] overflow-auto h-[100%]">
                     <p className="mb-10">Received invites: </p>
-                    {invites.map((invitation) => (
+                    {invites.map((invitation, index) => (
                       <div
                         className="min-w[350px] flex items-center mx-1 h-20 my-5 border-2 border-purple-500 relative bg-gray-500 rounded-lg"
                         key={invitation.senderID}
                       >
                         <div className="chat-image avatar my-auto mx-3">
                           <div className="w-14 rounded-full">
-                            {invitation.sender.provider === "email" ?
-                            <Image
-                            alt="friendReqPic"
-                            height={200}
-                            width={200}
-                            src={`/uploads/${invitation.sender.avatarUrl}`}
-                            /> :
-                            <Image
-                            alt="friendReqPic"
-                            height={200}
-                            width={200}
-                            src={`${invitation.sender.avatarUrl}`}
-                            />
-                          }
+                            {invitation.sender.provider === "email" &&
+                            invitesimages ? (
+                              <Image
+                                key={index}
+                                alt="friendReqPic"
+                                height={200}
+                                width={200}
+                                src={invitesimages[index] || ""}
+                              />
+                            ) : (
+                              <Image
+                                alt="friendReqPic"
+                                height={200}
+                                width={200}
+                                src={`${invitation.sender.avatarUrl}`}
+                              />
+                            )}
                           </div>
                         </div>
                         <p className="mx-3 text-xl">
@@ -914,27 +979,29 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                   </div>
                   <div className="qmx-auto min-w[350px] 2xl:w-[50%] overflow-auto h-[100%]">
                     <p className="mb-10 mt-5 2xl:mt-0">Friends list: </p>
-                    {myfriends.map((friend) => (
+                    {myfriends.map((friend, index) => (
                       <div
                         className="min-w[350px] flex items-center mx-1 h-20 my-5 border-2 border-purple-500 relative bg-gray-500 rounded-lg"
                         key={friend.id}
                       >
                         <div className="chat-image avatar my-auto mx-3">
                           <div className="w-14 rounded-full">
-                            {friend.provider === "email" ?
-                            <Image
-                            alt="friendReqPic"
-                            height={200}
-                            width={200}
-                            src={`/${friend.avatarUrl}`}
-                            /> : 
-                            <Image
-                            alt="friendReqPic"
-                            height={200}
-                            width={200}
-                            src={`${friend.avatarUrl}`}
-                            />
-                          }
+                            {friend.provider === "email" && friendsimages ? (
+                              <Image
+                                key={index}
+                                alt="friendReqPic"
+                                height={200}
+                                width={200}
+                                src={friendsimages[index] || ""}
+                              />
+                            ) : (
+                              <Image
+                                alt="friendReqPic"
+                                height={200}
+                                width={200}
+                                src={`${friend.avatarUrl}`}
+                              />
+                            )}
                           </div>
                         </div>
                         <span>{friend.nickname} :</span>
@@ -974,23 +1041,23 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
             <>
               <div className="absolute z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-[100%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                 <div className="w-[40%]">
-                  {friend.provider === "email" ?
+                  {friend.provider === "email" && searchimage? (
                     <Image
-                    className="object-cover mx-auto rounded-[20px]"
-                    src={`/uploads/${friend.avatarUrl}`}
-                    alt="pdp"
-                    height={200}
-                    width={200}
+                      className="object-cover mx-auto rounded-[20px]"
+                      src={searchimage || ''}
+                      alt="pdp"
+                      height={200}
+                      width={200}
                     />
-                    :
+                  ) : (
                     <Image
-                    className="object-cover mx-auto rounded-[20px]"
-                    src={`${friend.avatarUrl}`}
-                    alt="pdp"
-                    height={200}
-                    width={200}
+                      className="object-cover mx-auto rounded-[20px]"
+                      src={`${friend.avatarUrl}`}
+                      alt="pdp"
+                      height={200}
+                      width={200}
                     />
-                  }
+                  )}
                   <p className="font-serif text-center py-5 text-xs">
                     {friend.nickname}
                   </p>

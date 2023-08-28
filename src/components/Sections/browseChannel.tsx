@@ -5,6 +5,7 @@ import React, {useEffect, useState} from 'react'
 // import PrivateChannel from '../../../last_transcendance/src/components/channels/privateChannel';
 import  Channels  from './channels';
 import ChatRoom from '../../pages/chatRoom';
+import Loading from '@/pages/loading';
 const BrowseChannel = () => {
 
     interface owner 
@@ -65,7 +66,7 @@ const BrowseChannel = () => {
       };
 
     const [back, setback] = useState(false);
-    const [rooms, setRooms] = useState([]);
+    const [rooms, setRooms] = useState<channel[]>([]);
     const [PublicRooms, setPublicRooms] = useState<channel[]>([]);
     const [ProtectedRooms, setProtectedRooms] = useState<channel[]>([]);
     const [isprivate, setPrivate] = useState(false);
@@ -81,6 +82,8 @@ const BrowseChannel = () => {
     const [password, setPassword] = useState("");
     const [enterPass, setEnterPass] = useState(false);
     const [roomPass, setRoomPass] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+
 
 
     //EXPLANATION OF THIS VARIABLE: BECAUSE I NEED TO SEND THE PROTECTED CHANNEL FROM OUTSIDE THE MAPPING SECTION
@@ -89,10 +92,7 @@ const BrowseChannel = () => {
 
 
     //this is not a good way but yeah we should do this in sockets
-    useEffect(() => {
-        getAllRooms();
-    }, [rooms]);
-    
+
 
     useEffect(()=>
     {
@@ -101,10 +101,18 @@ const BrowseChannel = () => {
             await getUser();
             await getPublicChannels();
             await getProtectedChannels();
+            await getAllRooms();
+            setIsLoading(false);
+
+            console.log("Rooms loaded:", rooms);
         }
         initialize();
     },[])
     
+
+    useEffect(() => {
+        console.log(rooms);
+      }, [rooms]);
    
     function handleback()
     {
@@ -120,6 +128,7 @@ const BrowseChannel = () => {
       };
 
 
+
       async function getAllRooms()
       {
           try
@@ -128,6 +137,7 @@ const BrowseChannel = () => {
               const headers = { Authorization: `Bearer ${token}` };
               const res = await axios.get('http://localhost:9000/chat/my-rooms', { headers });            
               setRooms(res.data)
+              console.log(rooms)
             }
           catch(e)
           {
@@ -283,6 +293,7 @@ const BrowseChannel = () => {
             const res = await axios.post('http://localhost:9000/chat/leave-room', requestBody,  { headers });
             if (res.status === 201)
             {
+                setRooms([]);
                 setHide(false);
                 console.log("Room Left!");
                 console.log(res.data);
@@ -426,7 +437,11 @@ const BrowseChannel = () => {
         }
     }
 
-
+    function handleChat(Channel: channel)
+    {
+        console.log("Hhia channel" , Channel)
+        return <ChatRoom  room={Channel} />
+    }
 
     async function getProtectedChannels() {
 
@@ -454,11 +469,14 @@ const BrowseChannel = () => {
         }
     }
 
-
+    if(isLoading)
+    {
+        return <Loading />
+    }
 
   return (
     back === true ? <Channels /> : (
-        chat ? <ChatRoom /> :
+        
     <>
         {
             <>
@@ -514,25 +532,15 @@ const BrowseChannel = () => {
                                 <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
                             {
 
-                                rooms.find(((name: channel)=> {(name.uid === ChannelName.uid)}))  || (email === ChannelName.owner.email) ?
-
-                                //we have a state called hide, when it is off it means that the user did not join the room yet, so we only get join, then when he does , an enter and leavebutton appear
-                                <>
-                                        <div className='flex justify-between'>
-                                        <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                                        onClick={() =>handleLeaveRoom(ChannelName)}>Leave</button>
-                                            <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                                        onClick={() => setChat(true)}>Enter</button>
-                                        </div>
-                                </>
-                               :
+                                !hide?
                                <>
+                        
                                 <button className=' text-white border-4 border-[#7e22ce] rounded-full 
                                 px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
                                 onClick={() =>handlePublicRoom(ChannelName)}>Join</button>
                                </> 
+                               :
+                               null
                             }
                             </div>
                         ))
@@ -548,7 +556,8 @@ const BrowseChannel = () => {
                            <div key={ChannelName.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
                                <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
                            {
-                              rooms.find(((name: channel)=> {(name.uid === ChannelName.uid)}))  || (email === ChannelName.owner.email) ? 
+                            
+                              rooms.find(((name: channel)=> { (name.uid === ChannelName.uid)}))  || (email === ChannelName.owner.email) ? 
                                //we have a state called hide, when it is off it means that the user did not join the room yet, so we only get join, then when he does , an enter and leavebutton appear
                                <>
                                        <div className='flex justify-between'>
@@ -557,7 +566,7 @@ const BrowseChannel = () => {
                                        onClick={() =>handleLeaveRoomProtect(ChannelName)}>Leave</button>
                                            <button className=' text-white border-4 border-[#7e22ce] rounded-full 
                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                                       onClick={() => setChat(true)}>Enter</button>
+                                       onClick={() => handleChat(ChannelName)}>Enter</button>
                                        </div>
                                </>
                               :

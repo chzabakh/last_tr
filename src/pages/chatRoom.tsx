@@ -7,8 +7,63 @@ import MenuItem from '@mui/material/MenuItem';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 // import Channels from './channels';
 import BrowseChannel from '@/components/Sections/browseChannel';
+import Loading from './loading';
+import { initialize } from 'next/dist/server/lib/render-server';
 
-const ChatRoom = () => {
+interface owner 
+{
+    FirstLogin: boolean,
+    TwoFaAuthEnabled: boolean,
+    TwofaAuthSecret: string,
+    avatarUrl: string,
+    createdaAt: string,
+    email: string,
+    friendStatus: string,
+    hash: string,
+    id: number,
+    nickname: string,
+    provider: string,
+    state: string,
+    updatedAt: string,
+}
+interface user {
+    TwofaAutEnabled: boolean,
+    TwofaAutSecret : boolean,
+    avatarUrl: string,
+    createdAt: string,
+    email: string,
+    friendStatus: string,
+    id: number,
+    nickname: string,
+    provider: string,
+    state: string,
+    updatedAt: string,
+}
+
+interface channel{
+    createdAt: string,
+    id: number,
+    isGroup: boolean,
+    isPrivate: boolean,
+    isPrivateKey: boolean,
+    isProtected: boolean,
+    lastMessageAt: string,
+    name: string,
+    owner: owner,
+    ownerID: number,
+    password: string,
+    uid: string, 
+    users: user[],
+}
+
+interface ChatRoomProps {
+  room: channel,
+}
+
+const ChatRoom: React.FC<ChatRoomProps> = ({
+  room
+}) => {
+
 
 
 const optionsMember = [
@@ -29,6 +84,7 @@ const optionsChannel = [
 const ITEM_HEIGHT = 30;
 
     const [rooms, setRooms] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const [back, setBack] = useState(false);
@@ -137,9 +193,14 @@ const ITEM_HEIGHT = 30;
 
     useEffect(() =>
     {
-       getAllRooms();
+      async function initialize()
+      {
 
-    })
+        await getAllRooms();
+        setIsLoading(false);
+      }
+      initialize()
+    },[])
 
 
     async function getAllRooms()
@@ -168,6 +229,11 @@ const ITEM_HEIGHT = 30;
         }
     }
 
+    console.log(room)
+    if(isLoading)
+    {
+        return <Loading />
+    }
   return (
     back ? <BrowseChannel /> : (
     <>
@@ -180,42 +246,52 @@ const ITEM_HEIGHT = 30;
               
                 <div className='flex gap-4 flex-col'>
                   <div className='flex flex-row justify-between w-full'>
-                  <div>Oumaima </div> 
-                  <IconButton
-                  style={{color: "white"}}
-                  aria-label="more"
-                  id="long-button"
-                  aria-controls={open ? 'long-menu' : undefined}
-                  aria-expanded={open ? 'true' : undefined}
-                  aria-haspopup="true"
-                  onClick={handleClick}
-                >
-                  <MoreHorizIcon />
-                </IconButton>
-                <Menu
-                  id="long-menu"
-                  MenuListProps={{
-                    'aria-labelledby': 'long-button',
-                  }}
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  PaperProps={{
-                    style: {
-                      maxHeight: ITEM_HEIGHT * 4.5,
-                      width: '20ch',
-                      backgroundColor: '#3c005a', 
-                      color: 'white'
-                      // useTransition: '2sec'
-                    },
-                  }}
-                >
-                  {optionsMember.map((option) => (
-                    <MenuItem key={option}  onClick={() => handleOptions(option)}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Menu>
+                  {
+                    
+                    //NOT THE FUCKING ROOM, I HAVE TO RENDER HERE THE MEMBERS OF THE CURRENT CHANNNEL, SOMEHOW I NEED TO KNOW IN WHICH CHANNEL I AM 
+                    //THEN I NEED TO RENDER ITS INFORMATION
+
+                //     rooms.map((room) => <div>{
+                //       room.name   
+                //     }
+                //     <IconButton
+                //   style={{color: "white"}}
+                //   aria-label="more"
+                //   id="long-button"
+                //   aria-controls={open ? 'long-menu' : undefined}
+                //   aria-expanded={open ? 'true' : undefined}
+                //   aria-haspopup="true"
+                //   onClick={handleClick}
+                // >
+                //   <MoreHorizIcon />
+                // </IconButton>
+                // <Menu
+                //   id="long-menu"
+                //   MenuListProps={{
+                //     'aria-labelledby': 'long-button',
+                //   }}
+                //   anchorEl={anchorEl}
+                //   open={open}
+                //   onClose={handleClose}
+                //   PaperProps={{
+                //     style: {
+                //       maxHeight: ITEM_HEIGHT * 4.5,
+                //       width: '20ch',
+                //       backgroundColor: '#3c005a', 
+                //       color: 'white'
+                //       // useTransition: '2sec'
+                //     },
+                //   }}
+                // >
+                //   {optionsMember.map((option) => (
+                //     <MenuItem key={option}  onClick={() => handleOptions(option)}>
+                //       {option}
+                //     </MenuItem>
+                //   ))}
+                // </Menu>
+                // </div>)
+                  }
+                  
                   </div>
                 </div>
               </div>

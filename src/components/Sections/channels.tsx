@@ -10,7 +10,7 @@ import chat from "./chat";
 
 const Channels = () => {
 
-
+  
   interface owner 
   {
       FirstLogin: boolean,
@@ -60,6 +60,7 @@ const Channels = () => {
   const [activeComponent, setActiveComponent] = useState("");
   const [PrivateRooms, setPrivateRooms] = useState<channel[]>([]);
   const [chat, setChat] = useState(false);
+  const [channel, setChannel] = useState<channel>()
 
   function handleCreate() {
     setActiveComponent("create");
@@ -101,18 +102,36 @@ const Channels = () => {
 }
 
 
-async function LeaveRoomPrivate(uid : string)
+async function handleLeaveRoom(channel : channel)
 {
     try
     {
         const token = Cookies.get('token')
         const headers = { Authorization: `Bearer ${token}` };
-        const requestBody = {
+        let requestBody;
+
+        if(channel.isGroup)
+        {
+          requestBody = {
+              isGroup: true,
+              conversationID: channel.uid,
+          };
+        }
+        else if(channel.isPrivate)
+        {
+          requestBody = {
             isPrivate: true,
-            conversationId: uid,
+            conversationId: channel.uid,
         };
-        // console.log(requestBody)
-        // console.log("auiiiid", uid)
+        }
+        else if(channel.isProtected)
+        {
+          requestBody = {
+            isProtected: true,
+            conversationId: channel.uid,
+        };
+        }
+        console.log(requestBody)
         const res = await axios.post('http://localhost:9000/chat/leave-room', requestBody,  { headers });
         if (res.status === 201)
         {
@@ -137,16 +156,25 @@ async function LeaveRoomPrivate(uid : string)
     }
 }
 
-async function handleLeaveRoomPrivate(Channel : channel)
+
+
+function handleChat(Channel: channel)
 {
-    await LeaveRoomPrivate(Channel.uid);
-}
+        console.log("Hhia channel" , Channel)
+        setChannel(Channel)
+        setChat(true)
+        
+  }    
+
+
 
   return (
 
-    chat ?  <ChatRoom /> : (
     <>
-      {activeComponent ? (
+      
+      {
+      chat ?  <ChatRoom  room={channel!} /> :
+      activeComponent ? (
         <>
           {activeComponent === "create" && <CreateChannel />}
           {activeComponent === "browse" && <BrowseChannel />}
@@ -165,10 +193,10 @@ async function handleLeaveRoomPrivate(Channel : channel)
                                   <div className='flex justify-between'>
                                   <button className=' text-white border-4 border-[#7e22ce] rounded-full 
                                   px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                                  onClick={() =>handleLeaveRoomPrivate(ChannelName)}>Leave</button>
+                                  onClick={() =>handleLeaveRoom(ChannelName)}>Leave</button>
                                       <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                                  px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                                  onClick={() => setChat(true)}>Enter</button>
+                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
+                                        onClick={() => handleChat(ChannelName)}>Enter</button>
                                   </div>
                           </>
                       </div>
@@ -190,7 +218,6 @@ async function handleLeaveRoomPrivate(Channel : channel)
         </>
       )}
     </>
-    )
   );
 };
 
