@@ -360,10 +360,10 @@ const Dms: React.FC<DmProps> = ({
       {profile ? (
         <div className="absolute z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-[100%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <div className="w-[40%]">
-            {other.provider === "email" ? (
+            {other.provider === "email" && otherpdp ? (
               <Image
                 className="object-cover mx-auto rounded-[20px]"
-                src={`/uploads/${other.avatarUrl}`}
+                src={otherpdp}
                 alt="pdp"
                 height={200}
                 width={200}
@@ -424,7 +424,7 @@ const Dms: React.FC<DmProps> = ({
                 <div className="w-50 rounded-full">
                   {other?.provider === "email" && pdp ? (
                     <Image
-                      src={pdp || ''}
+                      src={pdp || '/jjjj.png'}
                       width={200}
                       height={200}
                       alt="friend"
@@ -479,7 +479,7 @@ const Dms: React.FC<DmProps> = ({
                           <div className="w-10 rounded-full">
                             {pdp && chat.sender.provider === "email" ? (
                               <Image
-                                src={pdp || ''}
+                                src={pdp || '/jjjj.png'}
                                 width={100}
                                 height={100}
                                 alt="me"
@@ -503,7 +503,7 @@ const Dms: React.FC<DmProps> = ({
                           <div className="w-10 rounded-full">
                           {pdp && chat.sender.provider === "email" ? (
                               <Image
-                                src={pdp || ''}
+                                src={pdp || '/jjjj.png'}
                                 width={100}
                                 height={100}
                                 alt="me"

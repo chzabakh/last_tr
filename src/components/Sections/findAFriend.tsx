@@ -187,7 +187,8 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [myfriends, setMyfriends] = useState<Friend[]>([]);
   const [friendsimages, setFriendsimages] = useState<(string | undefined)[]>();
   const [invitesimages, setInvitesimages] = useState<(string | undefined)[]>();
-  const [searchimage, setSearchimage] = useState<(string | undefined)>();
+  const [searchimage, setSearchimage] = useState<string | undefined>();
+  const [i, setI] = useState("0");
 
   // console.log(invites);
 
@@ -270,7 +271,6 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       );
       setSearchimage(URL.createObjectURL(response.data));
 
-
       console.log(res.data);
       setToblk(input);
       // console.log("this: ",me?.data.nickname);
@@ -342,6 +342,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           },
         }
       );
+      setI("1");
       console.log("poi", sendFriendReq, input);
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -364,6 +365,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           },
         }
       );
+      setI("0");
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log("175" + err.response?.data.message);
@@ -375,7 +377,6 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
 
   const removeFriend = async (username: string) => {
     try {
-      console.log(username);
       const remove = await axios.delete(
         `http://localhost:9000/users/remove-friend/${username}`,
         {
@@ -384,6 +385,8 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           },
         }
       );
+      console.log(username);
+      setI("0");
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log("89" + err.response?.data.message);
@@ -734,6 +737,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       try {
         const avatarURLs = await Promise.all(avatarPromises);
         setInvitesimages(avatarURLs);
+        console.log(avatarURLs.length);
       } catch (error) {
         console.error(error);
       }
@@ -816,10 +820,10 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                   </svg>
                 </button>
-                {friend.provider === "email" && searchimage? (
+                {friend.provider === "email" && searchimage ? (
                   <Image
                     className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
-                    src={searchimage || ''}
+                    src={searchimage || "/jjjj.png"}
                     alt="pdp"
                     height={200}
                     width={200}
@@ -837,7 +841,9 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                   {friend.nickname}
                 </p>
                 <div className="w-full  absolute bottom-10 flex justify-evenly left-0">
-                  {friend.friendStatus === "None" && identical === "0" ? (
+                  {friend.friendStatus === "None" &&
+                  identical === "0" &&
+                  i !== "1" ? (
                     <button
                       onClick={(e) => handleAdd(e, "None")}
                       className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
@@ -864,7 +870,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                       </button>
                     </>
                   ) : null}
-                  {friend.friendStatus === "Pending Sent" ? (
+                  {friend.friendStatus === "Pending Sent" || i === "1" ? (
                     <button
                       onClick={(e) => handleAdd(e, "p-sent")}
                       className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
@@ -910,7 +916,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                                 alt="friendReqPic"
                                 height={200}
                                 width={200}
-                                src={invitesimages[index] || ""}
+                                src={invitesimages[index] || "/jjjj.png"}
                               />
                             ) : (
                               <Image
@@ -992,7 +998,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                                 alt="friendReqPic"
                                 height={200}
                                 width={200}
-                                src={friendsimages[index] || ""}
+                                src={friendsimages[index] || "/jjjj.png"}
                               />
                             ) : (
                               <Image
@@ -1041,10 +1047,10 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
             <>
               <div className="absolute z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-[100%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                 <div className="w-[40%]">
-                  {friend.provider === "email" && searchimage? (
+                  {friend.provider === "email" && searchimage ? (
                     <Image
                       className="object-cover mx-auto rounded-[20px]"
-                      src={searchimage || ''}
+                      src={searchimage || "/jjjj.png"}
                       alt="pdp"
                       height={200}
                       width={200}

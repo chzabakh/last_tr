@@ -167,7 +167,7 @@ const Dmpreview: React.FC<MessageProps> = ({
             <div className="w-10 rounded-full">
               {other?.provider === "email" && pdp ? (
                 <Image
-                  src={pdp || ''}
+                  src={pdp || '/jjjj.png'}
                   width={100}
                   height={100}
                   alt="friend"
