@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
 import React, {useEffect, useState, useTransition} from 'react'
 import IconButton from '@mui/material/IconButton';
@@ -9,6 +9,8 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import BrowseChannel from '@/components/Sections/browseChannel';
 import Loading from './loading';
 import { initialize } from 'next/dist/server/lib/render-server';
+
+
 
 interface owner 
 {
@@ -64,73 +66,119 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
   room
 }) => {
 
-
-
-const optionsMember = [
-  'Bane',
-  'Mute',
-  'Kick',
-  'Send Private Message',
-  'Invite to Game',
-  'See Profile',
-  'Set New Admin'
-];
-
-
-const optionsChannel = [
-  'Add password',
-];
-
-const ITEM_HEIGHT = 30;
-
-    const [rooms, setRooms] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
-    const [back, setBack] = useState(false);
-
+  interface User {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+    email: string;
+    nickname: string;
+    hash: string;
+    TwofaAutSecret: null | string;
+    TwofaAutEnabled: boolean;
+    FirstLogin: boolean;
+    avatarUrl: string;
+    state: string;
+    provider: string;
+    friendStatus: string;
+  }
+  
+  interface Message {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+    content: string;
+    roomID: string;
+    senderID: number;
+  }
+  
+  interface RoomDetails {
+    id: number;
+    createdAt: string;
+    lastMessageAt: string;
+    name: string;
+    isPrivate: null | boolean;
+    isPrivateKey: null | string;
+    isProtected: null | boolean;
+    isGroup: boolean;
+    password: null | string;
+    uid: string;
+    ownerID: number;
+    users: User[];
+    admins: User[];
+    owner: User;
+    messages: Message[];
+  }
+  
+  
+  
+  const optionsMember = [
+    'Bane',
+    'Mute',
+    'Kick',
+    'Send Private Message',
+    'Invite to Game',
+    'See Profile',
+    'Set New Admin'
+  ];
+  
+  
+  const optionsChannel = [
+    'Add password',
+  ];
+  console.log(room)
+  const ITEM_HEIGHT = 30;
+  
+  const [rooms, setRooms] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const [back, setBack] = useState(false);
+  const [message, setMessage] = useState("");
+    const [chatMessages, setChatMessages] = useState<string[]>([]);
+    const [details, setDetails] = useState<RoomDetails | null>(null);
+    
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
       setAnchorEl(event.currentTarget);
     };
-
+    
     const handleClose = () => {
       setAnchorEl(null);
     };
-
+    
     const [anchorElement, setAnchorElement] = React.useState<null | HTMLElement>(null);
     const openIt = Boolean(anchorElement);
-
+    
     const handleClickChannel = (event: React.MouseEvent<HTMLElement>) => {
       setAnchorElement(event.currentTarget);
     };
-    
+  
     const handleCloseChannel = () => {
       setAnchorElement(null);
       console.log(rooms)
     };
 
-
+    
     async function handleBane()
     {
       alert("bane");
     }
-
+    
     async function handleMute()
     {
       alert("Mute");
     }
-
-
+    
+    
     async function handleKick()
     {
       alert("Kick")
     }
-
+    
     async function handleMessage()
     {
       alert("Message");
     }
-
+    
     async function handleInvite()
     {
       alert("Invite")
@@ -197,11 +245,85 @@ const ITEM_HEIGHT = 30;
       {
 
         await getAllRooms();
+        await getDetails()
         setIsLoading(false);
       }
       initialize()
     },[])
 
+    async function handleChat()
+    {
+      try
+      {
+          const token = Cookies.get('token')
+          const headers = { Authorization: `Bearer ${token}` };
+
+          const requestBody = {
+              message: message,
+              RoomId: room.uid, 
+          };
+          console.log(message + ' ' + room.uid);
+          const res = await axios.post('http://localhost:9000/chat/send-message', requestBody,  { headers });
+          if (res.status === 201)
+          {
+            setChatMessages([...chatMessages, message]);
+            setMessage('')
+            console.log(res.data); // Assuming the backend sends the created room details
+          }                                                                                                                                                                                                                                                                                                           
+      }
+      catch(e)
+      {
+          if(axios.isAxiosError(e))
+          {
+              if(e.request)
+                  console.log("No response received!", e.request);
+              else if(e.response)
+                  console.log("Error status: ", e.response?.status);
+                  console.log("Error data: ", e.response?.data);
+          }
+          else
+          {
+              console.log("Error: ", e);
+          }
+      }
+    }
+
+    async function getDetails()
+    {
+      try
+      {
+          const token = Cookies.get('token')
+
+          const config = {
+            headers: {
+              Authorization: `Bearer ${token}`
+            },
+          };
+          console.log(config)
+          const res: AxiosResponse<RoomDetails> = await axios.get(`http://localhost:9000/chat/channel/${room.uid}/details`, config);
+          setDetails(res.data)
+          if (res.status === 200)
+          {
+            console.log("Hahia res" , details)
+            console.log(res); // Assuming the backend sends the created room details
+          }                                                                                                                                                                                                                                                                                                           
+      }
+      catch(e)
+      {
+          if(axios.isAxiosError(e))
+          {
+              if(e.request)
+                  console.log("No response received!", e.request);
+              else if(e.response)
+                  console.log("Error status: ", e.response?.status);
+                  console.log("Error data: ", e.response?.data);
+          }
+          else
+          {
+              console.log("Error: ", e);
+          }
+      }
+    }
 
     async function getAllRooms()
     {
@@ -228,8 +350,6 @@ const ITEM_HEIGHT = 30;
             }
         }
     }
-
-    console.log(room)
     if(isLoading)
     {
         return <Loading />
@@ -341,6 +461,13 @@ const ITEM_HEIGHT = 30;
             </div>
 
           <div className="mb-16 overflow-auto" />
+          <div className="mb-16 overflow-auto flex-col items-end flex">
+            {chatMessages.map((msg, index) => (
+              <div key={index} className="max-w-[300px] p-[10px] m-[5px] bg-purple-500 rounded-[50px] self-end">
+                {msg}
+              </div>
+            ))}
+          </div>
             </div>
             <div className="flex bottom-4 w-full border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
               <input
@@ -351,14 +478,12 @@ const ITEM_HEIGHT = 30;
                 }}
                 type="text"
                 placeholder="Type Message.."
+                onChange={(e) =>setMessage(e.target.value)}
                 // onChange={handleChange}
                 // value={input}
               />
               <button
-                onClick={(e) => {
-                //   sendMsg(e);
-                  // setReload(!reload);
-                }}
+                onClick={() => {handleChat()}}
               >
                 <svg
                   className="text-white m-2"
