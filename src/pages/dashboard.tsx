@@ -90,9 +90,10 @@ useEffect(() => {
           if (res.data.provider === "intra") {
               setPreview(res.data.avatarUrl);
           } else {
+
               const avatarRes = await axios.get("http://localhost:9000/users/my-avatar", { headers, responseType: "blob" });
-              const blob = new Blob([avatarRes.data], { type: "image/png" });
-              const previewUrl = URL.createObjectURL(blob);
+              const previewUrl = URL.createObjectURL(avatarRes.data);
+              console.log("Preview" , previewUrl)
               setPreview(previewUrl);
           }
       } catch (err) {

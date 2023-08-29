@@ -9,10 +9,14 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import BrowseChannel from '@/components/Sections/browseChannel';
 import Loading from './loading';
 import { initialize } from 'next/dist/server/lib/render-server';
+import Image from 'next/image';
+import { StaticImport } from 'next/dist/shared/lib/get-img-props';
+import { getImageSize } from 'next/dist/server/image-optimizer';
+import { getSupportedBrowsers } from 'next/dist/build/utils';
+import Avatar from '../components/Avatar'
 
 
-
-interface owner 
+interface Owner 
 {
     FirstLogin: boolean,
     TwoFaAuthEnabled: boolean,
@@ -28,7 +32,7 @@ interface owner
     state: string,
     updatedAt: string,
 }
-interface user {
+export interface Users {
     TwofaAutEnabled: boolean,
     TwofaAutSecret : boolean,
     avatarUrl: string,
@@ -51,11 +55,26 @@ interface channel{
     isProtected: boolean,
     lastMessageAt: string,
     name: string,
-    owner: owner,
-    ownerID: number,
+    Owner: Owner,
+    OwnerID: number,
     password: string,
     uid: string, 
-    users: user[],
+    Users: Users[],
+}
+
+export interface User {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  email: string;
+  nickname: string;
+  hash: string;
+  TwofaAutSecret: null | string;
+  TwofaAutEnabled: boolean;
+  FirstLogin: boolean;
+  avatarUrl: string;
+  state: string;
+  provider: string;
 }
 
 interface ChatRoomProps {
@@ -65,8 +84,7 @@ interface ChatRoomProps {
 const ChatRoom: React.FC<ChatRoomProps> = ({
   room
 }) => {
-
-  interface User {
+  type User = {
     id: number;
     createdAt: string;
     updatedAt: string;
@@ -80,24 +98,30 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
     state: string;
     provider: string;
     friendStatus: string;
-  }
+  };
+
+  // type Sender = {
+  //   avatarUrl: string;
+  //   nickname: string;
+  //   provider: string;
+  //   id : number;
+  // }
   
-  interface Message {
-    id: number;
-    createdAt: string;
-    updatedAt: string;
+  type Message = {
     content: string;
     roomID: string;
-    senderID: number;
-  }
+    seen: User[];
+    createdAt: string;
+    sender: User;
+  };
   
-  interface RoomDetails {
+  type ChatRoom = {
     id: number;
     createdAt: string;
     lastMessageAt: string;
     name: string;
     isPrivate: null | boolean;
-    isPrivateKey: null | string;
+    isPrivateKey: null | boolean;
     isProtected: null | boolean;
     isGroup: boolean;
     password: null | string;
@@ -107,7 +131,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
     admins: User[];
     owner: User;
     messages: Message[];
-  }
+  };
+  
   
   
   
@@ -120,22 +145,31 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
     'See Profile',
     'Set New Admin'
   ];
+
+  type Images =
+  {
+    id: number;
+    avatarUrl: string;
+  }
   
   
   const optionsChannel = [
     'Add password',
   ];
-  console.log(room)
   const ITEM_HEIGHT = 30;
   
   const [rooms, setRooms] = useState([]);
+  const [image, setImage] = useState<(string | undefined)[]>([]);
+  const [nickname, setNickname] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [back, setBack] = useState(false);
   const [message, setMessage] = useState("");
-    const [chatMessages, setChatMessages] = useState<string[]>([]);
-    const [details, setDetails] = useState<RoomDetails | null>(null);
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [details, setDetails] = useState<ChatRoom | null>(null);
+
     
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
       setAnchorEl(event.currentTarget);
@@ -144,7 +178,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
     const handleClose = () => {
       setAnchorEl(null);
     };
-    
+
+
     const [anchorElement, setAnchorElement] = React.useState<null | HTMLElement>(null);
     const openIt = Boolean(anchorElement);
     
@@ -228,6 +263,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
       }
     };
 
+    
+    useEffect(() => {
+    }, [])
 
     const handleOptionsChannel = (option : string) => {
       switch(option)
@@ -239,17 +277,54 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
       }
   };
 
+    useEffect(() => {
+      async function fetchAvatrs() {
+      const getImages = users.map(async (user) => {
+          const token = Cookies.get('token')
+          const headers = { Authorization: `Bearer ${token}` };
+          // console.log(message + ' ' + room.uid);
+          const response = await axios.get(`http://localhost:9000/users/${user.id}/avatar`,{ headers, responseType: "blob"});
+          if (user.provider === 'email') {
+            return URL.createObjectURL(response.data);
+          }
+          console.log("Im Here EMAI!");
+          return user.avatarUrl;
+        })
+        const images = await Promise.all(getImages);
+        setImage(images);
+        console.log("IMAGES ", images);
+      }
+      
+      fetchAvatrs();
+    }, [users])
+
     useEffect(() =>
     {
       async function initialize()
       {
 
         await getAllRooms();
-        await getDetails()
+        await getDetails();
+        await  getUser();
         setIsLoading(false);
       }
       initialize()
     },[])
+
+
+    // useEffect(() =>
+    // {
+    //   async function initialize()
+    //   {
+    //     users.map((user) =>
+    //     {
+    //         await findImage(user);
+    //     })
+
+    //   }
+    //   initialize();
+
+    // },[])
 
     async function handleChat()
     {
@@ -266,7 +341,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
           const res = await axios.post('http://localhost:9000/chat/send-message', requestBody,  { headers });
           if (res.status === 201)
           {
-            setChatMessages([...chatMessages, message]);
             setMessage('')
             console.log(res.data); // Assuming the backend sends the created room details
           }                                                                                                                                                                                                                                                                                                           
@@ -288,6 +362,49 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
       }
     }
 
+
+    // async function getImage(id : number) : Promise<string>
+    // {
+    //   try{
+    //       const token = Cookies.get('token')
+    //       const headers = { Authorization: `Bearer ${token}` };
+    //       console.log(message + ' ' + room.uid);
+    //       const res = await axios.get(`http://localhost:9000/users/${id}/avatar`,{ headers, responseType: "blob"});
+    //       if (res.status === 200)
+    //       {
+    //         const image = URL.createObjectURL(res.data);
+    //         console.log("HAL IMAAGE" , image)
+    //         return image;
+    //       }                   
+    //   }
+    //   catch(e)
+    //   {
+    //     if(axios.isAxiosError(e))
+    //     {
+    //         if(e.request)
+    //             console.log("No response received!", e.request);
+    //         else if(e.response)
+    //             console.log("Error status: ", e.response?.status);
+    //             console.log("Error data: ", e.response?.data);
+    //     }
+    //     else
+    //     {
+    //         console.log("Error: ", e);
+    //     }
+
+    //   }
+    //   return ("../../public/place.png");
+    // }
+
+    const handleKeyDown = (event: any) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();  
+        handleChat();
+      }
+    };
+
+
+
     async function getDetails()
     {
       try
@@ -299,13 +416,52 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
               Authorization: `Bearer ${token}`
             },
           };
-          console.log(config)
-          const res: AxiosResponse<RoomDetails> = await axios.get(`http://localhost:9000/chat/channel/${room.uid}/details`, config);
-          setDetails(res.data)
+          console.log(room.uid)
+          const res: AxiosResponse<ChatRoom> = await axios.get(`http://localhost:9000/chat/channel/${room.uid}/details`, config);
           if (res.status === 200)
           {
-            console.log("Hahia res" , details)
-            console.log(res); // Assuming the backend sends the created room details
+            setDetails(res.data);
+            setUsers(res.data.users);
+            console.log("Users: ", users)
+            console.log("Hahia details" , details)
+            console.log("This is the data" , res.data);
+            setChatMessages(res.data.messages);
+            console.log("Hahome l messagat", chatMessages);
+            // console.log(res); // Assuming the backend sends the created room details
+          }                                                                                                                                                                                                                                                                                                           
+      }
+      catch(e)
+      {
+          if(axios.isAxiosError(e))
+          {
+              if(e.request)
+                  console.log("No response received!", e.request);
+              else if(e.response)
+                  console.log("Error status: ", e.response?.status);
+                  console.log("Error data: ", e.response?.data);
+          }
+          else
+          {
+              console.log("Error: ", e);
+          }
+      }
+    }
+
+    console.log("Hahia l images: ", image)
+
+    async function getUser()
+    {
+      try
+      {
+          const token = Cookies.get('token')
+
+          const headers = { Authorization: `Bearer ${token}` };
+          const res = await axios.get("http://localhost:9000/users/me", { headers });
+          if (res.status === 200)
+          {
+            setNickname(res.data.nickname);
+            console.log(nickname);
+            // console.log(res); // Assuming the backend sends the created room details
           }                                                                                                                                                                                                                                                                                                           
       }
       catch(e)
@@ -350,6 +506,31 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
             }
         }
     }
+
+    // async function findImage(member : User)
+    // {
+    //   if(member.provider === "email")
+    //   {
+    //       const uid : number = member.id;
+    //       const image : string = await getImage(uid);
+    //       setImage((curr) => {
+    //           console.log("HAHOWA L CURRENT ", curr)
+       
+    //           return [...curr, {id : uid, avatarUrl: image}]
+            
+    //       })
+          
+    //   }
+    //   else
+    //   {
+    //     setImage((curr) => {
+          
+    //         return [...curr, {id : member.id, avatarUrl: member.avatarUrl}]
+    //     })
+    //   }
+  
+    // }
+
     if(isLoading)
     {
         return <Loading />
@@ -452,8 +633,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                     },
                   }}
                 >
-                  {optionsChannel.map((optionTwo) => (
-                    <MenuItem key={optionTwo}  onClick={() => handleOptionsChannel(optionTwo)}>
+                  {optionsChannel.map((optionTwo, index) => (
+                    <MenuItem key={index}  onClick={() => handleOptionsChannel(optionTwo)}>
                       {optionTwo}
                     </MenuItem>
                   ))}
@@ -461,20 +642,60 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
             </div>
 
           <div className="mb-16 overflow-auto" />
-          <div className="mb-16 overflow-auto flex-col items-end flex">
-            {chatMessages.map((msg, index) => (
-              <div key={index} className="max-w-[300px] p-[10px] m-[5px] bg-purple-500 rounded-[50px] self-end">
-                {msg}
+          <div className="mb-16 flex-col items-end flex overflow-y-auto max-h-[400px]" >
+                {
+                chatMessages.map((msg, index) => (
+                  nickname === msg.sender.nickname ?
+                   (
+                  <>
+                  <div className='flex gap-2 '>
+                  <div 
+                    key={index} 
+                    className="max-w-[300px] p-[10px] m-[5px] bg-purple-500 rounded-[50px] self-end break-words "
+                  >
+                    <div className='flex flex-col '>{msg.content}</div>                  
+                  </div>
+                  {msg.sender.provider === 'intra' ? (<>
+                    <Image src={msg.sender.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={50} width={50} className='rounded-full max-w-[50px] max-h-[50px]' />
+                  </>) : (<>
+                  <Avatar currentUser={msg.sender}/>
+                  </>)}
+                    </div>
+                  <div className='text-xs opacity-[0.3]' > {msg.createdAt}</div>
+                    </>
+                  
+                  ) 
+                  :
+                  (
+                    <>
+                    <div className='flex  self-start gap-2 '>
+            
+                    {msg.sender.provider === 'intra' ? (<>
+                    <Image src={msg.sender.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={50} width={50} className='rounded-full max-w-[50px] max-h-[50px]' />
+                  </>) : (<>
+                  <Avatar currentUser={msg.sender}/>
+                  </>)}
+                    <div 
+                    key={index} 
+                    className="max-w-[300px] p-[10px] m-[5px] bg-purple-400 rounded-[50px] self-start break-words"
+                  >
+                    {msg.content}
+                  </div>
+                    </div>
+                  <div className='text-xs opacity-[0.3] self-start' > {msg.createdAt}</div>
+                    </>
+                  )
+                )
+                )}
               </div>
-            ))}
-          </div>
+
             </div>
             <div className="flex bottom-4 w-full border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
               <input
                 className="w-[100%] bg-transparent pl-3 py-4 focus:outline-none"
                 onKeyDown={(e) => {
-                //   handleKeyDown(e);
-                  // setReload(!reload);
+                handleKeyDown(e)
+                setMessage('')
                 }}
                 type="text"
                 placeholder="Type Message.."
@@ -483,7 +704,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                 // value={input}
               />
               <button
-                onClick={() => {handleChat()}}
+                 onClick={() => 
+                  {  
+              
+                   handleChat();
+                   setMessage('')
+                 }}
               >
                 <svg
                   className="text-white m-2"
