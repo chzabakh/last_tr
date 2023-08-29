@@ -26,9 +26,7 @@ const Avatar: React.FC<AvatarProps> = ({currentUser}) => {
 
     return (
         <>
- 
             <Image src={imageURL || "/place.png"} alt="avatar" width={50} height={50} className='rounded-full max-w-[50px] max-h-[50px]'/>
-
         </>
     )
 }

@@ -137,7 +137,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
   
   
   const optionsMember = [
-    'Bane',
+    'Ban',
     'Mute',
     'Kick',
     'Send Private Message',
@@ -363,42 +363,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
     }
 
 
-    // async function getImage(id : number) : Promise<string>
-    // {
-    //   try{
-    //       const token = Cookies.get('token')
-    //       const headers = { Authorization: `Bearer ${token}` };
-    //       console.log(message + ' ' + room.uid);
-    //       const res = await axios.get(`http://localhost:9000/users/${id}/avatar`,{ headers, responseType: "blob"});
-    //       if (res.status === 200)
-    //       {
-    //         const image = URL.createObjectURL(res.data);
-    //         console.log("HAL IMAAGE" , image)
-    //         return image;
-    //       }                   
-    //   }
-    //   catch(e)
-    //   {
-    //     if(axios.isAxiosError(e))
-    //     {
-    //         if(e.request)
-    //             console.log("No response received!", e.request);
-    //         else if(e.response)
-    //             console.log("Error status: ", e.response?.status);
-    //             console.log("Error data: ", e.response?.data);
-    //     }
-    //     else
-    //     {
-    //         console.log("Error: ", e);
-    //     }
-
-    //   }
-    //   return ("../../public/place.png");
-    // }
-
-    const handleKeyDown = (event: any) => {
+    
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
         event.preventDefault();  
+        // setMessage('')
         handleChat();
       }
     };
@@ -447,7 +416,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
       }
     }
 
-    console.log("Hahia l images: ", image)
+   
 
     async function getUser()
     {
@@ -507,34 +476,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
         }
     }
 
-    // async function findImage(member : User)
-    // {
-    //   if(member.provider === "email")
-    //   {
-    //       const uid : number = member.id;
-    //       const image : string = await getImage(uid);
-    //       setImage((curr) => {
-    //           console.log("HAHOWA L CURRENT ", curr)
-       
-    //           return [...curr, {id : uid, avatarUrl: image}]
-            
-    //       })
-          
-    //   }
-    //   else
-    //   {
-    //     setImage((curr) => {
-          
-    //         return [...curr, {id : member.id, avatarUrl: member.avatarUrl}]
-    //     })
-    //   }
-  
-    // }
 
     if(isLoading)
     {
         return <Loading />
     }
+
   return (
     back ? <BrowseChannel /> : (
     <>
@@ -546,51 +493,67 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                 <div className='text-lg self-center'>Group members:</div>
               
                 <div className='flex gap-4 flex-col'>
-                  <div className='flex flex-row justify-between w-full'>
+                  <div className='flex flex-col justify-between w-full h-full items-center gap-5'>
                   {
                     
                     //NOT THE FUCKING ROOM, I HAVE TO RENDER HERE THE MEMBERS OF THE CURRENT CHANNNEL, SOMEHOW I NEED TO KNOW IN WHICH CHANNEL I AM 
                     //THEN I NEED TO RENDER ITS INFORMATION
 
-                //     rooms.map((room) => <div>{
-                //       room.name   
-                //     }
-                //     <IconButton
-                //   style={{color: "white"}}
-                //   aria-label="more"
-                //   id="long-button"
-                //   aria-controls={open ? 'long-menu' : undefined}
-                //   aria-expanded={open ? 'true' : undefined}
-                //   aria-haspopup="true"
-                //   onClick={handleClick}
-                // >
-                //   <MoreHorizIcon />
-                // </IconButton>
-                // <Menu
-                //   id="long-menu"
-                //   MenuListProps={{
-                //     'aria-labelledby': 'long-button',
-                //   }}
-                //   anchorEl={anchorEl}
-                //   open={open}
-                //   onClose={handleClose}
-                //   PaperProps={{
-                //     style: {
-                //       maxHeight: ITEM_HEIGHT * 4.5,
-                //       width: '20ch',
-                //       backgroundColor: '#3c005a', 
-                //       color: 'white'
-                //       // useTransition: '2sec'
-                //     },
-                //   }}
-                // >
-                //   {optionsMember.map((option) => (
-                //     <MenuItem key={option}  onClick={() => handleOptions(option)}>
-                //       {option}
-                //     </MenuItem>
-                //   ))}
-                // </Menu>
-                // </div>)
+               users.map((user, index) => 
+                    
+            <div className='w-full flex '>
+               <div className='flex-1 w-[50%] '>
+               {user.provider === 'intra' ? (<>
+                    <Image src={user.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={50} width={50} className='rounded-full max-w-[50px] max-h-[50px]' />
+                  </>) : (<>
+                  <Avatar currentUser={user}/>
+                  </>)}
+              </div>
+              <div className='flex-1 w-[50%] pt-3 '>
+              {user.nickname}
+              </div>
+              
+                <div className='flex justify-end  w-[50%] self-end'>
+                <IconButton
+                style={{color: "white"}}
+                aria-label="more"
+                id="long-button"
+                aria-controls={open ? 'long-menu' : undefined}
+                aria-expanded={open ? 'true' : undefined}
+                aria-haspopup="true"
+                onClick={handleClick}
+                className="bg-white"
+              >
+                <MoreHorizIcon />
+              </IconButton>
+      <Menu
+                id="long-menu"
+                MenuListProps={{
+                  'aria-labelledby': 'long-button',
+                }}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                PaperProps={{
+                  style: {
+                    maxHeight: ITEM_HEIGHT * 4.5,
+                    width: '20ch',
+                    backgroundColor: '#3c005a', 
+                    color: 'white'
+                    // useTransition: '2sec'
+                  },
+                }}
+              >
+              {optionsMember.map((option) =>
+              (
+                <MenuItem key={option}  onClick={() => handleOptions(option)}>
+                  {option}
+                </MenuItem>
+              ))}
+                </Menu>
+                            </div>
+                       
+            </div>)
                   }
                   
                   </div>
@@ -603,7 +566,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
           <div className="flex flex-col  p-0 m-0 justify-start w-full h-full pt-">
             <div className='flex flex-row justify-between'>
              <div className='self-center w-[60%]  flex felx-row justify-end'>
-              Channel Name
+              {details?.name}
             </div>
             <IconButton
                   style={{color: "white"}}
@@ -695,7 +658,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                 className="w-[100%] bg-transparent pl-3 py-4 focus:outline-none"
                 onKeyDown={(e) => {
                 handleKeyDown(e)
-                setMessage('')
+
                 }}
                 type="text"
                 placeholder="Type Message.."
