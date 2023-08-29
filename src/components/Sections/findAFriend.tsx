@@ -6,7 +6,6 @@ import Cookies from "js-cookie";
 import Dms from "./dms";
 import Messages from "./messages";
 import { useSocket } from "@/pages/socket_context";
-import { useRouter } from "next/navigation";
 
 interface ChatProps {
   dmm: string;
@@ -121,7 +120,6 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [other, setOther] = useState<User>();
   const [loading, setLoading] = useState(false);
   const [plus, setPlus] = useState(1);
-  const router = useRouter();
   const [resetFriends, setResetFriends] = useState<boolean>(false);
 
   const [chat, setChat] = useState<Chat>({
@@ -594,7 +592,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         setLoading(false);
         setPlus(plus + 1);
         console.log("false");
-        callDm(senderId);
+        // callDm(senderId);
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
