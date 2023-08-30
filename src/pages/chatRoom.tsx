@@ -14,6 +14,7 @@ import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { getImageSize } from 'next/dist/server/image-optimizer';
 import { getSupportedBrowsers } from 'next/dist/build/utils';
 import Avatar from '../components/Avatar'
+import { io, Socket } from 'socket.io-client';
 
 
 interface Owner 
@@ -263,9 +264,38 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
       }
     };
 
+    const [socket, setSocket] = useState<Socket | null>(null)
     
     useEffect(() => {
+      const socket = io('http://localhost:9000/chat')
+      setSocket(socket);
+
+      const conversationId = room.uid
+      console.log("CONVERSATION", conversationId)
+      socket?.emit('joinRoom', {conversationId})
+
+      return () => {
+        socket?.off('joinRoom')
+        socket?.disconnect();
+      }
+
     }, [])
+
+    useEffect(() => {
+      if (socket) {
+        const newMessageHandler = (message: Message) => {
+          console.log(message)
+          setChatMessages((cur) => [...cur, message]);
+          // bottomRef?.current?.scrollIntoView();
+        };
+  
+        socket.on("message:new", newMessageHandler);
+        return () => {
+          socket.off("message:new");
+          // socket?.disconnect();
+        };
+      }
+    }, [socket]);
 
     const handleOptionsChannel = (option : string) => {
       switch(option)
@@ -341,7 +371,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
           const res = await axios.post('http://localhost:9000/chat/send-message', requestBody,  { headers });
           if (res.status === 201)
           {
-            setMessage('')
+            // setMessage('')
             console.log(res.data); // Assuming the backend sends the created room details
           }                                                                                                                                                                                                                                                                                                           
       }

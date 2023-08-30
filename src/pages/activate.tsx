@@ -5,6 +5,8 @@ import Router, { useRouter } from "next/router";
 import Dashboard from "./dashboard";
 import Place from "../../public/place.png";
 import Cookies from "js-cookie";
+import { Route } from "react-router-dom";
+import router from "next/router";
 
 
 const activate = () => {
@@ -33,7 +35,8 @@ const activate = () => {
         const auth = await axios.post('http://localhost:9000/2fa/enable', {}, {headers});
         console.log(auth)
         // setActivate(true);
-        // alert('jeue')  
+        router.push('/dashboard');
+        alert('jeue')  
       }
       else
       {
