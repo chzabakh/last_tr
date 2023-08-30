@@ -128,6 +128,7 @@ const Dms: React.FC<DmProps> = ({
     friendStatus: "null",
     provider: "null",
   });
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   // console.log("tocheck",chat);
 
@@ -165,6 +166,7 @@ const Dms: React.FC<DmProps> = ({
 
   useEffect(() => {
     console.log("df");
+    bottomRef?.current?.scrollIntoView();
     // if (!con) {
     // setCon(true);
     const socket = io("http://localhost:9000/chat");
@@ -181,10 +183,12 @@ const Dms: React.FC<DmProps> = ({
 
   useEffect(() => {
     if (socket) {
-      socket.on("message:new", (message: Message) => {
-        console.log(";", message);
+      const newMessageHandler = (message: Message) => {
         setNewmsg((cur) => [...cur, message]);
-      });
+        bottomRef?.current?.scrollIntoView();
+      };
+
+      socket.on("message:new", newMessageHandler);
       return () => {
         socket.off("message:new");
         // socket?.disconnect();
@@ -225,7 +229,6 @@ const Dms: React.FC<DmProps> = ({
           }
         );
         setOtherpdp(URL.createObjectURL(response.data));
-
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -323,9 +326,7 @@ const Dms: React.FC<DmProps> = ({
     await blockUser();
   };
 
-  useEffect(() => {
-
-  },[])
+  useEffect(() => {}, []);
 
   // useEffect(() => {
   //   // if (!other){
@@ -424,7 +425,7 @@ const Dms: React.FC<DmProps> = ({
                 <div className="w-50 rounded-full">
                   {other?.provider === "email" && pdp ? (
                     <Image
-                      src={pdp || '/jjjj.png'}
+                      src={pdp || "/jjjj.png"}
                       width={200}
                       height={200}
                       alt="friend"
@@ -465,8 +466,8 @@ const Dms: React.FC<DmProps> = ({
             </div>
           </div>
           <div className="border border-opacity-30 border-violet-400 h-full my-0 mr-5 w-[1px]"></div>
-          <div className="flex flex-col p-0 m-0 justify-center w-full h-full pt-5">
-            <div className="mb-16 overflow-auto " ref={chatContainerRef}>
+          <div className="flex Hello flex-col justify-center w-full h-full pt-5">
+            <div className="flex-1 overflow-y-auto " ref={chatContainerRef}>
               {isLoading ? (
                 <p>Loading...</p>
               ) : (
@@ -479,7 +480,7 @@ const Dms: React.FC<DmProps> = ({
                           <div className="w-10 rounded-full">
                             {pdp && chat.sender.provider === "email" ? (
                               <Image
-                                src={pdp || '/jjjj.png'}
+                                src={pdp || "/jjjj.png"}
                                 width={100}
                                 height={100}
                                 alt="me"
@@ -501,9 +502,9 @@ const Dms: React.FC<DmProps> = ({
                       <div className="chat chat-start">
                         <div className="chat-image avatar">
                           <div className="w-10 rounded-full">
-                          {pdp && chat.sender.provider === "email" ? (
+                            {pdp && chat.sender.provider === "email" ? (
                               <Image
-                                src={pdp || '/jjjj.png'}
+                                src={pdp || "/jjjj.png"}
                                 width={100}
                                 height={100}
                                 alt="me"
@@ -525,8 +526,9 @@ const Dms: React.FC<DmProps> = ({
                   </div>
                 ))
               )}
+              <div className="pt-2" ref={bottomRef} />
             </div>
-            <div className="flex absolute bottom-4 w-[45%] lg:w-[50%] xl:w-[60%] border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
+            <div className="flex bottom-4 w-[45%] lg:w-[50%] xl:w-[60%] border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
               <input
                 className="w-full bg-transparent pl-3 py-4 focus:outline-none"
                 onKeyDown={(e) => {

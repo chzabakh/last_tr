@@ -6,13 +6,14 @@ import Cookies from "js-cookie";
 import Dms from "./dms";
 import Messages from "./messages";
 import { useSocket } from "@/pages/socket_context";
+import FriendAvatar from "../FriendAvatar";
 
 interface ChatProps {
   dmm: string;
   updateItemm: (newValue: string, newDm: string) => void;
 }
 
-interface Friend {
+export interface Friend {
   avatarUrl: string;
   id: number;
   nickname: string;
@@ -1013,27 +1014,20 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                       >
                         <div className="chat-image avatar my-auto mx-3">
                           <div className="w-14 rounded-full">
-                            {friend.provider === "email" &&
-                            friendsimages &&
-                            !loading ? (
+                            {friend.provider === "email" ? (
+                              <>
+                                <FriendAvatar currentUser={friend} />
+                              </>
+                            ) : (
                               <>
                                 <Image
-                                  key={index}
                                   alt="friendReqPic"
                                   height={200}
                                   width={200}
-                                  src={friendsimages[index] || "/jjjj.png"}
+                                  src={`/jjjj.png`}
                                 />
                               </>
-                            ) : null}
-                            {friend.provider === "intra" && !loading ? (
-                              <Image
-                                alt="friendReqPic"
-                                height={200}
-                                width={200}
-                                src={`${friend.avatarUrl}`}
-                              />
-                            ) : null}
+                            )}
                           </div>
                         </div>
                         <span>{friend.nickname} :</span>
