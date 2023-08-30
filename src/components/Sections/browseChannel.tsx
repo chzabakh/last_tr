@@ -77,7 +77,7 @@ const BrowseChannel = () => {
     const [privJoined, setPrivJoined] = useState(false);
     const [chat, setChat] = useState(false);
     const [email, setUserEmail] = useState("");
-    const [hide, setHide] = useState(false);
+    const [hide, setHide] = useState<"true" | "false">("false");
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
     const [enterPass, setEnterPass] = useState(false);
@@ -173,7 +173,7 @@ const BrowseChannel = () => {
             const res = await axios.post('http://localhost:9000/chat/join-room', requestBody,  { headers });
             if (res.status === 201)
             {
-                setHide(true);
+                setHide("true");
                 console.log("Room successfully joined!");
                 console.log(res.data); // Assuming the backend sends the created room details
             }                                                                                                                                                                                                                                                                                                           
@@ -219,7 +219,7 @@ const BrowseChannel = () => {
             if (res.status === 201)
             {
                 console.log("responnnnnnse" , res.status)
-                setHide(true);
+                setHide("true");
                 console.log("Room successfully joined!");
                 console.log(res.data); // Assuming the backend sends the created room details
             }                                                                                                                                                                                                                                                                                                           
@@ -294,10 +294,8 @@ const BrowseChannel = () => {
             if (res.status === 201)
             {
                 setRooms([]);
-                setHide(false);
                 console.log("Room Left!");
                 console.log(res.data);
-                setHide(true);
             }                                                                                                                                                                                                                                                                                                         
         }
         catch(e)
@@ -333,7 +331,6 @@ const BrowseChannel = () => {
             const res = await axios.post('http://localhost:9000/chat/leave-room', requestBody,  { headers });
             if (res.status === 201)
             {
-                setHide(false);
                 console.log("Room Left!");
                 console.log(res.data);
                 setHide(true);
@@ -528,20 +525,29 @@ const BrowseChannel = () => {
                         {
                        
                         PublicRooms.map((ChannelName: channel) => (
-                            <div key={ChannelName.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
+                            <div key={ChannelName.id} className='bg-gradient-to-r  from-black to-purple-500 p-4 rounded-md text-white shadow-md'>
                                 <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
-                            {
+                                <div className='self-end flex items-end justify-end'>
+                                    {
 
-                                !hide?
-                               <>
-                        
-                                <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                                px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                                onClick={() =>handlePublicRoom(ChannelName)}>Join</button>
-                               </> 
-                               :
-                               null
-                            }
+                                        !hide? (
+                                    <>
+                                
+                                        <button className=' text-white border-4 border-black rounded-full 
+                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
+                                        onClick={() =>handlePublicRoom(ChannelName)}>Join</button>
+                                    </> 
+
+                                        )
+                                    :
+                                    (
+                                        <button className=' text-white border-4 border-black rounded-full 
+                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 ' 
+                                        onClick={() => handleChat(ChannelName)}>Enter</button>
+
+                                    )
+                                    }
+                                    </div>
                             </div>
                         ))
                         }
@@ -553,7 +559,7 @@ const BrowseChannel = () => {
                     {
                        
                        ProtectedRooms.map((ChannelName: channel) => (
-                           <div key={ChannelName.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
+                           <div key={ChannelName.id} className='bg-gradient-to-r from-black to-purple-500 p-4 rounded-md text-white shadow-md'>
                                <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
                            {
                             

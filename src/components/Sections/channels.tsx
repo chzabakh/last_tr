@@ -110,34 +110,36 @@ async function handleLeaveRoom(channel : channel)
         const headers = { Authorization: `Bearer ${token}` };
         let requestBody;
 
-        if(channel.isGroup)
+        if(channel.isGroup === true)
         {
           requestBody = {
               isGroup: true,
-              conversationID: channel.uid,
+              conversationdId: channel.uid,
           };
         }
-        else if(channel.isPrivate)
+        else if(channel.isPrivate )
         {
           requestBody = {
             isPrivate: true,
-            conversationId: channel.uid,
+            conversationdId: channel.uid,
         };
         }
         else if(channel.isProtected)
         {
           requestBody = {
             isProtected: true,
-            conversationId: channel.uid,
+            conversationdId: channel.uid,
         };
         }
-        console.log(requestBody)
+        // console.log(requestBody)
         const res = await axios.post('http://localhost:9000/chat/leave-room', requestBody,  { headers });
-        if (res.status === 201)
-        {
-            console.log("Room Left!");
-            console.log(res.data);
-        }                                                                                                                                                                                                                                                                                                         
+
+        console.log(res.data)
+        // if (res.status === 201)
+        // {
+        //     console.log("Room Left!");
+        //     console.log(res.data);
+        // }                                                                                                                                                                                                                                                                                                         
     }
     catch(e)
     {
@@ -187,15 +189,15 @@ function handleChat(Channel: channel)
             <div className="grid grid-cols6 gap-4">
                   {
                     PrivateRooms.map((ChannelName: channel) => (
-                      <div key={ChannelName.id} className='bg-[#3b0764]/80 p-4 rounded-md text-white shadow-md'>
-                          <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
+                      <div key={ChannelName.id} className='bg-gradient-to-r from-black to-purple-500 my-3 p-4 rounded-md text-white shadow-md'>
+                          <h3 className='text-xl font-semibold '>{ChannelName.name}</h3>
                           <>
-                                  <div className='flex justify-between'>
-                                  <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                                  px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
+                                  <div className='flex justify-end  gap-3'>
+                                  <button className=' text-white border-4 border-black  rounded-full 
+                                  py-2 px-4 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
                                   onClick={() =>handleLeaveRoom(ChannelName)}>Leave</button>
-                                      <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
+                                      <button className=' text-white border-4 border-black  rounded-full 
+                                        py-2 px-4 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
                                         onClick={() => handleChat(ChannelName)}>Enter</button>
                                   </div>
                           </>
