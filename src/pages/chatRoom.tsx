@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
-import React, {useEffect, useState, useTransition} from 'react'
+import React, {useEffect, useRef, useState, useTransition} from 'react'
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -56,11 +56,11 @@ interface channel{
     isProtected: boolean,
     lastMessageAt: string,
     name: string,
-    Owner: Owner,
-    OwnerID: number,
+    owner: Owner,
+    ownerID: number,
     password: string,
     uid: string, 
-    Users: Users[],
+    users: Users[],
 }
 
 export interface User {
@@ -180,6 +180,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
       setAnchorEl(null);
     };
 
+
+    const messageRef = useRef<HTMLDivElement>(null);
+
+    const scrollDown = () =>
+    {
+      if (messageRef.current) 
+        messageRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+    
+    useEffect(() => {
+      scrollDown();
+    }, [chatMessages]);
 
     const [anchorElement, setAnchorElement] = React.useState<null | HTMLElement>(null);
     const openIt = Boolean(anchorElement);
@@ -309,6 +321,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
 
     useEffect(() => {
       async function fetchAvatrs() {
+
       const getImages = users.map(async (user) => {
           const token = Cookies.get('token')
           const headers = { Authorization: `Bearer ${token}` };
@@ -320,6 +333,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
           console.log("Im Here EMAI!");
           return user.avatarUrl;
         })
+        
         const images = await Promise.all(getImages);
         setImage(images);
         console.log("IMAGES ", images);
@@ -394,14 +408,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
 
 
     
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();  
-        // setMessage('')
-        handleChat();
-      }
-    };
-
 
 
     async function getDetails()
@@ -646,7 +652,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                     key={index} 
                     className="max-w-[300px] p-[10px] m-[5px] bg-purple-500 rounded-[50px] self-end break-words "
                   >
-                    <div className='flex flex-col '>{msg.content}</div>                  
+                    <div className='flex flex-col '>{msg.content}</div> 
+                    <div ref={messageRef}></div>                 
                   </div>
                   {msg.sender.provider === 'intra' ? (<>
                     <Image src={msg.sender.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={50} width={50} className='rounded-full max-w-[50px] max-h-[50px]' />
@@ -673,6 +680,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                     className="max-w-[300px] p-[10px] m-[5px] bg-purple-400 rounded-[50px] self-start break-words"
                   >
                     {msg.content}
+                    <div ref={messageRef}></div> 
                   </div>
                     </div>
                   <div className='text-xs opacity-[0.3] self-start' > {msg.createdAt}</div>
@@ -687,22 +695,21 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
               <input
                 className="w-[100%] bg-transparent pl-3 py-4 focus:outline-none"
                 onKeyDown={(e) => {
-                handleKeyDown(e)
-
+                  if (e.key === 'Enter') {
+                    handleChat();
+                    setMessage('');  // clear only if Enter is pressed
+                  }
                 }}
                 type="text"
+                value={message}
                 placeholder="Type Message.."
-                onChange={(e) =>setMessage(e.target.value)}
+                onChange={(e) =>{setMessage(e.target.value)}}
                 // onChange={handleChange}
                 // value={input}
               />
               <button
                  onClick={() => 
-                  {  
-              
-                   handleChat();
-                   setMessage('')
-                 }}
+                   handleChat()}
               >
                 <svg
                   className="text-white m-2"
@@ -730,3 +737,4 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
 }
 
 export default ChatRoom
+

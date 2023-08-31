@@ -6,9 +6,11 @@ import React, {useEffect, useState} from 'react'
 import  Channels  from './channels';
 import ChatRoom from '../../pages/chatRoom';
 import Loading from '@/pages/loading';
+
+
 const BrowseChannel = () => {
 
-    interface owner 
+    interface Owner 
     {
         FirstLogin: boolean,
         TwoFaAuthEnabled: boolean,
@@ -24,7 +26,7 @@ const BrowseChannel = () => {
         state: string,
         updatedAt: string,
     }
-    interface user {
+    interface Users {
         TwofaAutEnabled: boolean,
         TwofaAutSecret : boolean,
         avatarUrl: string,
@@ -47,11 +49,11 @@ const BrowseChannel = () => {
         isProtected: boolean,
         lastMessageAt: string,
         name: string,
-        owner: owner,
-        ownerID: number,
+        Owner: Owner,
+        OwnerID: number,
         password: string,
         uid: string, 
-        users: user[],
+        Users: Users[],
     }
 
 
@@ -72,10 +74,10 @@ const BrowseChannel = () => {
     const [isprivate, setPrivate] = useState(false);
     const [fadeOut, setFadeOut] = useState(false);
     const [roomId, setRoomId] = useState("");
-
+    const [chat, setChat] = useState(false);
+    const [channel, setChannel] = useState<channel>()
     // const [joinedRooms, setJoinedRooms] = useState<JoinedRoom[]>([]);
     const [privJoined, setPrivJoined] = useState(false);
-    const [chat, setChat] = useState(false);
     const [email, setUserEmail] = useState("");
     const [hide, setHide] = useState<"true" | "false">("false");
     const [id, setId] = useState("");
@@ -84,11 +86,6 @@ const BrowseChannel = () => {
     const [roomPass, setRoomPass] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
-
-
-    //EXPLANATION OF THIS VARIABLE: BECAUSE I NEED TO SEND THE PROTECTED CHANNEL FROM OUTSIDE THE MAPPING SECTION
-    //I ACTUALLY STORE THE CHANNEL IN A STATE AND THEN WHEN THE PASSWORD IS SET , I SEND IT TO THE HANDLER.
-    const [channel, setChannel] = useState<channel>()
 
 
     //this is not a good way but yeah we should do this in sockets
@@ -436,9 +433,10 @@ const BrowseChannel = () => {
 
     function handleChat(Channel: channel)
     {
-        console.log("Hhia channel" , Channel)
-        return <ChatRoom  room={Channel} />
-    }
+            console.log("Hhia channel" , Channel)
+            setChannel(Channel)
+            setChat(true)
+      }    
 
     async function getProtectedChannels() {
 
@@ -473,7 +471,7 @@ const BrowseChannel = () => {
 
   return (
     back === true ? <Channels /> : (
-        
+        chat ?  <ChatRoom  room={channel} /> :
     <>
         {
             <>

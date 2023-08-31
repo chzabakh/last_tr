@@ -33,7 +33,7 @@ interface Friend {
 
 
 const PrivateChannel = () => {
-  const [roomName, setChannelName] = useState("");
+  const [roomName, setRoomName] = useState("");
   const [selectedOptions, setSelectedOptions] = useState<Friend[] | null>(null);
 
 
@@ -55,6 +55,7 @@ const PrivateChannel = () => {
 
         if (response.status === 201) {
           alert('Room Created');
+          setRoomName('')
         } else {
           alert('Failed to create room');
         }
@@ -73,43 +74,18 @@ const PrivateChannel = () => {
   
   function handleName(e : ChangeEvent<HTMLInputElement>)
   {
-    setChannelName(e.target.value);
+    setRoomName(e.target.value);
   }
 
-  const friends: Friend[] = [
-    { value: 1, label: 'oumaima' },
-    { value: 2, label: 'oum' },
-    { value: 3, label: 'oumma' },
-    { value: 4, label: 'oum' },
-    { value: 5, label: 'ouima' },
-    { value: 6, label: 'oum' },
-    { value: 7, label: 'oumaima' },
-    { value: 8, label: 'oum' },
-    { value: 9, label: 'omaima' },
-    { value: 10, label: 'oum' },
-    { value: 11, label: 'oumaima' },
-    { value: 12, label: 'om' },
-
-  ];
-
-  function setHandle(selected: MultiValue<Friend>, actionMeta: ActionMeta<Friend>)
-  {
-    setSelectedOptions(selected as Friend[])
-  }
-
+ 
   return (
     <>
      
-    <label htmlFor="channelname" className="block mb-2 text-sm font-medium text-white dark:text-white">Channel name:</label>
+    <label htmlFor="roomName" className="block mb-2 text-sm font-medium text-white dark:text-white"> Channel name:</label>
 
 
-    <input type="text" id="first_name" className="focus:border-none outline-none  border-gray-300 text-white/60 text-sm rounded-lg p-3 w-full bg-black/40" onChange={handleName} placeholder="Enter name..." required></input>
+    <input type="text"  className="focus:border-none outline-none  border-gray-300 text-white/60 text-sm rounded-lg p-3 w-full bg-black/40" onChange={handleName} placeholder="Enter name..." value={roomName} required></input>
 
-
-    <label htmlFor="friendstoinvite" className="block mb-2 text-sm font-medium text-white dark:text-white" >Select friends to invite:</label>
-
-
-    <Select options={friends} onChange={setHandle} isMulti className='text-black bg-black/40' styles={customStyles}/>
 
     <button className="border-opacity-40 border-violet-400 hover:border-[#2dd4bf]
      border-[3px] p-2 rounded-full w-[150px] self-center text-xs mt-3" onClick={handleSubmit}>Create Channel</button>
