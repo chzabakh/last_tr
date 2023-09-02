@@ -404,11 +404,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
           {
             setDetails(res.data);
             setUsers(res.data.users);
-            console.log("Users: ", users)
-            console.log("Hahia details" , details)
-            console.log("This is the data" , res.data);
             setChatMessages(res.data.messages);
-            console.log("Hahome l messagat", chatMessages);
             // console.log(res); // Assuming the backend sends the created room details
           }                                                                                                                                                                                                                                                                                                           
       }
@@ -528,7 +524,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
               
                 <div className='flex gap-4 flex-col h-full '>
                   
-                  <div className='flex flex-col justify-between w-full h-full items-center gap-5 overflow-scroll'>
+                  <div className='flex flex-col gap-1 w-full h-full items-center gap-5 overflow-scroll'>
                   {
 
                users.map((user, index) => 
@@ -667,13 +663,17 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
             </div>
 
           <div className="mb-16 overflow-auto" />
-          <div className=" mb-16 flex-col items-end flex overflow-y-auto max-h-[400px]" >
+          <div className=" mb-16 flex-col flex overflow-y-auto max-h-[400px]" >
                 {
-                chatMessages.map((msg, index) => (
+                chatMessages.map((msg, index) => 
+                
+                
+                (
                   nickname === msg.sender.nickname ?
                    (
                   <>
-                  <div className='flex gap-2 '>
+            <div className='flex self-end gap-2 '>
+              <div>
                   <div 
                     key={index} 
                     className="max-w-[300px] p-[10px] m-[5px] bg-purple-500 rounded-[50px] self-end break-words "
@@ -681,38 +681,55 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                     <div className='flex flex-col '>{msg.content}</div> 
                     <div key={index} ref={messageRef}></div>                 
                   </div>
+              </div>
+
+                  <div>
+
                   {msg.sender.provider === 'intra' ? (<>
                     <Image src={msg.sender.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={50} width={50} className='rounded-full max-w-[50px] max-h-[50px]' />
                   </>) : (<>
                   <Avatar currentUser={msg.sender}/>
                   </>)}
-                    </div>
-                  <div className='text-xs opacity-[0.3]' > {getTime(msg.createdAt)}</div>
+                <div className='text-xs opacity-[0.3] self-start' > {getTime(msg.createdAt)}</div>
+                  </div>
+            </div>
                     
                     </>
                   
-                  ) 
+                ) 
                   
                   :
                   (
                     <>
-                    <div className='flex  self-start gap-2 '>
-            
-                    {msg.sender.provider === 'intra' ? (<>
-                    <Image src={msg.sender.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={50} width={50} className='rounded-full max-w-[50px] max-h-[50px]' />
-                  </>) : (<>
-                  <Avatar currentUser={msg.sender}/>
-                  </>)}
+              <div className='flex self-start gap-2'>
+                <div>
+                  {
+                        msg.sender.provider === 'intra' ? (<>
+                        <Image src={msg.sender.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={50} width={50} className='rounded-full max-w-[50px] max-h-[50px]' />
+                      </>) : (<>
+                      <Avatar currentUser={msg.sender}/>
+                      </>)
+                  }
+                </div>
+                  <div>
+
                     <div 
-                    key={index} 
-                    ref={messageRef}
-                    className="max-w-[300px] p-[10px] m-[5px] bg-purple-400 rounded-[50px] self-start break-words"
-                  >
-                    {msg.content}
-                    <div ref={chatRef}></div> 
-                  </div>
+                            key={index} 
+                            ref={messageRef}
+                            className="max-w-[300px] p-[10px] m-[5px] bg-purple-400 rounded-[50px] self-start break-words"
+                          >
+                            <div>
+
+                            {msg.content}
+                            </div>
+                            <div ref={chatRef}></div> 
                     </div>
-                    <div className='text-xs opacity-[0.3]' > {getTime(msg.createdAt)}</div>
+                    <div className='text-xs opacity-[0.3] self-start' > {getTime(msg.createdAt)}</div>
+                </div>
+            
+
+
+            </div>
                     </>
                   )
                 )

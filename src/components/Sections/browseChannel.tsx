@@ -112,7 +112,6 @@ const BrowseChannel = () => {
     {
         try
         {
-            console.log("USER UID: " , uid)
             const token = Cookies.get('token')
             const headers = { Authorization: `Bearer ${token}` };
 
@@ -197,8 +196,9 @@ const BrowseChannel = () => {
 
             const requestBody = {
                 isPrivate: true,
-                conversationId: roomId, 
+                roomKey: roomId
             };
+            console.log(requestBody)
 
             const res = await axios.post('http://localhost:9000/chat/join-room', requestBody,  { headers });
             if (res.status === 201)
@@ -232,11 +232,11 @@ const BrowseChannel = () => {
     }
 
   
-    function handleProtectRoom(Channel : Channel | undefined)
+    async function handleProtectRoom(Channel : Channel | undefined)
     {
         if(Channel)
         {
-            joinProtectRoom(Channel);
+            await joinProtectRoom(Channel);
         }
         // console.log("THE CHANNEL ID:" ,Channel.id);
     }
@@ -330,6 +330,8 @@ const BrowseChannel = () => {
         }
     }
 
+
+
     if(isLoading)
     {
         return <Loading />
@@ -356,7 +358,7 @@ const BrowseChannel = () => {
                         <button onClick={handleDelete} className=' self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg'>X</button>
                         <div className='flex flex-col gap-7 items-center'>
                         <h2>Enter the room ID:</h2>
-                        <input type="password" className='bg-black/30 h-[20px] p-6 text-white mx-2' onChange={(e) => setRoomId(e.target.value)}></input>
+                        <input type="text" className='bg-black/30 h-[20px] p-6 text-white mx-2' onChange={(e) => setRoomId(e.target.value)}></input>
                         </div>
                         <button className='rounded-lg border-4 border-[#3b0764] w-[40%] self-center' onClick={joinPrivate}>Enter</button>
                     </div>
