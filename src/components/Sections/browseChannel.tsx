@@ -6,55 +6,9 @@ import React, {useEffect, useState} from 'react'
 import  Channels  from './channels';
 import ChatRoom from '../../pages/chatRoom';
 import Loading from '@/pages/loading';
-
+import {Channel, Owner, Users} from './types/index'
 
 const BrowseChannel = () => {
-
-    interface Owner 
-    {
-        FirstLogin: boolean,
-        TwoFaAuthEnabled: boolean,
-        TwofaAuthSecret: string,
-        avatarUrl: string,
-        createdaAt: string,
-        email: string,
-        friendStatus: string,
-        hash: string,
-        id: number,
-        nickname: string,
-        provider: string,
-        state: string,
-        updatedAt: string,
-    }
-    interface Users {
-        TwofaAutEnabled: boolean,
-        TwofaAutSecret : boolean,
-        avatarUrl: string,
-        createdAt: string,
-        email: string,
-        friendStatus: string,
-        id: number,
-        nickname: string,
-        provider: string,
-        state: string,
-        updatedAt: string,
-    }
-
-    interface channel{
-        createdAt: string,
-        id: number,
-        isGroup: boolean,
-        isPrivate: boolean,
-        isPrivateKey: boolean,
-        isProtected: boolean,
-        lastMessageAt: string,
-        name: string,
-        Owner: Owner,
-        OwnerID: number,
-        password: string,
-        uid: string, 
-        Users: Users[],
-    }
 
 
     const defaultStyle = {
@@ -68,14 +22,14 @@ const BrowseChannel = () => {
       };
 
     const [back, setback] = useState(false);
-    const [rooms, setRooms] = useState<channel[]>([]);
-    const [PublicRooms, setPublicRooms] = useState<channel[]>([]);
-    const [ProtectedRooms, setProtectedRooms] = useState<channel[]>([]);
+    const [rooms, setRooms] = useState<Channel[]>([]);
+    const [PublicRooms, setPublicRooms] = useState<Channel[]>([]);
+    const [ProtectedRooms, setProtectedRooms] = useState<Channel[]>([]);
     const [isprivate, setPrivate] = useState(false);
     const [fadeOut, setFadeOut] = useState(false);
     const [roomId, setRoomId] = useState("");
     const [chat, setChat] = useState(false);
-    const [channel, setChannel] = useState<channel>()
+    const [channel, setChannel] = useState<Channel>()
     // const [joinedRooms, setJoinedRooms] = useState<JoinedRoom[]>([]);
     const [privJoined, setPrivJoined] = useState(false);
     const [email, setUserEmail] = useState("");
@@ -84,6 +38,7 @@ const BrowseChannel = () => {
     const [password, setPassword] = useState("");
     const [enterPass, setEnterPass] = useState(false);
     const [roomPass, setRoomPass] = useState("");
+    const [entered, setEntered] = useState<"true" | "false">("false");
     const [isLoading, setIsLoading] = useState(true);
 
 
@@ -275,105 +230,21 @@ const BrowseChannel = () => {
             }
         }
     }
-    async function LeaveRoomProtect(uid : string)
-    {
-        try
-        {
-            const token = Cookies.get('token')
-            const headers = { Authorization: `Bearer ${token}` };
-            const requestBody = {
-                isProtected: true,
-                conversationId: uid,
-            };
-            console.log(requestBody)
-            console.log("auiiiid", uid)
-            const res = await axios.post('http://localhost:9000/chat/leave-room', requestBody,  { headers });
-            if (res.status === 201)
-            {
-                setRooms([]);
-                console.log("Room Left!");
-                console.log(res.data);
-            }                                                                                                                                                                                                                                                                                                         
-        }
-        catch(e)
-        {
-            if(axios.isAxiosError(e))
-            {
-                if(e.request)
-                    console.log("No response received!", e.request);
-                else if(e.response)
-                    console.log("Error status: ", e.response?.status);
-                    console.log("Error data: ", e.response?.data);
-            }
-            else
-            {
-                console.log("Error: ", e);
-            }
-        }
-    }
 
-
-    async function LeaveRoom(uid : string)
-    {
-        try
-        {
-            const token = Cookies.get('token')
-            const headers = { Authorization: `Bearer ${token}` };
-            const requestBody = {
-                isGroup: true,
-                conversationId: uid,
-            };
-            console.log(requestBody)
-            console.log("auiiiid", uid)
-            const res = await axios.post('http://localhost:9000/chat/leave-room', requestBody,  { headers });
-            if (res.status === 201)
-            {
-                console.log("Room Left!");
-                console.log(res.data);
-                setHide(true);
-            }                                                                                                                                                                                                                                                                                                         
-        }
-        catch(e)
-        {
-            if(axios.isAxiosError(e))
-            {
-                if(e.request)
-                    console.log("No response received!", e.request);
-                else if(e.response)
-                    console.log("Error status: ", e.response?.status);
-                    console.log("Error data: ", e.response?.data);
-            }
-            else
-            {
-                console.log("Error: ", e);
-            }
-        }
-    }
-    async function handlePublicRoom(Channel : channel)
+    async function handlePublicRoom(Channel : Channel)
     {
         await joinPublicRoom(Channel.uid);
         // console.log("THE CHANNEL ID:" ,Channel.id);
     }
 
-    async function handleLeaveRoom(Channel : channel)
-    {
-        await LeaveRoom(Channel.uid);
-        setHide(false);
-    }
   
-
-    async function handleProtectRoom(Channel : channel | undefined)
+    async function handleProtectRoom(Channel : Channel | undefined)
     {
         if(Channel)
             await joinProtectRoom(Channel.uid);
         // console.log("THE CHANNEL ID:" ,Channel.id);
     }
 
-    async function handleLeaveRoomProtect(Channel : channel)
-    {
-        await LeaveRoomProtect(Channel.uid);
-        setHide(false);
-    }
   
     async function getPublicChannels() {
 
@@ -431,7 +302,7 @@ const BrowseChannel = () => {
         }
     }
 
-    function handleChat(Channel: channel)
+    function handleChat(Channel: Channel)
     {
             console.log("Hhia channel" , Channel)
             setChannel(Channel)
@@ -471,7 +342,7 @@ const BrowseChannel = () => {
 
   return (
     back === true ? <Channels /> : (
-        chat ?  <ChatRoom  room={channel} /> :
+        chat && channel ?  <ChatRoom  room={channel} /> :
     <>
         {
             <>
@@ -522,7 +393,7 @@ const BrowseChannel = () => {
                     <div className='grid grid-cols6 gap-4'>
                         {
                        
-                        PublicRooms.map((ChannelName: channel) => (
+                        PublicRooms.map((ChannelName: Channel) => (
                             <div key={ChannelName.id} className='bg-gradient-to-r  from-black to-purple-500 p-4 rounded-md text-white shadow-md'>
                                 <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
                                 <div className='self-end flex items-end justify-end'>
@@ -556,22 +427,18 @@ const BrowseChannel = () => {
                     <div className='grid grid-cols6 gap-4'>
                     {
                        
-                       ProtectedRooms.map((ChannelName: channel) => (
+                       ProtectedRooms.map((ChannelName: Channel) => (
                            <div key={ChannelName.id} className='bg-gradient-to-r from-black to-purple-500 p-4 rounded-md text-white shadow-md'>
                                <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
                            {
                             
-                              rooms.find(((name: channel)=> { (name.uid === ChannelName.uid)}))  || (email === ChannelName.owner.email) ? 
+                              entered ?
                                //we have a state called hide, when it is off it means that the user did not join the room yet, so we only get join, then when he does , an enter and leavebutton appear
                                <>
-                                       <div className='flex justify-between'>
-                                       <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                                       px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                                       onClick={() =>handleLeaveRoomProtect(ChannelName)}>Leave</button>
-                                           <button className=' text-white border-4 border-[#7e22ce] rounded-full 
-                                       px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                                       onClick={() => handleChat(ChannelName)}>Enter</button>
-                                       </div>
+                                <button className=' text-white border-4 border-black rounded-full 
+                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
+                                onClick={() => handleChat(ChannelName)}>Enter</button>
+                
                                </>
                               :
                               <>
@@ -580,6 +447,7 @@ const BrowseChannel = () => {
                                onClick={() =>{
                                 setEnterPass(true);
                                 setChannel(ChannelName)
+                                setEntered("true");
                                 }}>Join</button>
                               </> 
                            }

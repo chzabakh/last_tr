@@ -98,11 +98,11 @@ export const Login  : React.FC  = () => {
       }
       else
       {
-        if(twoFac === true)
-        {
-          router.push('/activate')
-        }
-        else
+        // if(twoFac === true)
+        // {
+        //   router.push('/activate')
+        // }
+        // else
           router.push('/dashboard');
       }
      }
@@ -157,11 +157,11 @@ export const Login  : React.FC  = () => {
               Router.push('/addInfos');
           else
           {
-            if(isTwoFactorEnabled === true)
-            {
-              router.push('/activate')
-            }
-            else
+            // if(isTwoFactorEnabled === true)
+            // {
+            //   router.push('/activate')
+            // }
+            // else
             {
               router.push('/dashboard');
             }

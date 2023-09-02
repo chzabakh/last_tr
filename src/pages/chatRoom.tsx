@@ -47,7 +47,7 @@ export interface Users {
     updatedAt: string,
 }
 
-interface channel{
+interface Channel{
     createdAt: string,
     id: number,
     isGroup: boolean,
@@ -79,7 +79,7 @@ export interface User {
 }
 
 interface ChatRoomProps {
-  room: channel,
+  room: Channel,
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = ({
@@ -320,7 +320,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
   };
 
     useEffect(() => {
-      async function fetchAvatrs() {
+      async function fetchAvatars() {
 
       const getImages = users.map(async (user) => {
           const token = Cookies.get('token')
@@ -339,7 +339,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
         console.log("IMAGES ", images);
       }
       
-      fetchAvatrs();
+      fetchAvatars();
     }, [users])
 
     useEffect(() =>
@@ -587,11 +587,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                 </MenuItem>
               ))}
                 </Menu>
-                            </div>
-                       
+            </div>
             </div>)
                   }
-                  
                   </div>
                 </div>
               </div>
