@@ -11,7 +11,7 @@ import {Channel} from './types/types'
 const Channels = () => {
 
   const [activeComponent, setActiveComponent] = useState("");
-  const [PrivateRooms, setPrivateRooms] = useState<Channel[]>([]);
+  const [myRooms, setmyRooms] = useState<Channel[]>([]);
   const [chat, setChat] = useState(false);
   const [channel, setChannel] = useState<Channel>()
 
@@ -35,7 +35,7 @@ const Channels = () => {
         const token = Cookies.get('token')
         const headers = { Authorization: `Bearer ${token}` };
         const res = await axios.get('http://localhost:9000/chat/my-rooms',  { headers });
-        setPrivateRooms(res.data)
+        setmyRooms(res.data)
     }
     catch(e)
     {
@@ -63,36 +63,12 @@ async function handleLeaveRoom(channel : Channel)
         const headers = { Authorization: `Bearer ${token}` };
         let requestBody;
 
-        if(channel.isGroup === true)
-        {
           requestBody = {
-              isGroup: true,
-              conversationdId: channel.uid,
-          };
+            conversationId: channel.uid,
         }
-        else if(channel.isPrivate )
-        {
-          requestBody = {
-            isPrivate: true,
-            conversationdId: channel.uid,
-        };
-        }
-        else if(channel.isProtected)
-        {
-          requestBody = {
-            isProtected: true,
-            conversationdId: channel.uid,
-        };
-        }
-        // console.log(requestBody)
         const res = await axios.post('http://localhost:9000/chat/leave-room', requestBody,  { headers });
-
         console.log(res.data)
-        // if (res.status === 201)
-        // {
-        //     console.log("Room Left!");
-        //     console.log(res.data);
-        // }                                                                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                                                      
     }
     catch(e)
     {
@@ -139,11 +115,11 @@ function handleChat(Channel: Channel)
         <div className="flex flex-col p-20 gap-1 border-2  justify-between h-full  w-[77%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#49126e33] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
           
             <div>My joined channels:</div>
-          <div className="h-[60%]  overflow-scroll bg-black">
+          <div className="h-[60%]  overflow-scroll ">
 
             <div className="grid grid-cols6 gap-4">
                   {
-                    PrivateRooms.map((ChannelName: Channel) => (
+                    myRooms.map((ChannelName: Channel) => (
                       <div key={ChannelName.id} className='bg-gradient-to-r from-black to-purple-500 my-3 p-4 rounded-md text-white shadow-md'>
                           <h3 className='text-xl font-semibold '>{ChannelName.name}</h3>
                           <>
@@ -161,7 +137,7 @@ function handleChat(Channel: Channel)
                   }
             </div>
           </div>
-          <div className="flex justify-between w-full bg-black/20">
+          <div className="flex justify-between w-full ">
           <button className="border-opacity-40  min-w-[100px] border-violet-400 hover:border-[#2dd4bf]
   border-[3px] p-2 rounded-full w-[150px] self-center text-xs" onClick={handleCreate}>
             Create a channel
