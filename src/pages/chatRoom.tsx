@@ -460,16 +460,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
     }
 
 
-    function getTime(time : string)
-    {
-      let result;
-      if (time)
-      {
-        result = time.slice(11, 16);
-
-      }
-      return result;
-    }
     async function getAllRooms()
     {
         try
@@ -690,7 +680,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                   </>) : (<>
                   <Avatar currentUser={msg.sender}/>
                   </>)}
-                <div className='text-xs opacity-[0.3] self-start' > {getTime(msg.createdAt)}</div>
+                <div className='text-xs opacity-[0.3] self-start' > {msg.createdAt?.slice(11, 16)}</div>
                   </div>
             </div>
                     
@@ -724,7 +714,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                             </div>
                             <div ref={chatRef}></div> 
                     </div>
-                    <div className='text-xs opacity-[0.3] self-start' > {getTime(msg.createdAt)}</div>
+                    <div className='text-xs opacity-[0.3] self-start' > {msg.createdAt?.slice(11, 16)}</div>
                 </div>
             
 
