@@ -15,127 +15,13 @@ import { getImageSize } from 'next/dist/server/image-optimizer';
 import { getSupportedBrowsers } from 'next/dist/build/utils';
 import Avatar from '../components/Avatar'
 import { io, Socket } from 'socket.io-client';
-
-
-interface Owner 
-{
-    FirstLogin: boolean,
-    TwoFaAuthEnabled: boolean,
-    TwofaAuthSecret: string,
-    avatarUrl: string,
-    createdaAt: string,
-    email: string,
-    friendStatus: string,
-    hash: string,
-    id: number,
-    nickname: string,
-    provider: string,
-    state: string,
-    updatedAt: string,
-}
-export interface Users {
-    TwofaAutEnabled: boolean,
-    TwofaAutSecret : boolean,
-    avatarUrl: string,
-    createdAt: string,
-    email: string,
-    friendStatus: string,
-    id: number,
-    nickname: string,
-    provider: string,
-    state: string,
-    updatedAt: string,
-}
-
-interface Channel{
-    createdAt: string,
-    id: number,
-    isGroup: boolean,
-    isPrivate: boolean,
-    isPrivateKey: boolean,
-    isProtected: boolean,
-    lastMessageAt: string,
-    name: string,
-    owner: Owner,
-    ownerID: number,
-    password: string,
-    uid: string, 
-    users: Users[],
-}
-
-export interface User {
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  email: string;
-  nickname: string;
-  hash: string;
-  TwofaAutSecret: null | string;
-  TwofaAutEnabled: boolean;
-  FirstLogin: boolean;
-  avatarUrl: string;
-  state: string;
-  provider: string;
-}
-
-interface ChatRoomProps {
-  room: Channel,
-}
+import  crone from '../../public/crone.png'
+import {ChatRoomProps, Message, User, ChatRoom} from '../components/Sections/types/index' 
+import { ECDH } from 'crypto';
 
 const ChatRoom: React.FC<ChatRoomProps> = ({
   room
 }) => {
-  type User = {
-    id: number;
-    createdAt: string;
-    updatedAt: string;
-    email: string;
-    nickname: string;
-    hash: string;
-    TwofaAutSecret: null | string;
-    TwofaAutEnabled: boolean;
-    FirstLogin: boolean;
-    avatarUrl: string;
-    state: string;
-    provider: string;
-    friendStatus: string;
-  };
-
-  // type Sender = {
-  //   avatarUrl: string;
-  //   nickname: string;
-  //   provider: string;
-  //   id : number;
-  // }
-  
-  type Message = {
-    content: string;
-    roomID: string;
-    seen: User[];
-    createdAt: string;
-    sender: User;
-  };
-  
-  type ChatRoom = {
-    id: number;
-    createdAt: string;
-    lastMessageAt: string;
-    name: string;
-    isPrivate: null | boolean;
-    isPrivateKey: null | boolean;
-    isProtected: null | boolean;
-    isGroup: boolean;
-    password: null | string;
-    uid: string;
-    ownerID: number;
-    users: User[];
-    admins: User[];
-    owner: User;
-    messages: Message[];
-  };
-  
-  
-  
   
   const optionsMember = [
     'Ban',
@@ -146,17 +32,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
     'See Profile',
     'Set New Admin'
   ];
+  
 
-  type Images =
-  {
-    id: number;
-    avatarUrl: string;
-  }
-  
-  
   const optionsChannel = [
     'Add password',
   ];
+
   const ITEM_HEIGHT = 30;
   
   const [rooms, setRooms] = useState([]);
@@ -182,13 +63,20 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
 
 
     const messageRef = useRef<HTMLDivElement>(null);
+    const chatRef = useRef<HTMLDivElement>(null);
+    const keyRef = useRef<HTMLDivElement>(null);
 
     const scrollDown = () =>
     {
       if (messageRef.current) 
-        messageRef.current?.scrollIntoView({ behavior: "smooth" })
+        messageRef.current.scrollIntoView({ behavior: "smooth" })
     }
-    
+
+    useEffect(() => {
+      if(chatRef.current) 
+        chatRef.current.scrollIntoView({ behavior: "smooth" })
+    }, []);
+
     useEffect(() => {
       scrollDown();
     }, [chatMessages]);
@@ -208,18 +96,99 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
     
     async function handleBane()
     {
-      alert("bane");
+        try
+        {
+            const token = Cookies.get('token')
+            const headers = { Authorization: `Bearer ${token}` };
+            let requestBody;
+
+              requestBody = {
+                conversationId: room.uid,
+            }
+            const res = await axios.post('http://localhost:9000/chat/ban', requestBody,  { headers });
+            console.log(res.data)
+                                                                                                                                                                                                                                                                                                          
+        }
+        catch(e)
+        {
+            if(axios.isAxiosError(e))
+            {
+                if(e.request)
+                    console.log("No response received!", e.request);
+                else if(e.response)
+                    console.log("Error status: ", e.response?.status);
+                    console.log("Error data: ", e.response?.data);
+            }
+            else
+            {
+                console.log("Error: ", e);
+            }
+        }
     }
     
     async function handleMute()
     {
-      alert("Mute");
+      try
+      {
+          const token = Cookies.get('token')
+          const headers = { Authorization: `Bearer ${token}` };
+          let requestBody;
+
+            requestBody = {
+              conversationId: room.uid,
+          }
+          const res = await axios.post('http://localhost:9000/chat/mute', requestBody,  { headers });
+          console.log(res.data)
+                                                                                                                                                                                                                                                                                                        
+      }
+      catch(e)
+      {
+          if(axios.isAxiosError(e))
+          {
+              if(e.request)
+                  console.log("No response received!", e.request);
+              else if(e.response)
+                  console.log("Error status: ", e.response?.status);
+                  console.log("Error data: ", e.response?.data);
+          }
+          else
+          {
+              console.log("Error: ", e);
+          }
+      }
     }
     
     
     async function handleKick()
     {
-      alert("Kick")
+      try
+      {
+          const token = Cookies.get('token')
+          const headers = { Authorization: `Bearer ${token}` };
+          let requestBody;
+
+            requestBody = {
+              conversationId: room.uid,
+          }
+          const res = await axios.post('http://localhost:9000/chat/kick', requestBody,  { headers });
+          console.log(res.data)
+                                                                                                                                                                                                                                                                                                        
+      }
+      catch(e)
+      {
+          if(axios.isAxiosError(e))
+          {
+              if(e.request)
+                  console.log("No response received!", e.request);
+              else if(e.response)
+                  console.log("Error status: ", e.response?.status);
+                  console.log("Error data: ", e.response?.data);
+          }
+          else
+          {
+              console.log("Error: ", e);
+          }
+      }
     }
     
     async function handleMessage()
@@ -293,18 +262,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
 
     }, [])
 
+
     useEffect(() => {
       if (socket) {
         const newMessageHandler = (message: Message) => {
           console.log(message)
           setChatMessages((cur) => [...cur, message]);
-          // bottomRef?.current?.scrollIntoView();
+          chatRef.current?.scrollIntoView({ behavior: "smooth" })
         };
   
         socket.on("message:new", newMessageHandler);
         return () => {
           socket.off("message:new");
-          // socket?.disconnect();
         };
       }
     }, [socket]);
@@ -356,19 +325,27 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
     },[])
 
 
-    // useEffect(() =>
-    // {
-    //   async function initialize()
-    //   {
-    //     users.map((user) =>
-    //     {
-    //         await findImage(user);
-    //     })
+    function handleCopy()
+    {
+      if(keyRef.current)
+      {
+        const text = keyRef.current.textContent;
+        if(navigator.clipboard)
+        {
+          navigator.clipboard.writeText(text!)
+          .then(() => {
+            alert(text)
+            console.log('Text copied to clipboard');
+          })
+          .catch((error) => {
+            console.error('Failed to copy text: ', error);
+          });
+        }
 
-    //   }
-    //   initialize();
+      }
+      
+    }
 
-    // },[])
 
     async function handleChat()
     {
@@ -486,6 +463,17 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
       }
     }
 
+
+    function getTime(time : string)
+    {
+      let result;
+      if (time)
+      {
+        result = time.slice(11, 16);
+
+      }
+      return result;
+    }
     async function getAllRooms()
     {
         try
@@ -521,29 +509,69 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
   return (
     back ? <BrowseChannel /> : (
     <>
-       <div className="absolute top-0 z-2 flex justify-evenly border-2 rounded-3xl  border-opacity-30 w-[99.9%] h-full border-violet-400  bg-[#571d86]  bg-blur-md backdrop-filter backdrop-blur-md p-4">
-          <div className="w-[40%] flex flex-xol justify-center">
-            <div className="w-[90%] mt-2">
-          <button className='border-2 p-2 rounded-lg' onClick={() => setBack(true)}>Back</button>
-              <div className="flex flex-col gap-9  h-[80%] w-full justify-center">
-                <div className='text-lg self-center'>Group members:</div>
+
+    <div className="absolute top-0 z-2 flex justify-evenly border-2 rounded-3xl  border-opacity-30 w-[99.9%] h-full  border-violet-400  bg-[#571d86]  bg-blur-md backdrop-filter backdrop-blur-md p-4">
+    <div  className="w-[40%] flex flex-col h-full  gap-10">
+      <div className='flex flex-col h-[60%] items-center gap-5'>
+        <button className='border-2 p-2 rounded-lg w-full' onClick={() => setBack(true)}>Back</button>
+        <div>
+              {
+                details?.isPrivate ? <div className='flex flex-col jsutify-center'>Channel key : <div onClick={handleCopy} ref={keyRef} className="m-3">{details.isPrivateKey} </div></div> : null 
+              }
+        </div>
+      </div>
+      
+      <div className='h-full mt-2 flex flex-col '>
+              <div className="flex flex-col gap-3  h-[90%] w-full ">
+                
+                <div  className='text-lg self-center'>Group members:</div>
               
-                <div className='flex gap-4 flex-col'>
-                  <div className='flex flex-col justify-between w-full h-full items-center gap-5'>
+                <div className='flex gap-4 flex-col h-full '>
+                  
+                  <div className='flex flex-col justify-between w-full h-full items-center gap-5 overflow-scroll'>
                   {
-                    
-                    //NOT THE FUCKING ROOM, I HAVE TO RENDER HERE THE MEMBERS OF THE CURRENT CHANNNEL, SOMEHOW I NEED TO KNOW IN WHICH CHANNEL I AM 
-                    //THEN I NEED TO RENDER ITS INFORMATION
 
                users.map((user, index) => 
                     
-            <div className='w-full flex '>
-               <div className='flex-1 w-[50%] '>
-               {user.provider === 'intra' ? (<>
-                    <Image src={user.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={50} width={50} className='rounded-full max-w-[50px] max-h-[50px]' />
+            <div className='w-full flex p-3'>
+               <div className='flex-1 w-[50%]'>
+                
+                {
+               user.provider === 'intra' ? (<>
+                    <Image  key={index} src={user.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={80} width={80} className='rounded-full max-w-[50px] max-h-[50px] absolute' />
                   </>) : (<>
                   <Avatar currentUser={user}/>
-                  </>)}
+                  </>)
+                  
+                }
+                
+              <div>
+                {
+                  user.state === "online" &&
+                  (
+                      <div className="bg-green-500 w-2 h-2 rounded full relative left-9 top-11"></div>
+                  )
+                }
+                {
+                  user.state === "offline" &&
+                  (
+                      <div className="bg-grey-500 w-2 h-2 rounded full relative left-1 top-4"></div>
+                  )
+                }
+                 {
+                  (user.email === details?.owner.email) &&
+                  (
+                      <div className=" left-4 bottom-5 relative "><Image src={crone} width={20} height={20} alt="crone" /></div>
+                  )
+                }
+                {
+                   user.state === "inGame" &&
+                   (
+                       <div className="bg-grey-500 w-2 h-2 rounded full relative left-1 top-4"></div>
+                   )
+
+                }
+              </div>
               </div>
               <div className='flex-1 w-[50%] pt-3 '>
               {user.nickname}
@@ -562,7 +590,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
               >
                 <MoreHorizIcon />
               </IconButton>
-      <Menu
+               <Menu
                 id="long-menu"
                 MenuListProps={{
                   'aria-labelledby': 'long-button',
@@ -589,12 +617,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                 </Menu>
             </div>
             </div>)
-                  }
+          }
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+      </div>
+    </div>
           <div className="border border-opacity-30 border-violet-400 h-full my-0 mr-5 w-[1px] "></div>
           <div className='flex flex-col w-[60%]'>
           <div className="flex flex-col  p-0 m-0 justify-start w-full h-full pt-">
@@ -639,7 +667,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
             </div>
 
           <div className="mb-16 overflow-auto" />
-          <div className="mb-16 flex-col items-end flex overflow-y-auto max-h-[400px]" >
+          <div className=" mb-16 flex-col items-end flex overflow-y-auto max-h-[400px]" >
                 {
                 chatMessages.map((msg, index) => (
                   nickname === msg.sender.nickname ?
@@ -651,7 +679,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                     className="max-w-[300px] p-[10px] m-[5px] bg-purple-500 rounded-[50px] self-end break-words "
                   >
                     <div className='flex flex-col '>{msg.content}</div> 
-                    <div ref={messageRef}></div>                 
+                    <div key={index} ref={messageRef}></div>                 
                   </div>
                   {msg.sender.provider === 'intra' ? (<>
                     <Image src={msg.sender.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={50} width={50} className='rounded-full max-w-[50px] max-h-[50px]' />
@@ -659,10 +687,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                   <Avatar currentUser={msg.sender}/>
                   </>)}
                     </div>
-                  <div className='text-xs opacity-[0.3]' > {msg.createdAt}</div>
+                  <div className='text-xs opacity-[0.3]' > {getTime(msg.createdAt)}</div>
+                    
                     </>
                   
                   ) 
+                  
                   :
                   (
                     <>
@@ -675,13 +705,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                   </>)}
                     <div 
                     key={index} 
+                    ref={messageRef}
                     className="max-w-[300px] p-[10px] m-[5px] bg-purple-400 rounded-[50px] self-start break-words"
                   >
                     {msg.content}
-                    <div ref={messageRef}></div> 
+                    <div ref={chatRef}></div> 
                   </div>
                     </div>
-                  <div className='text-xs opacity-[0.3] self-start' > {msg.createdAt}</div>
+                    <div className='text-xs opacity-[0.3]' > {getTime(msg.createdAt)}</div>
                     </>
                   )
                 )
@@ -724,10 +755,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                   <line x1="10" y1="14" x2="21" y2="3" />
                   <path d="M21 3L14.5 21a.55 .55 0 0 1 -1 0L10 14L3 10.5a.55 .55 0 0 1 0 -1L21 3" />
                 </svg>
-              </button>
-            </div>
-          </div>
-          </div>
+             </button>
+    </div>
+    </div>
+          <div ref={chatRef}></div>
+     </div>
         {/* </div> */}
         </>
     )

@@ -44,3 +44,53 @@ export interface Channel{
     users: Users[],
 }
 
+
+export type User = {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+    email: string;
+    nickname: string;
+    hash: string;
+    TwofaAutSecret: null | string;
+    TwofaAutEnabled: boolean;
+    FirstLogin: boolean;
+    avatarUrl: string;
+    state: string;
+    provider: string;
+    friendStatus: string;
+  };
+
+export interface ChatRoomProps {
+  room: Channel,
+}
+
+
+export type Message = {
+    content: string;
+    roomID: string;
+    seen: User[];
+    createdAt: string;
+    sender: User;
+  };
+  
+  export type ChatRoom = {
+    id: number;
+    createdAt: string;
+    lastMessageAt: string;
+    name: string;
+    isPrivate: null | boolean;
+    isPrivateKey: null | boolean;
+    isProtected: null | boolean;
+    isGroup: boolean;
+    password: null | string;
+    uid: string;
+    ownerID: number;
+    users: User[];
+    admins: User[];
+    owner: User;
+    messages: Message[];
+  };
+  
+  
+  
