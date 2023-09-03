@@ -39,6 +39,7 @@ const BrowseChannel = () => {
     const [roomPass, setRoomPass] = useState("");
     const [entered, setEntered] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [myRooms, setMyRooms] = useState<Channel[]>([])
 
 
 
@@ -53,6 +54,7 @@ const BrowseChannel = () => {
             await getPublicChannels();
             await getProtectedChannels();
             await getAllRooms();
+            
             setIsLoading(false);
 
             console.log("Rooms loaded:", rooms);
@@ -89,8 +91,8 @@ const BrowseChannel = () => {
               const token = Cookies.get('token')
               const headers = { Authorization: `Bearer ${token}` };
               const res = await axios.get('http://localhost:9000/chat/my-rooms', { headers });            
-              setRooms(res.data)
-              console.log(rooms)
+              setMyRooms(res.data)
+              console.log(myRooms)
             }
           catch(e)
           {
@@ -187,6 +189,9 @@ const BrowseChannel = () => {
             }
         }
     }
+
+
+
 
 
     async function joinPrivate()
@@ -339,6 +344,14 @@ const BrowseChannel = () => {
         return <Loading />
     }
 
+
+    function findRoom(channel : Channel)
+    {
+        return myRooms.some((room) => room.name === channel.name)
+    }
+
+
+
   return (
     back === true ? <Channels /> : (
         chat && channel ?  <ChatRoom room={channel} /> :
@@ -395,35 +408,35 @@ const BrowseChannel = () => {
                         {
                             
                         PublicRooms.map((ChannelName: Channel) => (
+
+                            
                             (ChannelName.owner.email !== email) ? 
                             (
 
-                            <div key={ChannelName.id} className='bg-gradient-to-r  from-black to-purple-500 p-4 rounded-md text-white shadow-md'>
-                                <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
-                                <div className='self-end flex items-end justify-end'>
-                                    {
+                                findRoom(ChannelName)  ? (
+                                    null
+                                )
+                                :
+                            (
 
-                                         !hide? (
-                                    <>
-                                        {console.log(hide)}
-                                        <button className=' text-white border-4 border-black rounded-full 
-                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                                        onClick={() =>handlePublicRoom(ChannelName)}>Join</button>
-                                    </> 
+                                <div key={ChannelName.id} className='bg-gradient-to-r  from-black to-purple-500 p-4 rounded-md text-white shadow-md'>
+                                    <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
+                                    <div className='self-end flex items-end justify-end'>
+                                        {
 
-                                        )
-                                    :
-                                       
-                                    (
-                                        <button className=' text-white border-4 border-black rounded-full 
-                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300 ' 
-                                        onClick={() => handleChat(ChannelName)}>Enter</button>
+                                        <>
+                                            <button className=' text-white border-4 border-black rounded-full 
+                                            px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
+                                            onClick={() =>handlePublicRoom(ChannelName)}>Join</button>
+                                        </> 
+                                            
+                                        
+                                    }       
+                                    
+                                        </div>
+                                </div>
+                            )
 
-                                    )
-                                }       
-                                
-                                    </div>
-                            </div>
                             ) :
                             null
                         ))
@@ -439,31 +452,31 @@ const BrowseChannel = () => {
 
                         (ChannelName.owner.email !== email) ? 
                         (
-                           <div key={ChannelName.id} className='bg-gradient-to-r from-black to-purple-500 p-4 rounded-md text-white shadow-md'>
-                               <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
-                               <div className='self-end flex items-end justify-end'>
-                           {
-                            
-                              hideAgain ?
-                               //we have a state called hide, when it is off it means that the user did not join the room yet, so we only get join, then when he does , an enter and leavebutton appear
-                               <>
-                                <button className=' flex self-end justify-end text-white border-4 border-black rounded-full 
-                                        px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                                onClick={() => handleChat(ChannelName)}>Enter</button>
-                
-                               </>
-                              :
-                              <>
-                               <button className=' text-white border-4 border-black rounded-full 
-                               px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
-                               onClick={() =>{
-                                setChannel(ChannelName)
-                                setEnterPass(true)
-                                }}>Join</button>
-                              </> 
-                           }
+                            findRoom(ChannelName)  ?
+                             (
+                                null
+                            )
+                            :
+                            (
+                                <div key={ChannelName.id} className='bg-gradient-to-r from-black to-purple-500 p-4 rounded-md text-white shadow-md'>
+                                    <h3 className='text-xl font-semibold'>{ChannelName.name}</h3>
+                                    <div className='self-end flex items-end justify-end'>
+                                {
+                                 
+                                 <>
+                                    <button className=' text-white border-4 border-black rounded-full 
+                                    px-4 py-2 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300' 
+                                    onClick={() =>{
+                                     setChannel(ChannelName)
+                                     setEnterPass(true)
+                                     }}>Join</button>
+                                 </>
+                        
+                                   
+                                }
                            </div>
                            </div>
+                            )
 
                         ) :
                         null
