@@ -386,7 +386,7 @@ const BrowseChannel = () => {
                         <button onClick={handleDelete} className=' self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg'>X</button>
                         <div className='flex flex-col gap-7 items-center'>
                         <h2>Enter the room ID:</h2>
-                        <input type="password" className='bg-black/30 h-[20px] p-6 text-white mx-2' onChange={(e) => setRoomPass(e.target.value)}></input>
+                        <input type="text" className='bg-black/30 h-[20px] p-6 text-white mx-2' onChange={(e) => setRoomPass(e.target.value)}></input>
                         </div>
                         <button className='rounded-lg border-4 border-[#3b0764] w-[40%] self-center' 
                         onClick={() => 
