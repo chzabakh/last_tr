@@ -8,16 +8,14 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 // import Channels from './channels';
 import BrowseChannel from '@/components/Sections/browseChannel';
 import Loading from './loading';
-import { initialize } from 'next/dist/server/lib/render-server';
+
 import Image from 'next/image';
-import { StaticImport } from 'next/dist/shared/lib/get-img-props';
-import { getImageSize } from 'next/dist/server/image-optimizer';
-import { getSupportedBrowsers } from 'next/dist/build/utils';
+import pong from '../../public/pong.png'
 import Avatar from '../components/Avatar'
 import { io, Socket } from 'socket.io-client';
 import  crone from '../../public/crone.png'
 import {ChatRoomProps, Message, User, ChatRoom} from '../components/Sections/types/index' 
-import { ECDH } from 'crypto';
+
 
 const ChatRoom: React.FC<ChatRoomProps> = ({
   room
@@ -63,7 +61,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
 
 
     const messageRef = useRef<HTMLDivElement>(null);
-    const chatRef = useRef<HTMLDivElement>(null);
     const keyRef = useRef<HTMLDivElement>(null);
 
     const scrollDown = () =>
@@ -71,11 +68,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
       if (messageRef.current) 
         messageRef.current.scrollIntoView({ behavior: "smooth" })
     }
-
-    useEffect(() => {
-      if(chatRef.current) 
-        chatRef.current.scrollIntoView({ behavior: "smooth" })
-    }, []);
 
     useEffect(() => {
       scrollDown();
@@ -268,7 +260,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
         const newMessageHandler = (message: Message) => {
           console.log(message)
           setChatMessages((cur) => [...cur, message]);
-          chatRef.current?.scrollIntoView({ behavior: "smooth" })
         };
   
         socket.on("message:new", newMessageHandler);
@@ -494,15 +485,16 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
 
   return (
     back ? <BrowseChannel /> : (
-    <>
+      <>
+      
 
     <div className="absolute top-0 z-2 flex justify-evenly border-2 rounded-3xl  border-opacity-30 w-[99.9%] h-full  border-violet-400  bg-[#571d86]  bg-blur-md backdrop-filter backdrop-blur-md p-4">
     <div  className="w-[40%] flex flex-col h-full  gap-10">
       <div className='flex flex-col h-[60%] items-center gap-5'>
-        <button className='border-2 p-2 rounded-lg w-full' onClick={() => setBack(true)}>Back</button>
+        <button className='border-2 p-2 rounded-lg w-[50%]' onClick={() => setBack(true)}>Back</button>
         <div>
               {
-                details?.isPrivate ? <div className='flex flex-col jsutify-center'>Channel key : <div onClick={handleCopy} ref={keyRef} className="m-3">{details.isPrivateKey} </div></div> : null 
+                details?.isPrivate ? <div className='flex flex-col jsutify-center'>Channel key : <div onClick={handleCopy} ref={keyRef} className="m-3 cursor-pointer">{details.isPrivateKey} </div></div> : null 
               }
         </div>
       </div>
@@ -514,7 +506,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
               
                 <div className='flex gap-4 flex-col h-full '>
                   
-                  <div className='flex flex-col gap-1 w-full h-full items-center gap-5 overflow-scroll'>
+                  <div className='flex flex-col gap-1 w-full h-full items-center overflow-scroll'>
                   {
 
                users.map((user, index) => 
@@ -551,9 +543,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                   )
                 }
                 {
+
+                  //TODO : CHANGE TO PLAYING MODE
                    user.state === "inGame" &&
                    (
-                       <div className="bg-grey-500 w-2 h-2 rounded full relative left-1 top-4"></div>
+                       <div className="relative left-1 top-4"><Image src={pong} width={20} height={20} alt="crone" /></div>
                    )
 
                 }
@@ -652,8 +646,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                 </Menu>
             </div>
 
-          <div className="mb-16 overflow-auto" />
-          <div className=" mb-16 flex-col flex overflow-y-auto max-h-[400px]" >
+          <div className="mb-16 overflow-auto"  />
+          <div  className=" mb-16 flex-col flex overflow-y-auto max-h-[400px]" >
                 {
                 chatMessages.map((msg, index) => 
                 
@@ -669,7 +663,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                     className="max-w-[300px] p-[10px] m-[5px] bg-purple-500 rounded-[50px] self-end break-words "
                   >
                     <div className='flex flex-col '>{msg.content}</div> 
-                    <div key={index} ref={messageRef}></div>                 
                   </div>
               </div>
 
@@ -682,6 +675,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                   </>)}
                 <div className='text-xs opacity-[0.3] self-start' > {msg.createdAt?.slice(11, 16)}</div>
                   </div>
+                    <div key={index} ref={messageRef}></div>                 
             </div>
                     
                     </>
@@ -712,10 +706,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
 
                             {msg.content}
                             </div>
-                            <div ref={chatRef}></div> 
                     </div>
                     <div className='text-xs opacity-[0.3] self-start' > {msg.createdAt?.slice(11, 16)}</div>
                 </div>
+                           
             
 
 
@@ -745,7 +739,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
               />
               <button
                  onClick={() => 
-                   handleChat()}
+                  {
+                    handleChat()
+                    setMessage(''); 
+                  }
+                  }
               >
                 <svg
                   className="text-white m-2"
@@ -765,9 +763,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
              </button>
     </div>
     </div>
-          <div ref={chatRef}></div>
+    
      </div>
-        {/* </div> */}
         </>
     )
   )

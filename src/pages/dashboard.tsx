@@ -156,26 +156,26 @@ if (delayedLoading || isLoading) {
             <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
               <div>
                 <Image
-                  className="object-cover flex-auto mx-auto rounded-[30px]"
+                  className="object-fit flex-auto mx-auto rounded-full"
                   src={Preview || Place}
                   alt={me.avatarUrl}
-                  height={200}
-                  width={200}
+                  height={150}
+                  width={150}
                   priority={true}
                 />
 
-                <p className="font-serif text-center py-5 text-xl">
+                <p className="text-center font-bold py-5 text-xl">
                   {username}
                 </p>
               </div>
               <div className="w-full flex flex-col pt-[2rem]">
                 <button
                   onClick={() => setItem("1")}
-                  className={`hover:text-[#D6B3F1]  hover:border-2 hover:rounded-lg py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "1" ? "text-[#D6B3F1] " : ""
+                  className={`hover:text-[#D6B3F1]  hover:border-2 hover:rounded-lg py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-100 ease-in ${
+                    item === "1" ? "text-[#D6B3F1] border-white rounded-xl" : ""
                   }
               
-              ${item !== "1" ? "hover:bg-white/30" : ""}
+              ${item !== "1" ? "" : ""}
 
               `}
                 >
@@ -183,11 +183,11 @@ if (delayedLoading || isLoading) {
                 </button>
                 <button
                   onClick={() => setItem("2")}
-                  className={`hover:text-[#D6B3F1] py-5 hover:border-2 hover:rounded-lg text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "2" ? "text-[#D6B3F1] " : ""
+                  className={`hover:text-[#D6B3F1] py-5 hover:border-2 hover:rounded-lg text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-100 ease-in ${
+                    item === "2" ? "text-[#D6B3F1] border-white rounded-xl " : ""
                   }
               
-              ${item !== "2" ? "hover:bg-white/30" : ""}
+              ${item !== "2" ? "" : ""}
 
               `}
                 >
@@ -195,11 +195,11 @@ if (delayedLoading || isLoading) {
                 </button>
                 <button
                   onClick={() => setItem("3")}
-                  className={`hover:text-[#D6B3F1]  py-5 hover:border-2  hover:rounded-lg text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "3" ? "text-[#D6B3F1] " : ""
+                  className={`hover:text-[#D6B3F1]  py-5 hover:border-2  hover:rounded-lg text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-100 ease-in ${
+                    item === "3" ? "text-[#D6B3F1] border-white rounded-xl" : ""
                   }
               
-              ${item !== "3" ? "hover:bg-white/30" : ""}
+              ${item !== "3" ? "" : ""}
 
               `}
                 >
@@ -207,11 +207,11 @@ if (delayedLoading || isLoading) {
                 </button>
                 <button
                   onClick={() => setItem("4")}
-                  className={`hover:text-[#D6B3F1]  py-5 hover:border-2 hover:rounded-lg  text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "4" ? "text-[#D6B3F1] " : ""
+                  className={`hover:text-[#D6B3F1]  py-5 hover:border-2 hover:rounded-lg  text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-100 ease-in ${
+                    item === "4" ? "text-[#D6B3F1] border-white rounded-xl " : ""
                   }
               
-              ${item !== "4" ? "hover:bg-white/30" : ""}
+              ${item !== "4" ? "" : ""}
 
               `}
                 >
@@ -219,11 +219,11 @@ if (delayedLoading || isLoading) {
                 </button>
                 <button
                   onClick={() => setItem("5")}
-                  className={`hover:text-[#D6B3F1]  py-5 hover:border-2 hover:rounded-lg  text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "5" ? "text-[#D6B3F1] " : ""
+                  className={`hover:text-[#D6B3F1]  py-5 hover:border-2 hover:rounded-lg  text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-100 ease-in ${
+                    item === "5" ? "text-[#D6B3F1] border-white rounded-xl " : ""
                   }
               
-              ${item !== "5" ? "hover:bg-white/30" : ""}
+              ${item !== "5" ? "" : ""}
 
               `}
                 >
@@ -234,11 +234,11 @@ if (delayedLoading || isLoading) {
                     Cookies.remove("token", { path: "/" });
                     router.push("/login");
                   }}
-                  className={`hover:text-[#D6B3F1]  py-5 hover:border-2 hover:rounded-lg  text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "6" ? "text-[#D6B3F1] " : ""
+                  className={`hover:text-[#D6B3F1]  py-5 hover:border-2 hover:rounded-lg  text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-100 ease-in ${
+                    item === "6" ? "text-[#D6B3F1] border-2 border-white rounded-xl " : ""
                   }
               
-              ${item !== "6" ? "hover:bg-white/30" : ""}
+              ${item !== "6" ? "" : ""}
 
               `}
                 >

@@ -62,7 +62,7 @@ export type User = {
   };
 
 export interface ChatRoomProps {
-  room: Channel,
+  room: Channel, 
 }
 
 

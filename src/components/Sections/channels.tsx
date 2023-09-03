@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import CreateChannel from "./createChannel";
 import BrowseChannel from "./browseChannel";
 import Cookies from "js-cookie";
@@ -27,6 +27,9 @@ const Channels = () => {
   {
     getMyChannels();
   }, [])
+
+ 
+
   
   async function getMyChannels() {
 

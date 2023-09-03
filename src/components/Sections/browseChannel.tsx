@@ -339,7 +339,7 @@ const BrowseChannel = () => {
 
   return (
     back === true ? <Channels /> : (
-        chat && channel ?  <ChatRoom  room={channel} /> :
+        chat && channel ?  <ChatRoom room={channel} /> :
     <>
         {
             <>
