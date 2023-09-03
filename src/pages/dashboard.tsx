@@ -11,6 +11,7 @@ import Place from "../../public/place.png";
 import { RouterProvider } from "react-router-dom";
 import Loading from "./loading";
 import Play from "@/components/Sections/play";
+import Options from "@/components/Sections/options";
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -251,7 +252,7 @@ if (delayedLoading || isLoading) {
             {item === "1" ? <Leaderboard /> : null}
             {item === "2" ? <Chat /> : null}
             {item == "5" ? <Edit /> : null}
-            {item == "3" ? <Play /> : null}
+            {item == "3" ? <Options /> : null}
           </div>
         </div>
       </SocketProvider>
