@@ -516,33 +516,32 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                 
                 {
                user.provider === 'intra' ? (<>
-                    <Image  key={index} src={user.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={80} width={80} className='rounded-full max-w-[50px] max-h-[50px] absolute' />
+                    <Image  key={index} src={user.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={80} width={80} className='rounded-full max-w-[50px] max-h-[50px] relative' />
                   </>) : (<>
                   <Avatar currentUser={user}/>
                   </>)
                   
                 }
                 
-              <div>
-                {
-                  user.state === "online" &&
-                  (
-                      <div className="bg-green-500 w-2 h-2 rounded full relative left-9 top-11"></div>
-                  )
-                }
-                {
-                  user.state === "offline" &&
-                  (
-                      <div className="bg-grey-500 w-2 h-2 rounded full relative left-1 top-4"></div>
-                  )
-                }
-                 {
-                  (user.email === details?.owner.email) &&
-                  (
-                      <div className=" left-4 bottom-5 relative "><Image src={crone} width={20} height={20} alt="crone" /></div>
-                  )
-                }
-                {
+              <div className="relative">
+                    {
+                      user.state === "online" && (
+                        <div className="bg-green-500 w-2 h-2 rounded-full absolute left-10 bottom-1"></div>
+                      )
+                    }
+                    {
+                      user.state === "offline" && (
+                        <div className="bg-gray-500 w-2 h-2 rounded-full absolute left-0 top-0"></div>
+                      )
+                    }
+                    {
+                      (user.email === details?.owner.email) && (
+                        <div className="absolute left-4 bottom-10">
+                          <Image src={crone} width={20} height={20} alt="crone" />
+                        </div>
+                      )
+                    }
+                {/* {
 
                   //TODO : CHANGE TO PLAYING MODE
                    user.state === "inGame" &&
@@ -550,7 +549,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
                        <div className="relative left-1 top-4"><Image src={pong} width={20} height={20} alt="crone" /></div>
                    )
 
-                }
+                } */}
               </div>
               </div>
               <div className='flex-1 w-[50%] pt-3 '>
