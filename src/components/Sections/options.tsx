@@ -93,7 +93,7 @@ const defaultStyle = {
         invite ?
         <div 
         style={fadeOut ? fadeOutStyle : defaultStyle} 
-        className='w-[300px] h-[300px] absolute top-1/2 left-[60%] flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2  border-opacity-10 border-violet-400 bg-opacity-2 bg-gradient-to-l from-[#ffffff33] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]'>
+        className='w-[300px] h-[300px] absolute top-1/2 left-[60%] flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2   bg-[#7e22c3] bg-opacity-6 rounded-[30px]'>
         <button  onClick={handleDelete} className=' self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg'>X</button>
         <div className='flex flex-col gap-7 items-center'>
         <h2>Invite friends:</h2>

@@ -15,6 +15,7 @@ import Avatar from '../components/Avatar'
 import { io, Socket } from 'socket.io-client';
 import  crone from '../../public/crone.png'
 import {ChatRoomProps, Message, User, ChatRoom} from '../components/Sections/types/index' 
+import Channels from '@/components/Sections/channels';
 
 
 const ChatRoom: React.FC<ChatRoomProps> = ({
@@ -478,13 +479,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
     }
 
 
+    function isAdmin()
+    {
+      return details?.admins.some((admin) => nickname === admin.nickname) 
+    }
+
     if(isLoading)
     {
         return <Loading />
     }
 
   return (
-    back ? <BrowseChannel /> : (
+    back ? <Channels/> : (
       <>
       
 
@@ -514,33 +520,33 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
             <div className='w-full flex p-3'>
                <div className='flex-1 w-[50%]'>
                 
-                {
-               user.provider === 'intra' ? (<>
-                    <Image  key={index} src={user.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={80} width={80} className='rounded-full max-w-[50px] max-h-[50px] relative' />
-                  </>) : (<>
-                  <Avatar currentUser={user}/>
-                  </>)
-                  
-                }
-                
-              <div className="relative">
                     {
-                      user.state === "online" && (
-                        <div className="bg-green-500 w-2 h-2 rounded-full absolute left-10 bottom-1"></div>
-                      )
+                  user.provider === 'intra' ? (<>
+                        <Image  key={index} src={user.avatarUrl || "/place.png"} alt={details!.owner.avatarUrl}  height={80} width={80} className='rounded-full max-w-[50px] max-h-[50px] relative' />
+                      </>) : (<>
+                      <Avatar currentUser={user}/>
+                      </>)
+                      
                     }
-                    {
-                      user.state === "offline" && (
-                        <div className="bg-gray-500 w-2 h-2 rounded-full absolute left-0 top-0"></div>
-                      )
-                    }
-                    {
-                      (user.email === details?.owner.email) && (
-                        <div className="absolute left-4 bottom-10">
-                          <Image src={crone} width={20} height={20} alt="crone" />
-                        </div>
-                      )
-                    }
+                    
+                  <div className="relative">
+                        {
+                          user.state === "online" && (
+                            <div className="bg-green-500 w-2 h-2 rounded-full absolute left-10 bottom-1"></div>
+                          )
+                        }
+                        {
+                          user.state === "offline" && (
+                            <div className="bg-gray-500 w-2 h-2 rounded-full absolute left-0 top-0"></div>
+                          )
+                        }
+                        {
+                          (user.email === details?.owner.email) && (
+                            <div className="absolute left-4 bottom-10">
+                              <Image src={crone} width={20} height={20} alt="crone" />
+                            </div>
+                          )
+                        }
                 {/* {
 
                   //TODO : CHANGE TO PLAYING MODE
@@ -557,43 +563,63 @@ const ChatRoom: React.FC<ChatRoomProps> = ({
               </div>
               
                 <div className='flex justify-end  w-[50%] self-end'>
-                <IconButton
-                style={{color: "white"}}
-                aria-label="more"
-                id="long-button"
-                aria-controls={open ? 'long-menu' : undefined}
-                aria-expanded={open ? 'true' : undefined}
-                aria-haspopup="true"
-                onClick={handleClick}
-                className="bg-white"
-              >
-                <MoreHorizIcon />
-              </IconButton>
-               <Menu
-                id="long-menu"
-                MenuListProps={{
-                  'aria-labelledby': 'long-button',
-                }}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                PaperProps={{
-                  style: {
-                    maxHeight: ITEM_HEIGHT * 4.5,
-                    width: '20ch',
-                    backgroundColor: '#3c005a', 
-                    color: 'white'
-                    // useTransition: '2sec'
-                  },
-                }}
-              >
-              {optionsMember.map((option) =>
-              (
-                <MenuItem key={option}  onClick={() => handleOptions(option)}>
-                  {option}
-                </MenuItem>
-              ))}
-                </Menu>
+                {
+                    !isAdmin() ? null
+                    :
+                    (
+                      isAdmin() ?
+                      (
+                        nickname === user.nickname ?  null :
+                      <>
+
+                      <IconButton
+                                        style={{color: "white"}}
+                                        aria-label="more"
+                                        id="long-button"
+                                        aria-controls={open ? 'long-menu' : undefined}
+                                        aria-expanded={open ? 'true' : undefined}
+                                        aria-haspopup="true"
+                                        onClick={handleClick}
+                                        className="bg-white"
+                                      >
+                                        <MoreHorizIcon />
+                                      </IconButton>
+                                      <Menu
+                                        id="long-menu"
+                                        MenuListProps={{
+                                          'aria-labelledby': 'long-button',
+                                        }}
+                                        anchorEl={anchorEl}
+                                        open={open}
+                                        onClose={handleClose}
+                                        PaperProps={{
+                                          style: {
+                                            maxHeight: ITEM_HEIGHT * 4.5,
+                                            width: '20ch',
+                                            backgroundColor: '#3c005a', 
+                                            color: 'white'
+                                            // useTransition: '2sec'
+                                          },
+                                        }}
+                                      >
+                                      {optionsMember.map((option) =>
+                                      (
+                                        <MenuItem key={option}  onClick={() => handleOptions(option)}>
+                                          {option}
+                                        </MenuItem>
+                                      ))}
+                          </Menu>
+                      </>
+
+                      )
+                      :
+                      null
+
+                    )
+                      
+
+                  }
+               
             </div>
             </div>)
           }
