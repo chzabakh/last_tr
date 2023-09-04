@@ -4,6 +4,7 @@ import Channels from "@/components/Sections/channels";
 import Dms from "./dms";
 import Messages from "./messages";
 import Friends from "./friends";
+import { HiUsers, HiChatBubbleLeftEllipsis, HiTv } from "react-icons/hi2"
 
 const Chat = () => {
   const [item, setItem] = useState("6");
@@ -20,7 +21,7 @@ const Chat = () => {
         <div className="overflow-auto py-20 flex flex-col space-y-10 border-2  border-opacity-30 w-[15%] flex-auto border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <button
             onClick={() => setItem("6")}
-            className={`p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
+            className={`hidden sm:block p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
               item === "6" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
             }
               
@@ -30,8 +31,19 @@ const Chat = () => {
             Find a Friend
           </button>
           <button
+            onClick={() => setItem("6")}
+            className={`mx-auto sm:hidden p-0 hover:text-[#D6B3F1] text-left text-2xl xl:text-xl transition-all duration-300 ease-in ${
+              item === "6" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
+            }
+              
+
+              `}
+          >
+            <HiUsers/>
+          </button>
+          <button
             onClick={() => setItem("7")}
-            className={`p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
+            className={`hidden sm:block p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
               item === "7" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
             }
               
@@ -39,6 +51,17 @@ const Chat = () => {
               `}
           >
             Direct messages
+          </button>
+          <button
+            onClick={() => setItem("7")}
+            className={`mx-auto sm:hidden p-0 hover:text-[#D6B3F1] text-left text-2xl xl:text-xl transition-all duration-300 ease-in ${
+              item === "7" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
+            }
+              
+
+              `}
+          >
+            <HiChatBubbleLeftEllipsis />
           </button>
           {/* <button
             onClick={() => setItem("9")}
@@ -53,7 +76,7 @@ const Chat = () => {
           </button> */}
           <button
             onClick={() => setItem("8")}
-            className={`p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
+            className={`hidden sm:block p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
               item === "8" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
             }
               
@@ -61,6 +84,15 @@ const Chat = () => {
               `}
           >
             Channels
+          </button>
+          <button
+            onClick={() => setItem("8")}
+            className={` mx-auto sm:hidden p-0 hover:text-[#D6B3F1] text-left text-2xl xl:text-xl transition-all duration-300 ease-in ${
+              item === "8" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
+            }
+              `}
+          >
+            <HiTv />
           </button>
         </div>
         {item == "0" ? (

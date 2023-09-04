@@ -8,6 +8,7 @@ import axios, { AxiosError } from "axios";
 import Edit from "@/components/Sections/edit";
 import Cookies from "js-cookie";
 import Place from "../../public/place.png";
+import { HiBars4, HiMiniXCircle } from "react-icons/hi2";
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -29,6 +30,7 @@ const Dashboard = () => {
   const [username, setUser] = useState("");
   const [token, setToken] = useState("");
   const [provider, setProvider] = useState("");
+  const [menu, setMenu] = useState("off");
   const [me, setMe] = useState<Me>({
     TwofaAutEnabled: false,
     avatarUrl: "none",
@@ -82,104 +84,207 @@ const Dashboard = () => {
     fetchData();
   }, [Cookies.get("token")]); // Dependency on the token
 
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Clean up the event listener on unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <>
       <SocketProvider>
         <div className="flex flex-row h-full">
           {windowWidth > 768 ? (
-            <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
-              <div>
-                <Image
-                  className="object-cover flex-auto mx-auto rounded-[30px]"
-                  src={Preview || Place}
-                  alt={me.avatarUrl}
-                  height={200}
-                  width={200}
-                  priority={true}
-                />
-                <p className="font-serif text-center py-5 text-xl">
-                  {username}
-                </p>
-              </div>
-              <div className="w-full flex flex-col pt-[2rem]">
-                <button
-                  onClick={() => setItem("1")}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "1" ? "text-[#D6B3F1] bg-white" : ""
-                  }
+            <>
+              <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
+                <div>
+                  <Image
+                    className="object-cover flex-auto mx-auto rounded-[30px]"
+                    src={Preview || Place}
+                    alt={me.avatarUrl}
+                    height={200}
+                    width={200}
+                    priority={true}
+                  />
+                  <p className="font-serif text-center py-5 text-xl">
+                    {username}
+                  </p>
+                </div>
+                <div className="w-full flex flex-col pt-[2rem]">
+                  <button
+                    onClick={() => setItem("1")}
+                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                      item === "1" ? "text-[#D6B3F1] bg-white" : ""
+                    }
               
               ${item !== "1" ? "hover:bg-white/30" : ""}
 
               `}
-                >
-                  LeaderBoard
-                </button>
-                <button
-                  onClick={() => setItem("2")}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "2" ? "text-[#D6B3F1] bg-white" : ""
-                  }
-              
+                  >
+                    LeaderBoard
+                  </button>
+                  <button
+                    onClick={() => setItem("2")}
+                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                      item === "2" ? "text-[#D6B3F1] bg-white" : ""
+                    }
               ${item !== "2" ? "hover:bg-white/30" : ""}
-
               `}
-                >
-                  Chat
-                </button>
-                <button
-                  onClick={() => setItem("3")}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "3" ? "text-[#D6B3F1] bg-white" : ""
-                  }
+                  >
+                    Chat
+                  </button>
+                  <button
+                    onClick={() => setItem("3")}
+                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                      item === "3" ? "text-[#D6B3F1] bg-white" : ""
+                    }
               
               ${item !== "3" ? "hover:bg-white/30" : ""}
 
               `}
-                >
-                  Play Game
-                </button>
-                <button
-                  onClick={() => setItem("4")}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "4" ? "text-[#D6B3F1] bg-white" : ""
-                  }
+                  >
+                    Play Game
+                  </button>
+                  <button
+                    onClick={() => setItem("4")}
+                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                      item === "4" ? "text-[#D6B3F1] bg-white" : ""
+                    }
               
               ${item !== "4" ? "hover:bg-white/30" : ""}
 
               `}
-                >
-                  Match history
-                </button>
-                <button
-                  onClick={() => setItem("5")}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "5" ? "text-[#D6B3F1] bg-white" : ""
-                  }
+                  >
+                    Match history
+                  </button>
+                  <button
+                    onClick={() => setItem("5")}
+                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                      item === "5" ? "text-[#D6B3F1] bg-white" : ""
+                    }
               
               ${item !== "5" ? "hover:bg-white/30" : ""}
 
               `}
-                >
-                  Edit Profile
-                </button>
-                <button
-                  onClick={() => {
-                    Cookies.remove("token", { path: "/" });
-                    router.push("/login");
-                  }}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                    item === "6" ? "text-[#D6B3F1] bg-white" : ""
-                  }
+                  >
+                    Edit Profile
+                  </button>
+                  <button
+                    onClick={() => {
+                      Cookies.remove("token", { path: "/" });
+                      router.push("/login");
+                    }}
+                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
+                      item === "6" ? "text-[#D6B3F1] bg-white" : ""
+                    }
               
               ${item !== "6" ? "hover:bg-white/30" : ""}
 
               `}
-                >
-                  Logout
-                </button>
+                  >
+                    Logout
+                  </button>
+                </div>
               </div>
-            </div>
-          ) : null}
+            </>
+          ) : (
+            <>
+              <button
+                className="text-4xl absolute top-5 left-5 bg-purple-800 p-2 rounded-md"
+                onClick={() => setMenu("on")}
+              >
+                <HiBars4 />
+              </button>
+              <div
+                className={`absolute z-50 bg-purple-800 h-screen w-screen ${
+                  menu === "off" ? "-translate-x-full" : ""
+                } transition-transform duration-700`}
+              >
+                <button
+                  className="text-6xl absolute top-5 left-5 bg-red-700 p-0 rounded-md"
+                  onClick={() => setMenu("off")}
+                >
+                  <HiMiniXCircle />
+                </button>
+
+                <>
+                    <div className="mt-20">
+                      <Image
+                        className="object-cover flex-auto mx-auto rounded-[30px]"
+                        src={Preview || Place}
+                        alt={me.avatarUrl}
+                        height={200}
+                        width={200}
+                        priority={true}
+                      />
+                      <p className="font-serif text-center py-5 text-xl">
+                        {username}
+                      </p>
+                    </div>
+                    <div className="w-full flex flex-col pt-[2rem]">
+                      <button
+                        onClick={() => setItem("1")}
+                        className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                          item === "1" ? "text-[#D6B3F1] bg-white" : ""
+                        } ${item !== "1" ? "hover:bg-white/30" : ""}`}
+                      >
+                        LeaderBoard
+                      </button>
+                      <button
+                        onClick={() => setItem("2")}
+                        className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                          item === "2" ? "text-[#D6B3F1] bg-white" : ""
+                        }${item !== "2" ? "hover:bg-white/30" : ""}`}
+                      >
+                        Chat
+                      </button>
+                      <button
+                        onClick={() => setItem("3")}
+                        className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                          item === "3" ? "text-[#D6B3F1] bg-white" : ""
+                        }${item !== "3" ? "hover:bg-white/30" : ""}`}
+                      >
+                        Play Game
+                      </button>
+                      <button
+                        onClick={() => setItem("4")}
+                        className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                          item === "4" ? "text-[#D6B3F1] bg-white" : ""
+                        }${item !== "4" ? "hover:bg-white/30" : ""}`}
+                      >
+                        Match history
+                      </button>
+                      <button
+                        onClick={() => setItem("5")}
+                        className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                          item === "5" ? "text-[#D6B3F1] bg-white" : ""
+                        }${item !== "5" ? "hover:bg-white/30" : ""}`}
+                      >
+                        Edit Profile
+                      </button>
+                      <button
+                        onClick={() => {
+                          Cookies.remove("token", { path: "/" });
+                          router.push("/login");
+                        }}
+                        className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                          item === "6" ? "text-[#D6B3F1] bg-white" : ""
+                        }${item !== "6" ? "hover:bg-white/30" : ""}`}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                </>
+              </div>
+            </>
+          )}
           <div className="h-screen w-full md:w-[90%] flex mx-auto ">
             {item === "1" ? <Leaderboard /> : null}
             {item === "2" ? <Chat /> : null}

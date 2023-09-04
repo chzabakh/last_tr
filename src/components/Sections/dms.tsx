@@ -154,7 +154,7 @@ const Dms: React.FC<DmProps> = ({
       // setAvatar(res.data.avatarUrl);
       // setNickname(res.data.nickname);
       console.log(reload);
-      setInput("");
+      // setInput("");
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
@@ -299,7 +299,8 @@ const Dms: React.FC<DmProps> = ({
     }
   };
 
-  const blockUser = async () => {
+  const blockUser = async (pinput: string) => {
+    console.log(pinput);
     try {
       const block = await axios.post(
         `http://localhost:9000/users/${input}/block-user`,
@@ -323,7 +324,7 @@ const Dms: React.FC<DmProps> = ({
     input: string
   ) => {
     e.preventDefault();
-    await blockUser();
+    await blockUser(input);
   };
 
   useEffect(() => {}, []);
@@ -526,7 +527,7 @@ const Dms: React.FC<DmProps> = ({
                   </div>
                 ))
               )}
-              <div className="pt-2" ref={bottomRef} />
+              <div className="pt-24" ref={bottomRef} />
             </div>
             <div className="flex bottom-4 w-[45%] lg:w-[50%] xl:w-[60%] border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
               <input
