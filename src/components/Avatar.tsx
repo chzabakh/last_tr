@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { User } from "./Sections/types";
 
 interface AvatarProps {
-  currentUser: User;
+  currentUser: User | undefined;
 }
 
 const Avatar: React.FC<AvatarProps> = ({ currentUser }) => {
@@ -15,7 +15,7 @@ const Avatar: React.FC<AvatarProps> = ({ currentUser }) => {
     const token = Cookies.get("token");
     const headers = { Authorization: `Bearer ${token}` };
     axios
-      .get(`http://localhost:9000/users/${currentUser.id}/avatar`, {
+      .get(`http://localhost:9000/users/${currentUser?.id}/avatar`, {
         headers,
         responseType: "blob",
       })

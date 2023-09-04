@@ -62,28 +62,6 @@ class Paddle {
     }
   }
 
-  // ComputerUpdate(ball: Ball) {
-  //   const paddleCenter = this.y + this.height / 2;
-
-  //   const ballCenter = ball.y;
-
-  //   if (paddleCenter < ballCenter) {
-  //     this.move(Direction.Down);
-  //   } else if (paddleCenter > ballCenter) {
-  //     this.move(Direction.Up);
-  //   } else {
-  //     this.stop();
-  //   }
-
-  //   this.y += this.dy;
-
-  //   if (this.y < 0) {
-  //     this.y = 0;
-  //   } else if (this.y + this.height > this.canvas.height) {
-  //     this.y = this.canvas.height - this.height;
-  //   }
-  // }
-
   draw() {
     this.context.fillStyle = "#ffffff";
     this.context.fillRect(this.x, this.y, this.width, this.height);
@@ -102,7 +80,6 @@ export default class PongGame {
   private socket: Socket;
   private playerId: number;
   private largeScreenMediaQuery: MediaQueryList;
-  // private isMouseInsideCanvas: boolean;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -143,14 +120,15 @@ export default class PongGame {
       }
     });
 
-    socket.on("BallPositionUpdated", (data) => {
-      console.log(data);
-      // console.log(data.PaddleWidth);
-      // console.log(data.PaddleHeight);
+    const gradient = this.context.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, "blue"); // Start color
+    gradient.addColorStop(1, "red"); // End color
+    this.context.fillStyle = gradient;
 
+    socket.on("BallPositionUpdated", (data) => {
       let x: number = data.ball.x;
       if (this.gameTable.player1.id !== this.playerId) {
-        x = this.canvas.width - x; // Reverse the X-coordinate
+        x = this.canvas.width - x;
       }
       this.drawBall(x, data.ball.y);
 
@@ -161,17 +139,17 @@ export default class PongGame {
       this.context.stroke();
 
       if (data.playerId === this.playerId) {
-        this.context.fillStyle = "#ffffff";
+        this.context.fillStyle = "##008000";
         this.context.fillRect(
           680,
           data.secondPaddle.y,
           data.PaddleWidth,
           data.PaddleHeight
         );
-        this.context.fillStyle = "#ffffff";
+        this.context.fillStyle = "#008000";
         this.context.fillRect(10, data.y, data.PaddleWidth, data.PaddleHeight);
       } else {
-        this.context.fillStyle = "#ffffff";
+        this.context.fillStyle = "#008000";
         this.context.fillRect(
           10,
           data.secondPaddle.y,
