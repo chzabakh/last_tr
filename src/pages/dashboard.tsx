@@ -230,7 +230,7 @@ const Dashboard = () => {
                     </div>
                     <div className="w-full flex flex-col pt-[2rem]">
                       <button
-                        onClick={() => setItem("1")}
+                        onClick={() => {setMenu("off"); setItem("1")}}
                         className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
                           item === "1" ? "text-[#D6B3F1] bg-white" : ""
                         } ${item !== "1" ? "hover:bg-white/30" : ""}`}
@@ -238,7 +238,7 @@ const Dashboard = () => {
                         LeaderBoard
                       </button>
                       <button
-                        onClick={() => setItem("2")}
+                        onClick={() => {setMenu("off"); setItem("2")}}
                         className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
                           item === "2" ? "text-[#D6B3F1] bg-white" : ""
                         }${item !== "2" ? "hover:bg-white/30" : ""}`}
@@ -246,7 +246,7 @@ const Dashboard = () => {
                         Chat
                       </button>
                       <button
-                        onClick={() => setItem("3")}
+                        onClick={() => {setMenu("off"); setItem("3")}}
                         className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
                           item === "3" ? "text-[#D6B3F1] bg-white" : ""
                         }${item !== "3" ? "hover:bg-white/30" : ""}`}
@@ -254,7 +254,7 @@ const Dashboard = () => {
                         Play Game
                       </button>
                       <button
-                        onClick={() => setItem("4")}
+                        onClick={() => {setMenu("off"); setItem("4")}}
                         className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
                           item === "4" ? "text-[#D6B3F1] bg-white" : ""
                         }${item !== "4" ? "hover:bg-white/30" : ""}`}
@@ -262,7 +262,7 @@ const Dashboard = () => {
                         Match history
                       </button>
                       <button
-                        onClick={() => setItem("5")}
+                        onClick={() => {setMenu("off"); setItem("5")}}
                         className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
                           item === "5" ? "text-[#D6B3F1] bg-white" : ""
                         }${item !== "5" ? "hover:bg-white/30" : ""}`}

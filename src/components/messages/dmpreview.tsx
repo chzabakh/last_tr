@@ -153,6 +153,7 @@ const Dmpreview: React.FC<MessageProps> = ({
           setChatList={setChatList}
           other={other}
           setOther={setOther}
+          patch={"off"}
         />
       ) : (
         //  </div>

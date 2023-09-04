@@ -40,7 +40,7 @@ interface Invitation {
   friendRequestStatus: string;
 }
 
-interface Blockedpoeple {
+export interface Blockedpoeple {
   blockedUserID: number;
   blockedUserNickname: string;
   blockingUserID: number;
@@ -122,6 +122,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [loading, setLoading] = useState(false);
   const [plus, setPlus] = useState(1);
   const [resetFriends, setResetFriends] = useState<boolean>(false);
+  const [blocked, setBlocked] = useState("free");
 
   const [chat, setChat] = useState<Chat>({
     id: 0,
@@ -208,7 +209,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && input) {
       e.preventDefault();
-      e.currentTarget.blur();
+      // e.currentTarget.blur();
       handleSubmit(e as any, input); // As we're simulating a button click, we cast the event to any.
     }
   };
@@ -415,6 +416,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   };
 
   const blockUser = async () => {
+    console.log("toblk: ", toblk);
     try {
       const block = await axios.post(
         `http://localhost:9000/users/${toblk}/block-user`,
@@ -425,7 +427,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           },
         }
       );
-      console.log(block.data);
+      setBlocked("jail");
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log(err.response?.data.message);
@@ -435,12 +437,35 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     }
   };
 
-  const handleBlock = async (
-    e: React.MouseEvent<HTMLButtonElement>,
-    input: string
-  ) => {
+  const handleBlock = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     await blockUser();
+  };
+
+  const unblockUser = async () => {
+    console.log("toblk: ", toblk);
+    try {
+      const unblock = await axios.delete(
+        `http://localhost:9000/users/${user1}/${toblk}/unblock`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      setBlocked("free");
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.log(err.response?.data.message);
+      } else {
+        console.log("Unexpected error", err);
+      }
+    }
+  };
+
+  const handleUnblock = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await unblockUser();
   };
 
   useEffect(() => {
@@ -768,6 +793,8 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     fetchAvatars();
   }, [invites]);
 
+  console.log("blocked: ", blocked, "isblocked: ", isblocked);
+
   return (
     <>
       {dm == "1" && chat && other ? (
@@ -779,6 +806,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
             setChatList={setChatList}
             other={other}
             setOther={setOther}
+            patch={"on"}
           />
           {/* <FindAFriend  dmm={dm} updateItemm={updateItem}/> */}
           {/* <Messages dm={dm} updateItem={updateItem} /> */}
@@ -1030,8 +1058,10 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                             )}
                           </div>
                         </div>
-                        <span>{friend.nickname} :</span>
-                        <span>{friend.state}</span>
+                        <div className="flex flex-wrap">
+                          <span>{friend.nickname} :</span>
+                          <span>{friend.state}</span>
+                        </div>
                         <button
                           onClick={() => {
                             // getChat(friend.nickname);
@@ -1089,12 +1119,22 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                   <div className="gap-5 w-full flex flex-col">
                     {identical === "0" ? (
                       <>
-                        <button
-                          onClick={(e) => handleBlock(e, input)}
-                          className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
-                        >
-                          Block user
-                        </button>
+                        {blocked === "free" && !isblocked ? (
+                          <button
+                            onClick={(e) => handleBlock(e)}
+                            className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                          >
+                            Block user
+                          </button>
+                        ) : null}
+                        {blocked === "jail" || isblocked ? (
+                          <button
+                            onClick={(e) => handleUnblock(e)}
+                            className="mx-auto text-white hover:bg-white hover:bg-opacity-10 w-[90%] text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                          >
+                            Unblock user
+                          </button>
+                        ) : null}
                         <button
                           onClick={() => {
                             setItem("9");
