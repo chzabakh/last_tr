@@ -7,6 +7,7 @@ import Play from "./play";
 import PongGame from "./pongGame";
 import Image from "next/image";
 import place from "../../../public/place.png";
+import {Friend} from '../../components/Sections/types'
 
 export interface Player {
   id: number;
@@ -47,6 +48,7 @@ interface gameInvite {
 const Options = () => {
   const [socket, setSocket] = useState<Socket>();
   const [inQueue, setInQueue] = useState(false); // State to track inQueue status
+  const [friends, setFriends] = useState<Friend[]>([]);
   const [gameStart, setGamestart] = useState(false);
   const [user, setUser] = useState<Player>();
   const [countdown, setCountdown] = useState<number | null>(3); // Countdown timer
@@ -55,6 +57,20 @@ const Options = () => {
   const [winner, setWinner] = useState<string>("");
   const [gameEnded, setGameEnded] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [invite, setInvite] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
+
+  const defaultStyle = {
+    transition: "opacity 0.5s",
+    opacity: 1
+    };
+    
+    const fadeOutStyle = {
+    transition: "opacity 0.5s",
+    opacity: 0
+    };
+    
+
 
   useEffect(() => {
     if (countdown === null) {
@@ -113,6 +129,57 @@ const Options = () => {
     }
   }, [socket]);
 
+
+
+  const handleDelete = () => {
+    setFadeOut(true);
+    setTimeout(() => {
+     setInvite(false);
+      setFadeOut(false); 
+      
+    }, 500);
+  };
+
+  useEffect(() => 
+  {
+    async function initialize()
+    {
+        await getFriends()
+
+    }
+    initialize();
+  }, [])
+
+
+
+  async function getFriends()
+  {
+      try
+      {
+          const token = Cookies.get('token')
+          const headers = { Authorization: `Bearer ${token}` };
+          const res = await axios.get('http://localhost:9000/users/friendlist', { headers });            
+          setFriends(res.data)
+          console.log(friends)
+        }
+      catch(e)
+      {
+          if(axios.isAxiosError(e))
+          {
+              if(e.request)
+                  console.log("No response received!", e.request);
+              else if(e.response)
+                  console.log("Error status: ", e.response?.status);
+                  console.log("Error data: ", e.response?.data);
+          }
+          else
+          {
+              console.log("Error: ", e);
+          }
+      }
+  }
+
+
   useEffect(() => {
     if (gameStart) {
       const timer = setInterval(() => {
@@ -141,34 +208,31 @@ const Options = () => {
       });
     }
   };
-
+  
   return (
-    <div className="my-6 h-[90%] gap-3 flex justify-center items-center flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-      <div className="flex">
+    <div className="my-6 h-[95%] gap-3 flex justify-center items-center flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+      <div className="flex w-full h-full justify-center items-center">
         {gameStart ? (
           <>
             {countdown !== null ? (
               <h1 className="text-7xl">{countdown}</h1>
-            ) : (
-              <>
-                <div
-                  className={`flex justify-center absolute top-[25%] left-[25%] 
-              `}
-                >
-                  {/* <canvas
-                    className="lg:flex lg:justify-center lg:absolute lg:top-[25%] lg:left-[25%] lg:rotate-0 bg-black -rotate-90"
-                    width={700}
-                    height={400}
-                    ref={canvasRef}
-                    id="gameCanvas"
-                  ></canvas> */}
-                  <div className="my-6 bg-black h-[90%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20  bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-                    <div className="border-2 h-[20%] flex justify-between border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#45167233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+              ) : (
+                <>
+                <div className="flex h-full w-full justify-center items-center">
+                {/* <canvas
+                  className="lg:flex lg:justify-center lg:absolute lg:top-[25%] lg:left-[25%] lg:rotate-0 bg-black -rotate-90"
+                  width={700}
+                  height={400}
+                  ref={canvasRef}
+                  id="gameCanvas"
+                ></canvas> */}
+                  <div className="my-6 bg-black h-[94%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20  bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+                    <div className="border-2 h-[10%] flex justify-between border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#45167233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                       <div className="flex justify-between w-[30%]">
                         <Image
                           src={place}
-                          width={100}
-                          height={100}
+                          width={50}
+                          height={50}
                           alt=""
                           className="rounded-full"
                         />
@@ -184,8 +248,8 @@ const Options = () => {
                         </div>
                         <Image
                           src={place}
-                          width={100}
-                          height={100}
+                          width={50}
+                          height={50}
                           alt=""
                           className="rounded-full"
                         />
@@ -235,11 +299,33 @@ const Options = () => {
                 >
                   Play
                 </Button>
-                <Button className="border-2 border-white px-4 m-8 rounded-full w-[200px] p-3">
-                  Invite
-                </Button>
+                <Button className="border-2 border-white px-4 m-8 rounded-full w-[200px] p-3" onClick={() => setInvite(true)}>Invite</Button>
               </>
             )}
+
+            {
+                    invite ?
+                    <div 
+                    style={fadeOut ? fadeOutStyle : defaultStyle} 
+                    className='w-[300px] h-[300px] absolute top-1/2 left-[50%] flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2   bg-[#7e22c3] bg-opacity-6 rounded-[30px]'>
+                    <button  onClick={handleDelete} className=' self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg'>X</button>
+                    <div className='flex flex-col gap-7 items-center'>
+                    <h2>Invite friends:</h2>
+                    </div>
+                    <div className='flex flex-col gap-2 '>
+                        {
+                            friends.map((friend) => (
+                            <div key={friend.id} className="flex justify-evenly">
+                                <div className='text-[purple-500]'>{friend.nickname}</div>
+                                <button className='border-4 border-[#3b0764] px-2 rounded-full'>Invite</button>
+                            </div>
+                            ))
+                        }
+                        </div>
+                    </div>
+                    :
+                    null
+                }
           </>
         )}
       </div>

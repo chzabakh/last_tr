@@ -93,4 +93,10 @@ export type Message = {
   };
   
   
-  
+  export type Friend = {
+    id: number;
+    nickname: string;
+    state: string;
+    avatarUrl: string;
+    provider: string;
+  };
