@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import Dmpreview from "../messages/dmpreview";
-import { useSocket } from "@/pages/socket_context";
+import { useSocket } from "@/components/socket_context";
 
 interface User {
   id: number;

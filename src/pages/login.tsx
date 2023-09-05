@@ -62,7 +62,7 @@ export const Login: React.FC = () => {
         //   router.push('/activate')
         // }
         // else
-        router.push("/dashboard");
+        router.push("/chat");
       }
     } catch (err) {
       if (err instanceof AxiosError) {

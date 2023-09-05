@@ -2,41 +2,37 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 import Router, { useRouter } from "next/router";
-import Dashboard from "./dashboard";
+import Dashboard from "./bakindex";
 import Place from "../../public/place.png";
 import Cookies from "js-cookie";
 
 const addInfos = () => {
   useEffect(() => {
-  async function getAvatar()
-  {
-    try {
-      const Token = Cookies.get("token");
-      const headers = { Authorization: `Bearer ${Token}` };
+    async function getAvatar() {
+      try {
+        const Token = Cookies.get("token");
+        const headers = { Authorization: `Bearer ${Token}` };
 
-      const response = await axios.get("http://localhost:9000/users/me", {
+        const response = await axios.get("http://localhost:9000/users/me", {
           headers,
         });
 
-      if (response.data.provider === "intra") {
+        if (response.data.provider === "intra") {
           setPreview(response.data.avatarUrl);
+        } else {
+          const res = await axios.get("http://localhost:9000/users/my-avatar", {
+            headers,
+            responseType: "blob",
+          });
+          const blob = new Blob([res.data], { type: "image/png" });
+          const previewUrl = URL.createObjectURL(blob);
+          setPreview(previewUrl);
+        }
+      } catch (err) {
+        console.log(err);
       }
-      else
-      {
-        const res = await axios.get("http://localhost:9000/users/my-avatar", {
-          headers,
-          responseType: "blob",
-        });
-        const blob = new Blob([res.data], { type: "image/png" });
-        const previewUrl = URL.createObjectURL(blob);
-        setPreview(previewUrl);
-      }
-    } catch (err) {
-      console.log(err);
     }
-
-  }
-  getAvatar();
+    getAvatar();
   }, []);
 
   const [Avatar, setAvatar] = useState<File | null>(null);
@@ -47,8 +43,6 @@ const addInfos = () => {
   const [isUsernameChanged, setIsUsernameChanged] = useState(false);
 
   const router = useRouter();
-
-
 
   function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];

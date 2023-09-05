@@ -1,3 +1,22 @@
+export interface Player {
+  id: number;
+  nickname: string;
+  sockerId: string;
+  score: number;
+}
+
+export class Ball {
+  x!: number;
+  y!: number;
+}
+
+export class GameTable {
+  player1: Player | null = null;
+  player2: Player | null = null;
+  ball: Ball | undefined;
+  roomName: string | undefined;
+}
+
 export interface Owner 
 {
     FirstLogin: boolean,

@@ -3,9 +3,10 @@ import React, { useEffect } from "react";
 import { useState, ChangeEvent } from "react";
 import Image from "next/image";
 import axios from "axios";
-import TwoFac from "./twoFac";
+import TwoFac from "../components/Sections/twoFac";
 import Cookies from "js-cookie";
-import Place from "../../../public/place.png";
+import Place from "../../public/place.png";
+import DashboardLayout from "@/components/Layout/dashboardLayout";
 // import { initialize } from 'next/dist/server/lib/render-server';
 
 const Edit = () => {
@@ -243,97 +244,99 @@ const Edit = () => {
 
   return (
     <>
-      {!showTwoFac ? (
-        <div className="my-20 h-[80%] gap-3 justify-center flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white/20 bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-          <div className="border-2 flex overflow-scroll flex-col justify-between  h-[97%] border-opacity-30 border-violet-400 bg-opacity-7 bg-gradient-to-l from-[#4f117f33] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-            <div className="flex">
-              <div className="flex-1 w-[50%]">Change the Avatar:</div>
-              <div className="w-[50%]">
-                <Image
-                  src={Preview || Place}
-                  alt=""
-                  width={200}
-                  height={200}
-                  className="border-2 self-center"
-                />
-                <input
-                  key="avatar"
-                  type="file"
-                  accept=".jpg, .jpeg, .png"
-                  className="my-5 bg-black/20"
-                  onChange={(e) => {
-                    handleAvatarChange(e);
-                  }}
-                />
+      <DashboardLayout>
+        {!showTwoFac ? (
+          <div className="my-20 h-[80%] gap-3 justify-center flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white/20 bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+            <div className="border-2 flex overflow-scroll flex-col justify-between  h-[97%] border-opacity-30 border-violet-400 bg-opacity-7 bg-gradient-to-l from-[#4f117f33] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+              <div className="flex">
+                <div className="flex-1 w-[50%]">Change the Avatar:</div>
+                <div className="w-[50%]">
+                  <Image
+                    src={Preview || Place}
+                    alt=""
+                    width={200}
+                    height={200}
+                    className="border-2 self-center"
+                  />
+                  <input
+                    key="avatar"
+                    type="file"
+                    accept=".jpg, .jpeg, .png"
+                    className="my-5 bg-black/20"
+                    onChange={(e) => {
+                      handleAvatarChange(e);
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col gap-10 ">
-              <div className="flex  w-full flex-row ">
-                <div className="w-[50%]">Change username:</div>
-                <input
-                  className="p-2 rounded-lg w-[50%] text-white bg-black/20"
-                  value={Username}
-                  type="text"
-                  placeholder="Type new username"
-                  onChange={handleNickChange}
-                />
+              <div className="flex flex-col gap-10 ">
+                <div className="flex  w-full flex-row ">
+                  <div className="w-[50%]">Change username:</div>
+                  <input
+                    className="p-2 rounded-lg w-[50%] text-white bg-black/20"
+                    value={Username}
+                    type="text"
+                    placeholder="Type new username"
+                    onChange={handleNickChange}
+                  />
+                </div>
+                {provider === "email" ? (
+                  <>
+                    <div className="">Change password: </div>
+                    <div className="flex flex-row justify-center flex-wrap">
+                      <input
+                        className="p-2 rounded-lg text-white m-4 bg-black/20"
+                        type="password"
+                        placeholder="Type old password"
+                        onChange={handleOldPassChange}
+                      />
+                      <input
+                        className="p-2 rounded-lg text-white m-4 bg-black/20 mb-5"
+                        type="password"
+                        placeholder="Type new password"
+                        onChange={handlePassChange}
+                      />
+                    </div>
+                  </>
+                ) : null}
               </div>
-              {provider === "email" ? (
-                <>
-                  <div className="">Change password: </div>
-                  <div className="flex flex-row justify-center flex-wrap">
-                    <input
-                      className="p-2 rounded-lg text-white m-4 bg-black/20"
-                      type="password"
-                      placeholder="Type old password"
-                      onChange={handleOldPassChange}
-                    />
-                    <input
-                      className="p-2 rounded-lg text-white m-4 bg-black/20 mb-5"
-                      type="password"
-                      placeholder="Type new password"
-                      onChange={handlePassChange}
-                    />
-                  </div>
-                </>
-              ) : null}
-            </div>
 
-            <div className="flex flex-col justify-between">
-              <div className="flex justify-between">
-                {status === "enabled" ? (
+              <div className="flex flex-col justify-between">
+                <div className="flex justify-between">
+                  {status === "enabled" ? (
+                    <button
+                      className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
+                      onClick={handleDisable}
+                    >
+                      {" "}
+                      Desactivate auth
+                    </button>
+                  ) : (
+                    <button
+                      className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
+                      onClick={handleAuthClick}
+                    >
+                      {" "}
+                      Activate auth
+                    </button>
+                  )}
                   <button
-                    className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
-                    onClick={handleDisable}
+                    className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white  p-3 rounded-2xl"
+                    onClick={handleSaveChanges}
                   >
-                    {" "}
-                    Desactivate auth
+                    Save changes
                   </button>
-                ) : (
-                  <button
-                    className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
-                    onClick={handleAuthClick}
-                  >
-                    {" "}
-                    Activate auth
-                  </button>
-                )}
-                <button
-                  className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white  p-3 rounded-2xl"
-                  onClick={handleSaveChanges}
-                >
-                  Save changes
-                </button>
-                {error && <p>{error}</p>}
+                  {error && <p>{error}</p>}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <div className="h-screen w-full md:w-[90%] flex mx-auto ">
-          {showTwoFac && <TwoFac handle={handleBack} />}{" "}
-        </div>
-      )}
+        ) : (
+          <div className="h-screen w-full md:w-[90%] flex mx-auto ">
+            {showTwoFac && <TwoFac handle={handleBack} />}{" "}
+          </div>
+        )}
+      </DashboardLayout>
     </>
   );
 };

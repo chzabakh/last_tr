@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
-import { SocketProvider } from "./socket_context";
+import { SocketProvider } from "../components/socket_context";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [render, setRender] = useState(false);
@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return render ? (
     <>
       {/* <SocketProvider> */}
-        <Component {...pageProps} />
+      <Component {...pageProps} />
       {/* </SocketProvider> */}
     </>
   ) : null;

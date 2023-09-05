@@ -4,8 +4,8 @@ import Image from "next/image";
 import { use, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Dms from "./dms";
-import Messages from "./messages";
-import { useSocket } from "@/pages/socket_context";
+// import Messages from "./messages";
+import { useSocket } from "@/components/socket_context";
 import FriendAvatar from "../avatar";
 
 interface ChatProps {
@@ -800,9 +800,14 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   }, [invites]);
 
   console.log("blocked: ", blocked, "isblocked: ", isblocked);
-console.log("friend status: ",friend.friendStatus,
-"identical: ",identical ,"i: ",
-i );
+  console.log(
+    "friend status: ",
+    friend.friendStatus,
+    "identical: ",
+    identical,
+    "i: ",
+    i
+  );
   return (
     <>
       {dm == "1" && chat && other ? (
@@ -935,7 +940,7 @@ i );
                       Cancel friend request
                     </button>
                   ) : null}
-                  {friend.friendStatus === "friend"  ? (
+                  {friend.friendStatus === "friend" ? (
                     <button
                       onClick={(e) => handleAdd(e, "friends")}
                       className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"

@@ -1,17 +1,15 @@
-import Leaderboard from "@/pages/dashboard/leaderboard";
-import Chat from "@/components/Sections/chat";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { SocketProvider } from "./socket_context";
+import { SocketProvider } from "../socket_context";
 import Router, { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
-import Edit from "@/components/Sections/edit";
 import Cookies from "js-cookie";
-import Place from "../../public/place.png";
+import Place from "../../../public/place.png";
 import { HiBars4, HiMiniXCircle } from "react-icons/hi2";
 import Card from "@/tools/card";
-import Options from "@/components/Sections/options";
 import Loading from "@/components/Sections/loading";
+import { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -26,8 +24,12 @@ type Me = {
   updatedAt: string;
 };
 
-const Dashboard = () => {
-  const [item, setItem] = useState("2");
+interface LayoutProps {
+  children: ReactNode;
+}
+
+export default function DashboardLayout({ children }: LayoutProps) {
+  const [item, setItem] = useState("27");
   const [Preview, setPreview] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [username, setUser] = useState("");
@@ -50,6 +52,7 @@ const Dashboard = () => {
   const [isLoading, setLoading] = useState(true);
   const [isIn, setIn] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -76,7 +79,6 @@ const Dashboard = () => {
         router.push("/login");
     }
   }, [isIn, isLoading, delayedLoading]);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -136,14 +138,13 @@ const Dashboard = () => {
 
   return (
     <>
-     <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
+      <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
         <div id="stars"></div>
         <div id="stars1"></div>
       </div>
       <SocketProvider>
         <div className="flex flex-row h-full">
           <div className="border-2 border-slate-700 z-50 absolute h-40 w-52 bottom-0 right-0 card bg-purple-700 text-primary-content">
-
             <Card />
           </div>
           {windowWidth > 768 ? (
@@ -164,58 +165,74 @@ const Dashboard = () => {
                 </div>
                 <div className="w-full flex flex-col pt-[2rem]">
                   <button
-                    onClick={() => setItem("1")}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                      item === "1" ? "text-[#D6B3F1] bg-white" : ""
+                    onClick={() => {
+                      setItem("1");
+                      router.push("/leaderboard");
+                    }}
+                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
+              ${item !== "1" ? "hover:bg-white/30" : ""} ${
+                      pathname === "/leaderboard"
+                        ? "text-[#D6B3F1] bg-white"
+                        : ""
                     }
-              
-              ${item !== "1" ? "hover:bg-white/30" : ""}
 
               `}
                   >
                     LeaderBoard
                   </button>
                   <button
-                    onClick={() => setItem("2")}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                      item === "2" ? "text-[#D6B3F1] bg-white" : ""
-                    }
-              ${item !== "2" ? "hover:bg-white/30" : ""}
-              `}
+                    onClick={() => {
+                      setItem("2");
+                      router.push("/chat");
+                    }}
+                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
+                   
+                       ${item !== "2" ? "hover:bg-white/30" : ""}
+                       ${pathname === "/chat" ? "text-[#D6B3F1] bg-white" : ""}
+                              `}
                   >
                     Chat
                   </button>
                   <button
-                    onClick={() => setItem("3")}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                      item === "3" ? "text-[#D6B3F1] bg-white" : ""
-                    }
+                    onClick={() => {
+                      setItem("3");
+                      router.push("/game");
+                    }}
+                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
+                    
               
               ${item !== "3" ? "hover:bg-white/30" : ""}
+              ${pathname === "/game" ? "text-[#D6B3F1] bg-white" : ""}
 
               `}
                   >
                     Play Game
                   </button>
                   <button
-                    onClick={() => setItem("4")}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                      item === "4" ? "text-[#D6B3F1] bg-white" : ""
-                    }
+                    onClick={() => {
+                      setItem("4");
+                      router.push("/history");
+                    }}
+                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
+                  
               
               ${item !== "4" ? "hover:bg-white/30" : ""}
+              ${pathname === "/history" ? "text-[#D6B3F1] bg-white" : ""}
 
               `}
                   >
                     Match history
                   </button>
                   <button
-                    onClick={() => setItem("5")}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                      item === "5" ? "text-[#D6B3F1] bg-white" : ""
-                    }
+                    onClick={() => {
+                      setItem("5");
+                      router.push("/edit");
+                    }}
+                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in
+                    
               
               ${item !== "5" ? "hover:bg-white/30" : ""}
+              ${pathname === "/edit" ? "text-[#D6B3F1] bg-white" : ""}
 
               `}
                   >
@@ -226,12 +243,8 @@ const Dashboard = () => {
                       Cookies.remove("token", { path: "/" });
                       router.push("/login");
                     }}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in ${
-                      item === "6" ? "text-[#D6B3F1] bg-white" : ""
-                    }
-              
+                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in
               ${item !== "6" ? "hover:bg-white/30" : ""}
-
               `}
                   >
                     Logout
@@ -278,7 +291,7 @@ const Dashboard = () => {
                       onClick={() => {
                         setMenu("off");
                         setItem("1");
-                        Router.push('/dashboard/leaderboard')
+                        Router.push("/dashboard/leaderboard");
                       }}
                       className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
                         item === "1" ? "text-[#D6B3F1] bg-white" : ""
@@ -291,9 +304,9 @@ const Dashboard = () => {
                         setMenu("off");
                         setItem("2");
                       }}
-                      className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
-                        item === "2" ? "text-[#D6B3F1] bg-white" : ""
-                      }${item !== "2" ? "hover:bg-white/30" : ""}`}
+                      className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in 
+                      ${item === "2" ? "text-[#D6B3F1] bg-white" : ""}
+                      ${item === "2" ? "hover:bg-white/30" : ""}`}
                     >
                       Chat
                     </button>
@@ -347,14 +360,10 @@ const Dashboard = () => {
             </>
           )}
           <div className="h-screen w-full md:w-[90%] flex mx-auto ">
-            {item === "1" ? <Leaderboard /> : null}
-            {item === "2" ? <Chat /> : null}
-            {item == "3" ? <Options /> : null}
-            {item == "5" ? <Edit /> : null}
+            {children}
           </div>
         </div>
       </SocketProvider>
     </>
   );
-};
-export default Dashboard;
+}
