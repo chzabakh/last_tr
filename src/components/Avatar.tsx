@@ -15,7 +15,7 @@ const Avatar: React.FC<AvatarProps> = ({ currentUser }) => {
     const token = Cookies.get("token");
     const headers = { Authorization: `Bearer ${token}` };
     axios
-      .get(`http://localhost:9000/users/${currentUser?.id}/avatar`, {
+      .get(`http://10.30.144.163:9000/users/${currentUser?.id}/avatar`, {
         headers,
         responseType: "blob",
       })

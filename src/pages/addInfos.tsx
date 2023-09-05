@@ -8,35 +8,34 @@ import Cookies from "js-cookie";
 
 const addInfos = () => {
   useEffect(() => {
-  async function getAvatar()
-  {
-    try {
-      const Token = Cookies.get("token");
-      const headers = { Authorization: `Bearer ${Token}` };
+    async function getAvatar() {
+      try {
+        const Token = Cookies.get("token");
+        const headers = { Authorization: `Bearer ${Token}` };
 
-      const response = await axios.get("http://localhost:9000/users/me", {
+        const response = await axios.get("http://10.30.144.163:9000/users/me", {
           headers,
         });
 
-      if (response.data.provider === "intra") {
+        if (response.data.provider === "intra") {
           setPreview(response.data.avatarUrl);
+        } else {
+          const res = await axios.get(
+            "http://10.30.144.163:9000/users/my-avatar",
+            {
+              headers,
+              responseType: "blob",
+            }
+          );
+          const blob = new Blob([res.data], { type: "image/png" });
+          const previewUrl = URL.createObjectURL(blob);
+          setPreview(previewUrl);
+        }
+      } catch (err) {
+        console.log(err);
       }
-      else
-      {
-        const res = await axios.get("http://localhost:9000/users/my-avatar", {
-          headers,
-          responseType: "blob",
-        });
-        const blob = new Blob([res.data], { type: "image/png" });
-        const previewUrl = URL.createObjectURL(blob);
-        setPreview(previewUrl);
-      }
-    } catch (err) {
-      console.log(err);
     }
-
-  }
-  getAvatar();
+    getAvatar();
   }, []);
 
   const [Avatar, setAvatar] = useState<File | null>(null);
@@ -47,8 +46,6 @@ const addInfos = () => {
   const [isUsernameChanged, setIsUsernameChanged] = useState(false);
 
   const router = useRouter();
-
-
 
   function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -77,11 +74,15 @@ const addInfos = () => {
         data.append("avatar", Avatar);
 
         try {
-          await axios.patch("http://localhost:9000/users/upload/avatar", data, {
-            headers: {
-              ...headers,
-            },
-          });
+          await axios.patch(
+            "http://10.30.144.163:9000/users/upload/avatar",
+            data,
+            {
+              headers: {
+                ...headers,
+              },
+            }
+          );
 
           alert("Avatar updated!");
         } catch (err: any) {
@@ -100,7 +101,7 @@ const addInfos = () => {
           const headers = { Authorization: `Bearer ${Token}` };
           const data = { nickname: Username };
           await axios.patch(
-            "http://localhost:9000/users/me/settings/change-username",
+            "http://10.30.144.163:9000/users/me/settings/change-username",
             data,
             { headers }
           );

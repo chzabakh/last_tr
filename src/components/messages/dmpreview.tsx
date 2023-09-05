@@ -110,7 +110,7 @@ const Dmpreview: React.FC<MessageProps> = ({
     const getOther = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:9000/chat/${chat.uid}/other-user`,
+          `http://10.30.144.163:9000/chat/${chat.uid}/other-user`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
@@ -120,7 +120,7 @@ const Dmpreview: React.FC<MessageProps> = ({
         setOther(res.data);
 
         const response = await axios.get(
-          `http://localhost:9000/users/${res.data.id}/avatar`,
+          `http://10.30.144.163:9000/users/${res.data.id}/avatar`,
           {
             responseType: "blob",
             headers: {
@@ -166,12 +166,7 @@ const Dmpreview: React.FC<MessageProps> = ({
           <div className="flex flex-col chat-image avatar -z-10">
             <div className="w-10 rounded-full">
               {other?.provider === "email" && pdp ? (
-                <Image
-                  src={pdp || ''}
-                  width={100}
-                  height={100}
-                  alt="friend"
-                />
+                <Image src={pdp || ""} width={100} height={100} alt="friend" />
               ) : null}
               {other?.provider === "intra" ? (
                 <Image

@@ -32,13 +32,13 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:9000/users/me`, {
+      .get(`http://10.30.144.163:9000/users/me`, {
         headers: {
           Authorization: `Bearer ${Cookies.get("token")}`,
         },
       })
       .then((res) => {
-        var newSocket = io("http://localhost:9000/global", {
+        var newSocket = io("http://10.30.144.163:9000/global", {
           query: res.data,
         });
         setSocket(newSocket);

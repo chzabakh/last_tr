@@ -55,7 +55,7 @@ const Friends = () => {
     try {
       const Token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${Token}` };
-      const res = await axios.get("http://localhost:9000/users/me", {
+      const res = await axios.get("http://10.30.144.163:9000/users/me", {
         headers,
       });
       setMe(res.data);
@@ -69,7 +69,7 @@ const Friends = () => {
       const Token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${Token}` };
       const user = me.nickname;
-      // const res = await axios.get(`http://localhost:9000/users/${user}/friendlist`, {headers});
+      // const res = await axios.get(`http://10.30.144.163:9000/users/${user}/friendlist`, {headers});
       const friends = fake.map((i) => i.name);
       setFriend(friends);
     } catch (e) {

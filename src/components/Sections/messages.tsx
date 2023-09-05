@@ -88,7 +88,7 @@ const Messages: React.FC<ChatProps> = ({ dm, updateItem }) => {
     const getMessages = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/chat/my-chats`,
+          `http://10.30.144.163:9000/chat/my-chats`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,

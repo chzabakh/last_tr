@@ -38,7 +38,7 @@ export const Register = () => {
     password: string;
   }) => {
     axios
-      .post("http://localhost:9000/auth/register", data)
+      .post("http://10.30.144.163:9000/auth/register", data)
       .then((res: any) => {
         console.log(res);
         setStatus("1");
@@ -55,61 +55,60 @@ export const Register = () => {
   return (
     <>
       <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
-     <div id="stars"></div>
-      <div id="stars1"></div>
+        <div id="stars"></div>
+        <div id="stars1"></div>
       </div>
-    <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen max-h-screen">
-      <Layout>
-        <div className="flex w-[100%] flex-col items-center gap-4 mx-auto justify-center relative mb-5">
-          <div className={styles.auth}>
+      <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen max-h-screen">
+        <Layout>
+          <div className="flex w-[100%] flex-col items-center gap-4 mx-auto justify-center relative mb-5">
+            <div className={styles.auth}></div>
+            <form className={styles.formy} onSubmit={handleSubmit}>
+              <div className={styles.infos}>
+                <h1 className={styles.title}>Sign Up</h1>
+                <label className={styles.label}>Username:</label>
+                <input
+                  type="nickname"
+                  placeholder="TheLegend27"
+                  className={styles.input}
+                  name="nickname"
+                  value={data.nickname}
+                  onChange={handleChange}
+                  required
+                />
+
+                <label className={styles.label}>Email:</label>
+                <input
+                  type="email"
+                  placeholder="qwe@qwe.com"
+                  className={styles.input}
+                  name="email"
+                  value={data.email}
+                  onChange={handleChange}
+                  required
+                />
+                <label className={styles.label}>Password:</label>
+                <input
+                  type="password"
+                  placeholder="P@ssw0rd"
+                  className={styles.input}
+                  name="password"
+                  value={data.password}
+                  onChange={handleChange}
+                  required
+                />
+
+                {status === "1" ? <p>{message}</p> : null}
+                {status === "-1" ? <p>{message}</p> : null}
+
+                <button type="submit" className={styles.logIn}>
+                  Register
+                </button>
+              </div>
+              <Link href="login">Already have an account ? Log In.</Link>
+            </form>
           </div>
-          <form className={styles.formy} onSubmit={handleSubmit}>
-            <div className={styles.infos}>
-              <h1 className={styles.title}>Sign Up</h1>
-              <label className={styles.label}>Username:</label>
-              <input
-                type="nickname"
-                placeholder="TheLegend27"
-                className={styles.input}
-                name="nickname"
-                value={data.nickname}
-                onChange={handleChange}
-                required
-              />
-
-              <label className={styles.label}>Email:</label>
-              <input
-                type="email"
-                placeholder="qwe@qwe.com"
-                className={styles.input}
-                name="email"
-                value={data.email}
-                onChange={handleChange}
-                required
-              />
-              <label className={styles.label}>Password:</label>
-              <input
-                type="password"
-                placeholder="P@ssw0rd"
-                className={styles.input}
-                name="password"
-                value={data.password}
-                onChange={handleChange}
-                required
-              />
-
-              {status === "1" ? <p>{message}</p> : null}
-              {status === "-1" ? <p>{message}</p> : null}
-
-              <button type="submit" className={styles.logIn}>
-                Register
-              </button>
-            </div>
-            <Link href="login">Already have an account ? Log In.</Link>
-          </form>
-        </div>
-      </Layout>
-    </div>
+        </Layout>
+      </div>
     </>
   );
 };

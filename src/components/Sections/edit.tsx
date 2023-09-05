@@ -45,7 +45,7 @@ const Edit = () => {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
-      const res = await axios.get("http://localhost:9000/users/me", {
+      const res = await axios.get("http://10.30.144.163:9000/users/me", {
         headers,
       });
       // setUserEmail(res.data.email);
@@ -99,14 +99,14 @@ const Edit = () => {
     const token = Cookies.get("token");
     try {
       const headers = { Authorization: `Bearer ${token}` };
-      const res = await axios.get("http://localhost:9000/users/me", {
+      const res = await axios.get("http://10.30.144.163:9000/users/me", {
         headers,
       });
       if (res.data.provider === "intra") {
         setPreview(res.data.avatarUrl);
       } else {
         const avatarRes = await axios.get(
-          "http://localhost:9000/users/my-avatar",
+          "http://10.30.144.163:9000/users/my-avatar",
           { headers, responseType: "blob" }
         );
         const blob = new Blob([avatarRes.data], { type: "image/png" });
@@ -130,11 +130,15 @@ const Edit = () => {
         data.append("avatar", Avatar);
 
         try {
-          await axios.patch("http://localhost:9000/users/upload/avatar", data, {
-            headers: {
-              ...headers,
-            },
-          });
+          await axios.patch(
+            "http://10.30.144.163:9000/users/upload/avatar",
+            data,
+            {
+              headers: {
+                ...headers,
+              },
+            }
+          );
 
           alert("Avatar updated!");
         } catch (err: any) {
@@ -153,7 +157,7 @@ const Edit = () => {
           const headers = { Authorization: `Bearer ${Token}` };
           const data = { nickname: Username };
           await axios.patch(
-            "http://localhost:9000/users/me/settings/change-username",
+            "http://10.30.144.163:9000/users/me/settings/change-username",
             data,
             { headers }
           );
@@ -177,7 +181,7 @@ const Edit = () => {
             new_password: pass,
           };
           await axios.patch(
-            "http://localhost:9000/users/me/settings/new-password",
+            "http://10.30.144.163:9000/users/me/settings/new-password",
             data,
             { headers }
           );
@@ -204,7 +208,7 @@ const Edit = () => {
     try {
       const Token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${Token}` };
-      const auth = await axios.get("http://localhost:9000/2fa/status", {
+      const auth = await axios.get("http://10.30.144.163:9000/2fa/status", {
         headers,
       });
       console.log("STATUS  DATA", auth.data);
@@ -225,7 +229,7 @@ const Edit = () => {
       const Token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${Token}` };
       const auth = await axios.post(
-        "http://localhost:9000/2fa/disable",
+        "http://10.30.144.163:9000/2fa/disable",
         {},
         { headers }
       );

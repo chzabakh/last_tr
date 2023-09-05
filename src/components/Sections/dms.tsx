@@ -139,7 +139,7 @@ const Dms: React.FC<DmProps> = ({
     e.preventDefault();
     try {
       const res = await axios.post(
-        `http://localhost:9000/chat/send-message`,
+        `http://10.30.144.163:9000/chat/send-message`,
         {
           RoomId: chat.uid,
           message: input,
@@ -167,7 +167,7 @@ const Dms: React.FC<DmProps> = ({
     console.log("df");
     // if (!con) {
     // setCon(true);
-    const socket = io("http://localhost:9000/chat");
+    const socket = io("http://10.30.144.163:9000/chat");
     setSocket(socket);
     const conversationId = chat.uid;
     socket?.emit("joinRoom", { conversationId });
@@ -196,7 +196,7 @@ const Dms: React.FC<DmProps> = ({
     // console.log(socket);
     const getMe = async () => {
       try {
-        const res = await axios.get(`http://localhost:9000/users/me`, {
+        const res = await axios.get(`http://10.30.144.163:9000/users/me`, {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
@@ -205,7 +205,7 @@ const Dms: React.FC<DmProps> = ({
         setNickname(res.data.nickname);
 
         const response = await axios.get(
-          `http://localhost:9000/users/${res.data.id}/avatar`,
+          `http://10.30.144.163:9000/users/${res.data.id}/avatar`,
           {
             responseType: "blob",
             headers: {
@@ -216,7 +216,7 @@ const Dms: React.FC<DmProps> = ({
         setPdp(URL.createObjectURL(response.data));
 
         const responseother = await axios.get(
-          `http://localhost:9000/users/${other.id}/avatar`,
+          `http://10.30.144.163:9000/users/${other.id}/avatar`,
           {
             responseType: "blob",
             headers: {
@@ -225,7 +225,6 @@ const Dms: React.FC<DmProps> = ({
           }
         );
         setOtherpdp(URL.createObjectURL(response.data));
-
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -238,7 +237,7 @@ const Dms: React.FC<DmProps> = ({
     const getFriend = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:9000/users/${chat.users[1].nickname}/profile`,
+          `http://10.30.144.163:9000/users/${chat.users[1].nickname}/profile`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
@@ -258,7 +257,7 @@ const Dms: React.FC<DmProps> = ({
     const getMessages = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:9000/chat/${chat.uid}/messages`,
+          `http://10.30.144.163:9000/chat/${chat.uid}/messages`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
@@ -299,7 +298,7 @@ const Dms: React.FC<DmProps> = ({
   const blockUser = async () => {
     try {
       const block = await axios.post(
-        `http://localhost:9000/users/${input}/block-user`,
+        `http://10.30.144.163:9000/users/${input}/block-user`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -323,9 +322,7 @@ const Dms: React.FC<DmProps> = ({
     await blockUser();
   };
 
-  useEffect(() => {
-
-  },[])
+  useEffect(() => {}, []);
 
   // useEffect(() => {
   //   // if (!other){
@@ -333,7 +330,7 @@ const Dms: React.FC<DmProps> = ({
   //     const getOther = async () => {
   //       try {
   //         const res = await axios.get(
-  //         `http://localhost:9000/chat/${chat.uid}/other-user`,
+  //         `http://10.30.144.163:9000/chat/${chat.uid}/other-user`,
   //         {
   //           headers: {
   //             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -424,7 +421,7 @@ const Dms: React.FC<DmProps> = ({
                 <div className="w-50 rounded-full">
                   {other?.provider === "email" && pdp ? (
                     <Image
-                      src={pdp || ''}
+                      src={pdp || ""}
                       width={200}
                       height={200}
                       alt="friend"
@@ -479,7 +476,7 @@ const Dms: React.FC<DmProps> = ({
                           <div className="w-10 rounded-full">
                             {pdp && chat.sender.provider === "email" ? (
                               <Image
-                                src={pdp || ''}
+                                src={pdp || ""}
                                 width={100}
                                 height={100}
                                 alt="me"
@@ -501,9 +498,9 @@ const Dms: React.FC<DmProps> = ({
                       <div className="chat chat-start">
                         <div className="chat-image avatar">
                           <div className="w-10 rounded-full">
-                          {pdp && chat.sender.provider === "email" ? (
+                            {pdp && chat.sender.provider === "email" ? (
                               <Image
-                                src={pdp || ''}
+                                src={pdp || ""}
                                 width={100}
                                 height={100}
                                 alt="me"

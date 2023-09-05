@@ -81,7 +81,7 @@ const Options = () => {
     const headers = { Authorization: `Bearer ${token}` };
     if (gameTable?.player1?.nickname === user?.nickname) {
       axios
-        .get("http://localhost:9000/users/me", { headers })
+        .get("http://10.30.144.163:9000/users/me", { headers })
         .then((response) => {
           setPlayer1(response.data);
         })
@@ -91,7 +91,7 @@ const Options = () => {
     } else {
       axios
         .get(
-          `http://localhost:9000/users/${gameTable?.player2?.nickname}/other`,
+          `http://10.30.144.163:9000/users/${gameTable?.player2?.nickname}/other`,
           { headers }
         )
         .then((response) => {
@@ -105,7 +105,7 @@ const Options = () => {
     if (gameTable?.player1?.nickname === user?.nickname) {
       axios
         .get(
-          `http://localhost:9000/users/${gameTable?.player2?.nickname}/other`,
+          `http://10.30.144.163:9000/users/${gameTable?.player2?.nickname}/other`,
           {
             headers,
           }
@@ -120,7 +120,7 @@ const Options = () => {
     } else {
       axios
         .get(
-          `http://localhost:9000/users/${gameTable?.player1?.nickname}/other`,
+          `http://10.30.144.163:9000/users/${gameTable?.player1?.nickname}/other`,
           {
             headers,
           }
@@ -154,13 +154,13 @@ const Options = () => {
   }, [countdown, socket, gameTable, user, largeScreenMediaQuery]);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:9000/game");
+    const newSocket = io("http://10.30.144.163:9000/game");
     setSocket(newSocket);
     const token = Cookies.get("token");
 
     const headers = { Authorization: `Bearer ${token}` };
     axios
-      .get("http://localhost:9000/users/me", { headers })
+      .get("http://10.30.144.163:9000/users/me", { headers })
       .then((response) => {
         setUser(response.data);
       })
@@ -255,9 +255,12 @@ const Options = () => {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
-      const res = await axios.get("http://localhost:9000/users/friendlist", {
-        headers,
-      });
+      const res = await axios.get(
+        "http://10.30.144.163:9000/users/friendlist",
+        {
+          headers,
+        }
+      );
       setFriends(res.data);
     } catch (e) {
       if (axios.isAxiosError(e)) {

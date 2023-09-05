@@ -92,7 +92,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         conversationId: room.uid,
       };
       const res = await axios.post(
-        "http://localhost:9000/chat/ban",
+        "http://10.30.144.163:9000/chat/ban",
         requestBody,
         { headers }
       );
@@ -118,7 +118,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         conversationId: room.uid,
       };
       const res = await axios.post(
-        "http://localhost:9000/chat/mute",
+        "http://10.30.144.163:9000/chat/mute",
         requestBody,
         { headers }
       );
@@ -144,7 +144,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         conversationId: room.uid,
       };
       const res = await axios.post(
-        "http://localhost:9000/chat/kick",
+        "http://10.30.144.163:9000/chat/kick",
         requestBody,
         { headers }
       );
@@ -209,7 +209,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const socket = io("http://localhost:9000/chat");
+    const socket = io("http://10.30.144.163:9000/chat");
     setSocket(socket);
 
     const conversationId = room.uid;
@@ -251,7 +251,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         const headers = { Authorization: `Bearer ${token}` };
         // console.log(message + ' ' + room.uid);
         const response = await axios.get(
-          `http://localhost:9000/users/${user.id}/avatar`,
+          `http://10.30.144.163:9000/users/${user.id}/avatar`,
           { headers, responseType: "blob" }
         );
         if (user.provider === "email") {
@@ -307,7 +307,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
       };
       console.log(message + " " + room.uid);
       const res = await axios.post(
-        "http://localhost:9000/chat/send-message",
+        "http://10.30.144.163:9000/chat/send-message",
         requestBody,
         { headers }
       );
@@ -337,7 +337,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
       };
       console.log(room.uid);
       const res: AxiosResponse<ChatRoom> = await axios.get(
-        `http://localhost:9000/chat/channel/${room.uid}/details`,
+        `http://10.30.144.163:9000/chat/channel/${room.uid}/details`,
         config
       );
       if (res.status === 200) {
@@ -362,7 +362,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
       const token = Cookies.get("token");
 
       const headers = { Authorization: `Bearer ${token}` };
-      const res = await axios.get("http://localhost:9000/users/me", {
+      const res = await axios.get("http://10.30.144.163:9000/users/me", {
         headers,
       });
       if (res.status === 200) {
@@ -385,7 +385,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
-      const res = await axios.get("http://localhost:9000/chat/my-rooms", {
+      const res = await axios.get("http://10.30.144.163:9000/chat/my-rooms", {
         headers,
       });
       setRooms(res.data);

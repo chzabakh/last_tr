@@ -27,7 +27,6 @@ type Me = {
 };
 
 const Dashboard = () => {
-  
   const [item, setItem] = useState("1");
   const [Preview, setPreview] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -52,104 +51,97 @@ const Dashboard = () => {
   const [isIn, setIn] = useState(false);
   const router = useRouter();
 
-
-
   useEffect(() => {
     const token = Cookies.get("token");
     if (token) {
-        setIn(true);
-        setLoading(false);
+      setIn(true);
+      setLoading(false);
     } else {
-        setLoading(false);
+      setLoading(false);
     }
   }, []);
 
-useEffect(() => {
-  const timer = setTimeout(() => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
       setDelayedLoading(false);
-  }, 1500); 
-  return () => clearTimeout(timer);
-}, []);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
+  useEffect(() => {
+    if (!isIn) {
+      // false
+      if (!isLoading && !delayedLoading)
+        // false , true
+        router.push("/login");
+    }
+  }, [isIn, isLoading, delayedLoading]);
 
-useEffect(() => {
-  if (!isIn) { // false 
-  if (!isLoading && !delayedLoading) // false , true
-    router.push('/login');
-  }
-}, [isIn, isLoading, delayedLoading]);
+  useEffect(() => {
+    const token = Cookies.get("token");
 
-useEffect(() => {
-  const token = Cookies.get("token"); 
-
-  const fetchData = async () => {
+    const fetchData = async () => {
       try {
-          const headers = { Authorization: `Bearer ${token}` };
-          const res = await axios.get("http://localhost:9000/users/me", { headers });
-          setUser(res.data.nickname);
-          
-          if (res.data.provider === "intra") {
-              setPreview(res.data.avatarUrl);
-          } else {
+        const headers = { Authorization: `Bearer ${token}` };
+        const res = await axios.get("http://10.30.144.163:9000/users/me", {
+          headers,
+        });
+        setUser(res.data.nickname);
 
-              const avatarRes = await axios.get("http://localhost:9000/users/my-avatar", { headers, responseType: "blob" });
-              const previewUrl = URL.createObjectURL(avatarRes.data);
-              console.log("Preview" , previewUrl)
-              setPreview(previewUrl);
-          }
+        if (res.data.provider === "intra") {
+          setPreview(res.data.avatarUrl);
+        } else {
+          const avatarRes = await axios.get(
+            "http://10.30.144.163:9000/users/my-avatar",
+            { headers, responseType: "blob" }
+          );
+          const previewUrl = URL.createObjectURL(avatarRes.data);
+          console.log("Preview", previewUrl);
+          setPreview(previewUrl);
+        }
       } catch (err) {
-          console.error("Error fetching data:", err);
-      }                                          
+        console.error("Error fetching data:", err);
+      }
+    };
+
+    fetchData();
+  }, [Cookies.get("token")]);
+
+  useEffect(() => {
+    getStatus();
+  }, []);
+
+  const getStatus = async () => {
+    try {
+      const Token = Cookies.get("token");
+      const headers = { Authorization: `Bearer ${Token}` };
+      const auth = await axios.get("http://10.30.144.163:9000/2fa/status", {
+        headers,
+      });
+      console.log(auth.data);
+      auth.data === true ? setStatus("enabled") : setStatus("disabled");
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
+      } else {
+        console.log("Error: ", e);
+      }
+    }
   };
 
-  fetchData();
-}, [Cookies.get("token")]);
+  // Render part
 
-useEffect(() => {
-  getStatus();
-}, []);
-
-const getStatus = async () =>
-  {
-    try{
-
-        const Token = Cookies.get('token')
-        const headers = {Authorization: `Bearer ${Token}`}
-        const auth = await axios.get('http://localhost:9000/2fa/status', {headers});
-        console.log(auth.data)
-        auth.data === true ? setStatus("enabled") : setStatus("disabled");
-      }
-      catch(e)
-      {
-          if(axios.isAxiosError(e))
-          {
-              if(e.request)
-                  console.log("No response received!", e.request);
-              else if(e.response)
-                  console.log("Error status: ", e.response?.status);
-                  console.log("Error data: ", e.response?.data);
-          }
-          else
-          {
-              console.log("Error: ", e);
-          }
-          
-      }
-    
+  if (delayedLoading || isLoading) {
+    return <Loading />;
   }
-
-
-// Render part
-
-if (delayedLoading || isLoading) {
-  return <Loading />;
-} 
   // Rest of your component JSX or return
   return (
     <>
       <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
-      <div id="stars"></div>
-      <div id="stars1"></div>
+        <div id="stars"></div>
+        <div id="stars1"></div>
       </div>
       <SocketProvider>
         <div className="flex flex-row h-full">
@@ -165,9 +157,7 @@ if (delayedLoading || isLoading) {
                   priority={true}
                 />
 
-                <p className="text-center font-bold py-5 text-xl">
-                  {username}
-                </p>
+                <p className="text-center font-bold py-5 text-xl">{username}</p>
               </div>
               <div className="w-full flex flex-col pt-[2rem]">
                 <button
@@ -185,7 +175,9 @@ if (delayedLoading || isLoading) {
                 <button
                   onClick={() => setItem("2")}
                   className={`hover:text-[#D6B3F1] py-5 hover:border-2 hover:rounded-lg text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-100 ease-in ${
-                    item === "2" ? "text-[#D6B3F1] border-white rounded-xl " : ""
+                    item === "2"
+                      ? "text-[#D6B3F1] border-white rounded-xl "
+                      : ""
                   }
               
               ${item !== "2" ? "" : ""}
@@ -209,7 +201,9 @@ if (delayedLoading || isLoading) {
                 <button
                   onClick={() => setItem("4")}
                   className={`hover:text-[#D6B3F1]  py-5 hover:border-2 hover:rounded-lg  text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-100 ease-in ${
-                    item === "4" ? "text-[#D6B3F1] border-white rounded-xl " : ""
+                    item === "4"
+                      ? "text-[#D6B3F1] border-white rounded-xl "
+                      : ""
                   }
               
               ${item !== "4" ? "" : ""}
@@ -221,7 +215,9 @@ if (delayedLoading || isLoading) {
                 <button
                   onClick={() => setItem("5")}
                   className={`hover:text-[#D6B3F1]  py-5 hover:border-2 hover:rounded-lg  text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-100 ease-in ${
-                    item === "5" ? "text-[#D6B3F1] border-white rounded-xl " : ""
+                    item === "5"
+                      ? "text-[#D6B3F1] border-white rounded-xl "
+                      : ""
                   }
               
               ${item !== "5" ? "" : ""}
@@ -236,7 +232,9 @@ if (delayedLoading || isLoading) {
                     router.push("/login");
                   }}
                   className={`hover:text-[#D6B3F1]  py-5 hover:border-2 hover:rounded-lg  text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-100 ease-in ${
-                    item === "6" ? "text-[#D6B3F1] border-2 border-white rounded-xl " : ""
+                    item === "6"
+                      ? "text-[#D6B3F1] border-2 border-white rounded-xl "
+                      : ""
                   }
               
               ${item !== "6" ? "" : ""}
@@ -258,6 +256,5 @@ if (delayedLoading || isLoading) {
       </SocketProvider>
     </>
   );
-  
 };
 export default Dashboard;
