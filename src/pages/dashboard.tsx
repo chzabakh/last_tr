@@ -9,6 +9,7 @@ import Edit from "@/components/Sections/edit";
 import Cookies from "js-cookie";
 import Place from "../../public/place.png";
 import { HiBars4, HiMiniXCircle } from "react-icons/hi2";
+import Card from "@/tools/card";
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -101,6 +102,10 @@ const Dashboard = () => {
     <>
       <SocketProvider>
         <div className="flex flex-row h-full">
+          <div className="border-2 border-slate-700 z-50 absolute h-40 w-52 bottom-0 right-0 card bg-purple-700 text-primary-content">
+
+            <Card />
+          </div>
           {windowWidth > 768 ? (
             <>
               <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
@@ -215,72 +220,87 @@ const Dashboard = () => {
                 </button>
 
                 <>
-                    <div className="mt-20">
-                      <Image
-                        className="object-cover flex-auto mx-auto rounded-[30px]"
-                        src={Preview || Place}
-                        alt={me.avatarUrl}
-                        height={200}
-                        width={200}
-                        priority={true}
-                      />
-                      <p className="font-serif text-center py-5 text-xl">
-                        {username}
-                      </p>
-                    </div>
-                    <div className="w-full flex flex-col pt-[2rem]">
-                      <button
-                        onClick={() => {setMenu("off"); setItem("1")}}
-                        className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
-                          item === "1" ? "text-[#D6B3F1] bg-white" : ""
-                        } ${item !== "1" ? "hover:bg-white/30" : ""}`}
-                      >
-                        LeaderBoard
-                      </button>
-                      <button
-                        onClick={() => {setMenu("off"); setItem("2")}}
-                        className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
-                          item === "2" ? "text-[#D6B3F1] bg-white" : ""
-                        }${item !== "2" ? "hover:bg-white/30" : ""}`}
-                      >
-                        Chat
-                      </button>
-                      <button
-                        onClick={() => {setMenu("off"); setItem("3")}}
-                        className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
-                          item === "3" ? "text-[#D6B3F1] bg-white" : ""
-                        }${item !== "3" ? "hover:bg-white/30" : ""}`}
-                      >
-                        Play Game
-                      </button>
-                      <button
-                        onClick={() => {setMenu("off"); setItem("4")}}
-                        className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
-                          item === "4" ? "text-[#D6B3F1] bg-white" : ""
-                        }${item !== "4" ? "hover:bg-white/30" : ""}`}
-                      >
-                        Match history
-                      </button>
-                      <button
-                        onClick={() => {setMenu("off"); setItem("5")}}
-                        className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
-                          item === "5" ? "text-[#D6B3F1] bg-white" : ""
-                        }${item !== "5" ? "hover:bg-white/30" : ""}`}
-                      >
-                        Edit Profile
-                      </button>
-                      <button
-                        onClick={() => {
-                          Cookies.remove("token", { path: "/" });
-                          router.push("/login");
-                        }}
-                        className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
-                          item === "6" ? "text-[#D6B3F1] bg-white" : ""
-                        }${item !== "6" ? "hover:bg-white/30" : ""}`}
-                      >
-                        Logout
-                      </button>
-                    </div>
+                  <div className="mt-20">
+                    <Image
+                      className="object-cover flex-auto mx-auto rounded-[30px]"
+                      src={Preview || Place}
+                      alt={me.avatarUrl}
+                      height={200}
+                      width={200}
+                      priority={true}
+                    />
+                    <p className="font-serif text-center py-5 text-xl">
+                      {username}
+                    </p>
+                  </div>
+                  <div className="w-full flex flex-col pt-[2rem]">
+                    <button
+                      onClick={() => {
+                        setMenu("off");
+                        setItem("1");
+                      }}
+                      className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                        item === "1" ? "text-[#D6B3F1] bg-white" : ""
+                      } ${item !== "1" ? "hover:bg-white/30" : ""}`}
+                    >
+                      LeaderBoard
+                    </button>
+                    <button
+                      onClick={() => {
+                        setMenu("off");
+                        setItem("2");
+                      }}
+                      className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                        item === "2" ? "text-[#D6B3F1] bg-white" : ""
+                      }${item !== "2" ? "hover:bg-white/30" : ""}`}
+                    >
+                      Chat
+                    </button>
+                    <button
+                      onClick={() => {
+                        setMenu("off");
+                        setItem("3");
+                      }}
+                      className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                        item === "3" ? "text-[#D6B3F1] bg-white" : ""
+                      }${item !== "3" ? "hover:bg-white/30" : ""}`}
+                    >
+                      Play Game
+                    </button>
+                    <button
+                      onClick={() => {
+                        setMenu("off");
+                        setItem("4");
+                      }}
+                      className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                        item === "4" ? "text-[#D6B3F1] bg-white" : ""
+                      }${item !== "4" ? "hover:bg-white/30" : ""}`}
+                    >
+                      Match history
+                    </button>
+                    <button
+                      onClick={() => {
+                        setMenu("off");
+                        setItem("5");
+                      }}
+                      className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                        item === "5" ? "text-[#D6B3F1] bg-white" : ""
+                      }${item !== "5" ? "hover:bg-white/30" : ""}`}
+                    >
+                      Edit Profile
+                    </button>
+                    <button
+                      onClick={() => {
+                        Cookies.remove("token", { path: "/" });
+                        router.push("/login");
+                      }}
+                      className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                        item === "6" ? "text-[#D6B3F1] bg-white" : ""
+                      }${item !== "6" ? "hover:bg-white/30" : ""}`}
+                    >
+                      Logout
+                    </button>
+                  </div>
                 </>
               </div>
             </>

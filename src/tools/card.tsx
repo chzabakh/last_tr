@@ -1,14 +1,13 @@
 const Card = () => {
   return (
     <>
-      <div className="card w-96 bg-neutral text-neutral-content">
-        <div className="card-body items-center text-center">
-          <h2 className="card-title">Cookies!</h2>
-          <p>We are using cookies for no reason.</p>
-          <div className="card-actions justify-end">
-            <button className="btn btn-primary">Accept</button>
-            <button className="btn btn-ghost">Deny</button>
-          </div>
+      <div className="card-body">
+        <h2 className="card-title text-center mt-3">
+          PlayerX challenged you to a game!
+        </h2>
+        <div className="absolute bottom-0 w-full flex ml-2">
+          <button className="btn btn-primary mx-3">Accept</button>
+          <button className="btn btn-ghost mx-3">Deny</button>
         </div>
       </div>
     </>
