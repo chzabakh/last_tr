@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 import Dms from "./dms";
 import Messages from "./messages";
 import { useSocket } from "@/pages/socket_context";
-import FriendAvatar from "../FriendAvatar";
+import FriendAvatar from "../avatar";
 
 interface ChatProps {
   dmm: string;
@@ -145,7 +145,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         setInvites((cur) => [...cur, invitation]);
       });
 
-      socket.on("friend:new", (friend: Friend) => {
+      socket.on("friend:new", (friend: User) => {
         // console.log(";", message);
         // setLoading(true);
 
@@ -193,7 +193,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   });
   // const { login, accessToken } = useAuth();
   const [invites, setInvites] = useState<Invitation[]>([]);
-  const [myfriends, setMyfriends] = useState<Friend[]>([]);
+  const [myfriends, setMyfriends] = useState<User[]>([]);
   const [friendsimages, setFriendsimages] = useState<(string | undefined)[]>();
   const [invitesimages, setInvitesimages] = useState<(string | undefined)[]>();
   const [searchimage, setSearchimage] = useState<string | undefined>();
@@ -396,6 +396,11 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       );
       console.log(username);
       setI("0");
+      const updatefriendstatus = () => {
+        const updatedFriend = { ...friend, friendStatus: "None" };
+        setFriend(updatedFriend);
+      };
+      updatefriendstatus();
     } catch (err) {
       if (err instanceof AxiosError) {
         console.log("89" + err.response?.data.message);
@@ -766,11 +771,12 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
 
   useEffect(() => {
     async function fetchAvatars() {
-      const avatarPromises = invites.map(async (user) => {
+      const avatarPromises = invites.map(async (invite) => {
         if (invites) {
-          console.log("HELLOW", user.senderID);
+          // const userID: string = JSON.stringify(invite.senderID);
+          console.log("HELLOW", invite.id);
           const response = await axios.get(
-            `http://localhost:9000/users/${user.senderID}/avatar`,
+            `http://localhost:9000/users/${invite.senderID}/avatar`,
             {
               responseType: "blob",
               headers: {
@@ -794,7 +800,9 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   }, [invites]);
 
   console.log("blocked: ", blocked, "isblocked: ", isblocked);
-
+console.log("friend status: ",friend.friendStatus,
+"identical: ",identical ,"i: ",
+i );
   return (
     <>
       {dm == "1" && chat && other ? (
@@ -918,7 +926,8 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                       </button>
                     </>
                   ) : null}
-                  {friend.friendStatus === "Pending Sent" || i === "1" ? (
+                  {(friend.friendStatus === "Pending Sent" || i === "1") &&
+                  friend.friendStatus !== "friend" ? (
                     <button
                       onClick={(e) => handleAdd(e, "p-sent")}
                       className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
@@ -926,7 +935,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                       Cancel friend request
                     </button>
                   ) : null}
-                  {friend.friendStatus === "friend" ? (
+                  {friend.friendStatus === "friend"  ? (
                     <button
                       onClick={(e) => handleAdd(e, "friends")}
                       className="text-[#38FFF3] hover:bg-white hover:bg-opacity-10 w-1/3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
@@ -1052,7 +1061,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                                   alt="friendReqPic"
                                   height={200}
                                   width={200}
-                                  src={`/jjjj.png`}
+                                  src={friend.avatarUrl}
                                 />
                               </>
                             )}

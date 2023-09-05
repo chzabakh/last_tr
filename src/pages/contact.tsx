@@ -4,12 +4,8 @@ import Image from "next/image";
 import bg from "@/../public/bg.png";
 import SmallButton from "../components/Button/smallButton";
 import Layout from "@/components/Layout/layout";
-import { useAuth } from "./socket_context";
 
 const Contact = () => {
-  const { accessToken } = useAuth();
-
-  console.log(accessToken, "Hello world");
 
   return (
     <div className="containera">

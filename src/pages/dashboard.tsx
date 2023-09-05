@@ -1,15 +1,17 @@
-import Leaderboard from "@/components/Sections/leaderboard";
+import Leaderboard from "@/pages/dashboard/leaderboard";
 import Chat from "@/components/Sections/chat";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { SocketProvider } from "./socket_context";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
 import Edit from "@/components/Sections/edit";
 import Cookies from "js-cookie";
 import Place from "../../public/place.png";
 import { HiBars4, HiMiniXCircle } from "react-icons/hi2";
 import Card from "@/tools/card";
+import Options from "@/components/Sections/options";
+import Loading from "@/components/Sections/loading";
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -44,7 +46,37 @@ const Dashboard = () => {
     state: "none",
     updatedAt: "none",
   });
+  const [delayedLoading, setDelayedLoading] = useState(true);
+  const [isLoading, setLoading] = useState(true);
+  const [isIn, setIn] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      setIn(true);
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDelayedLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isIn) {
+      // false
+      if (!isLoading && !delayedLoading)
+        // false , true
+        router.push("/login");
+    }
+  }, [isIn, isLoading, delayedLoading]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,8 +130,16 @@ const Dashboard = () => {
     };
   }, []);
 
+  if (delayedLoading || isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
+     <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
+        <div id="stars"></div>
+        <div id="stars1"></div>
+      </div>
       <SocketProvider>
         <div className="flex flex-row h-full">
           <div className="border-2 border-slate-700 z-50 absolute h-40 w-52 bottom-0 right-0 card bg-purple-700 text-primary-content">
@@ -238,6 +278,7 @@ const Dashboard = () => {
                       onClick={() => {
                         setMenu("off");
                         setItem("1");
+                        Router.push('/dashboard/leaderboard')
                       }}
                       className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
                         item === "1" ? "text-[#D6B3F1] bg-white" : ""
@@ -308,6 +349,7 @@ const Dashboard = () => {
           <div className="h-screen w-full md:w-[90%] flex mx-auto ">
             {item === "1" ? <Leaderboard /> : null}
             {item === "2" ? <Chat /> : null}
+            {item == "3" ? <Options /> : null}
             {item == "5" ? <Edit /> : null}
           </div>
         </div>

@@ -53,24 +53,20 @@ export const Register = () => {
   };
 
   return (
-    <div className="flex flex-col my-2 justify-between max-w-full mx-[3rem] h-full max-h-full min-h-full relative">
+    <>
+      <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
+     <div id="stars"></div>
+      <div id="stars1"></div>
+      </div>
+    <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen max-h-screen">
       <Layout>
         <div className="flex w-[100%] flex-col items-center gap-4 mx-auto justify-center relative mb-5">
           <div className={styles.auth}>
-            {/* <button className={styles.button}>
-            <Image className={styles.logo} alt="" src={fourty} />
-            <div>Register with Intra</div>
-          </button> */}
-            {/* <button className={styles.button}>
-            <Image className={styles.logoTwo} alt="" src={gog} />
-            Register with Google
-          </button> */}
-            {/* <div className={styles.or}>Or</div> */}
           </div>
           <form className={styles.formy} onSubmit={handleSubmit}>
             <div className={styles.infos}>
               <h1 className={styles.title}>Sign Up</h1>
-              <label className={styles.label}>username:</label>
+              <label className={styles.label}>Username:</label>
               <input
                 type="nickname"
                 placeholder="TheLegend27"
@@ -114,6 +110,7 @@ export const Register = () => {
         </div>
       </Layout>
     </div>
+    </>
   );
 };
 

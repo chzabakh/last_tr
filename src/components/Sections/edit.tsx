@@ -5,9 +5,13 @@ import Image from "next/image";
 import axios from "axios";
 import TwoFac from "./twoFac";
 import Cookies from "js-cookie";
+import Place from "../../../public/place.png";
+// import { initialize } from 'next/dist/server/lib/render-server';
 
 const Edit = () => {
   const [showTwoFac, setShowTwoFac] = useState(false);
+  const [back, setBack] = useState(false);
+  const [error, seterror] = useState<string | undefined>();
   const [Preview, setPreview] = useState("");
   const [Avatar, setAvatar] = useState<File | null>(null);
   const [Username, setUsername] = useState("");
@@ -17,27 +21,56 @@ const Edit = () => {
   const [oldpass, setoldpass] = useState("");
   const [isPassChanged, setIsPassChanged] = useState(false);
   const [isOldPassChanged, setIsOldPassChanged] = useState(false);
-  const [error, seterror] = useState("");
+  const [status, setStatus] = useState<"enabled" | "disabled">();
+  const [provider, setProvider] = useState<"intra" | "email">();
 
-  // useEffect(() => {
-  //   getAvatar();
+  useEffect(() => {
+    async function initialize() {
+      await getAvatar();
+      await getUser();
+    }
+    initialize();
+  }, []);
 
-  // }, [Preview]);
-
-  // useEffect(() => {
-  //   getNick();
-
-  // }, [Username]);
-
-  // Function to handle the button click and show the <TwoFac> component
+  useEffect(() => {
+    console.log("The satatus", status);
+    getStatus();
+  });
 
   function handleAuthClick() {
     setShowTwoFac(true);
   }
 
-  function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
+  async function getUser() {
+    try {
+      const token = Cookies.get("token");
+      const headers = { Authorization: `Bearer ${token}` };
+      const res = await axios.get("http://localhost:9000/users/me", {
+        headers,
+      });
+      // setUserEmail(res.data.email);
+      setProvider(res.data.provider);
+      // console.log(email);
+      // console.log(res.data.email)
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
+      } else {
+        console.log("Error: ", e);
+      }
+    }
+  }
+  async function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) {
+      const maxFileSize = 1024 * 1024 * 5; // 5 MB
+
+      if (file.size > maxFileSize) {
+        alert("File is too large. Please upload a file smaller than 5 MB.");
+        return;
+      }
       const previewUrl = URL.createObjectURL(file);
       setPreview(previewUrl);
       setIsAvatarChanged(true);
@@ -63,43 +96,34 @@ const Edit = () => {
   }
 
   async function getAvatar() {
+    const token = Cookies.get("token");
     try {
-      const Token = Cookies.get("token");
-      const headers = { Authorization: `Bearer ${Token}` };
-      const res = await axios.get("http://localhost:9000/users/me/${Preview}", {
-        headers,
-      });
-      const avatar = res.data.avatarUrl;
-      //p1.png
-      console.log(res.data);
-      console.log(res.data.avatarPic);
-      setPreview(avatar);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function getNick() {
-    try {
-      const Token = Cookies.get("token");
-      const headers = { Authorization: `Bearer ${Token}` };
+      const headers = { Authorization: `Bearer ${token}` };
       const res = await axios.get("http://localhost:9000/users/me", {
         headers,
       });
-      const nickname = res.data.nickname;
-      console.log(res.data);
-      setUsername(nickname);
+      if (res.data.provider === "intra") {
+        setPreview(res.data.avatarUrl);
+      } else {
+        const avatarRes = await axios.get(
+          "http://localhost:9000/users/my-avatar",
+          { headers, responseType: "blob" }
+        );
+        const blob = new Blob([avatarRes.data], { type: "image/png" });
+        const previewUrl = URL.createObjectURL(blob);
+        setPreview(previewUrl);
+      }
     } catch (err) {
-      console.log(err);
+      console.error("Error fetching data:", err);
     }
   }
 
   async function handleSaveChanges() {
     try {
       if (isAvatarChanged && Avatar) {
-        const token = Cookies.get("token");
+        const Token = Cookies.get("token");
         const headers = {
-          Authorization: `Bearer ${Cookies.get("token")}`,
+          Authorization: `Bearer ${Token}`,
         };
 
         const data = new FormData();
@@ -172,31 +196,66 @@ const Edit = () => {
     }
   }
 
+  function handleBack() {
+    setShowTwoFac(false);
+  }
+
+  const getStatus = async () => {
+    try {
+      const Token = Cookies.get("token");
+      const headers = { Authorization: `Bearer ${Token}` };
+      const auth = await axios.get("http://localhost:9000/2fa/status", {
+        headers,
+      });
+      console.log("STATUS  DATA", auth.data);
+      auth.data === true ? setStatus("enabled") : setStatus("disabled");
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
+      } else {
+        console.log("Error: ", e);
+      }
+    }
+  };
+
+  const handleDisable = async () => {
+    try {
+      const Token = Cookies.get("token");
+      const headers = { Authorization: `Bearer ${Token}` };
+      const auth = await axios.post(
+        "http://localhost:9000/2fa/disable",
+        {},
+        { headers }
+      );
+      alert("auth disabaled, refrech the page!");
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
+      } else {
+        console.log("Error: ", e);
+      }
+    }
+  };
+
   return (
     <>
       {!showTwoFac ? (
-        <div className="my-20 h-[80%] gap-3 justify-center flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-          <div className="border-2 flex overflow-scroll flex-col justify-between  h-[97%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+        <div className="my-20 h-[80%] gap-3 justify-center flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white/20 bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+          <div className="border-2 flex overflow-scroll flex-col justify-between  h-[97%] border-opacity-30 border-violet-400 bg-opacity-7 bg-gradient-to-l from-[#4f117f33] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
             <div className="flex">
               <div className="flex-1 w-[50%]">Change the Avatar:</div>
               <div className="w-[50%]">
-                {Preview === "" ? (
-                  <Image
-                    src={"/uploads/change.png"}
-                    alt=""
-                    width={200}
-                    height={200}
-                    className="border-2 self-center"
-                  />
-                ) : (
-                  <Image
-                    src={Preview}
-                    alt=""
-                    width={200}
-                    height={200}
-                    className="border-2 self-center"
-                  />
-                )}
+                <Image
+                  src={Preview || Place}
+                  alt=""
+                  width={200}
+                  height={200}
+                  className="border-2 self-center"
+                />
                 <input
                   key="avatar"
                   type="file"
@@ -219,40 +278,46 @@ const Edit = () => {
                   onChange={handleNickChange}
                 />
               </div>
-              <div className="flex w-full flex-row ">
-                <div className="  w-[50%]">Change email:</div>
-                <input
-                  className="p-2 rounded-lg w-[50%] text-white bg-black/20"
-                  type="text"
-                  placeholder="Type new email"
-                />
-              </div>
-              <div className="">Change password: </div>
-              <div className="flex flex-row justify-center flex-wrap">
-                <input
-                  className="p-2 rounded-lg text-white m-4 bg-black/20"
-                  type="password"
-                  placeholder="Type old password"
-                  onChange={handleOldPassChange}
-                />
-                <input
-                  className="p-2 rounded-lg text-white m-4 bg-black/20 mb-5"
-                  type="password"
-                  placeholder="Type new password"
-                  onChange={handlePassChange}
-                />
-              </div>
+              {provider === "email" ? (
+                <>
+                  <div className="">Change password: </div>
+                  <div className="flex flex-row justify-center flex-wrap">
+                    <input
+                      className="p-2 rounded-lg text-white m-4 bg-black/20"
+                      type="password"
+                      placeholder="Type old password"
+                      onChange={handleOldPassChange}
+                    />
+                    <input
+                      className="p-2 rounded-lg text-white m-4 bg-black/20 mb-5"
+                      type="password"
+                      placeholder="Type new password"
+                      onChange={handlePassChange}
+                    />
+                  </div>
+                </>
+              ) : null}
             </div>
 
             <div className="flex flex-col justify-between">
               <div className="flex justify-between">
-                <button
-                  className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
-                  onClick={handleAuthClick}
-                >
-                  {" "}
-                  Activate auth
-                </button>
+                {status === "enabled" ? (
+                  <button
+                    className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
+                    onClick={handleDisable}
+                  >
+                    {" "}
+                    Desactivate auth
+                  </button>
+                ) : (
+                  <button
+                    className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
+                    onClick={handleAuthClick}
+                  >
+                    {" "}
+                    Activate auth
+                  </button>
+                )}
                 <button
                   className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white  p-3 rounded-2xl"
                   onClick={handleSaveChanges}
@@ -266,7 +331,7 @@ const Edit = () => {
         </div>
       ) : (
         <div className="h-screen w-full md:w-[90%] flex mx-auto ">
-          {showTwoFac && <TwoFac />}{" "}
+          {showTwoFac && <TwoFac handle={handleBack} />}{" "}
         </div>
       )}
     </>
