@@ -141,6 +141,12 @@ export default function DashboardLayout({ children }: LayoutProps) {
     return <Loading />;
   }
 
+  const addInvite = (user: string) => {
+    setInvites((prevInvites) => [...prevInvites, user]);
+
+    // Show a toast notification when a new card is displayed
+  };
+
   return (
     <>
       <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
@@ -150,8 +156,12 @@ export default function DashboardLayout({ children }: LayoutProps) {
       <SocketProvider>
         <div className="flex flex-row h-full">
           {invites.map((user, index) => (
-            <div key={index} style={{ bottom: `${index * 160}px` }} className="border-2 border-slate-700 z-50 absolute h-40 w-52 bottom-0 right-0 card bg-purple-700 text-primary-content">
-              <Card user={user}/>
+            <div
+              key={index}
+              style={{ bottom: `${index * 64}px` }}
+              className="justify-center items-center flex flex-row border-2 border-slate-700 z-50 absolute h-16 w-[500px] bottom-0 right-0 card bg-purple-700 text-primary-content"
+            >
+              <Card user={user} />
             </div>
           ))}
           {windowWidth > 768 ? (
@@ -255,6 +265,9 @@ export default function DashboardLayout({ children }: LayoutProps) {
               `}
                   >
                     Logout
+                  </button>
+                  <button onClick={() => addInvite("New Player")}>
+                    Add New Card
                   </button>
                 </div>
               </div>
