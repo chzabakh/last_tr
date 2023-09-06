@@ -31,7 +31,7 @@ interface LayoutProps {
 export default function DashboardLayout({ children }: LayoutProps) {
   const [item, setItem] = useState("27");
   const [Preview, setPreview] = useState("");
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(0);
   const [username, setUser] = useState("");
   const [token, setToken] = useState("");
   const [provider, setProvider] = useState("");
@@ -119,16 +119,20 @@ export default function DashboardLayout({ children }: LayoutProps) {
   }, [Cookies.get("token")]); // Dependency on the token
 
   useEffect(() => {
-    const handleResize = () => {
+    if (typeof window !== "undefined") {
       setWindowWidth(window.innerWidth);
-    };
 
-    window.addEventListener("resize", handleResize);
+      const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+      };
 
-    // Clean up the event listener on unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+      window.addEventListener("resize", handleResize);
+
+      // Clean up the event listener on unmount
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }
   }, []);
 
   if (delayedLoading || isLoading) {
@@ -147,7 +151,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
         <div id="stars"></div>
         <div id="stars1"></div>
       </div>
-      <SocketProvider>
+      {/* <SocketProvider> */}
         <div className="flex flex-row h-full">
           {invites.map((user, index) => (
             <div
@@ -377,7 +381,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
             {children}
           </div>
         </div>
-      </SocketProvider>
+      {/* </SocketProvider> */}
     </>
   );
 }

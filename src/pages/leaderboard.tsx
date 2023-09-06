@@ -5,6 +5,7 @@ import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Score from "@/tools/score";
 
 const Leaderboard = () => {
   const [me, setMe] = useState<User>();
@@ -46,7 +47,7 @@ const Leaderboard = () => {
     getUser();
     getUsers();
   }, []);
-
+console.log("theusers:",users);
   return (
     <>
       {/* <DashboardLayout> */}
@@ -60,7 +61,25 @@ const Leaderboard = () => {
             </div>
           </div>
         </div>
-        <div className="border-2 flex-auto h-[100%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"></div>
+        <div className="overflow-y-auto border-2 flex-auto border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+          <Score />
+        </div>
       </div>
       {/* </DashboardLayout> */}
     </>

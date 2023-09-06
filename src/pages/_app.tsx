@@ -9,22 +9,23 @@ export default function App({ Component, pageProps }: AppProps) {
   const [render, setRender] = useState(false);
   const pathname = usePathname();
   const shouldRenderSidebar = !["/login", "/register", "/"].includes(pathname);
-  useEffect(() => setRender(true), []);
-  return render ? (
+  // useEffect(() => setRender(true), []);
+  console.log("test");
+  return  (
     <>
-      {/* <SocketProvider> */}
       {shouldRenderSidebar ? (
         <>
+      <SocketProvider>
           <DashboardLayout>
             <Component {...pageProps} />
           </DashboardLayout>
+      </SocketProvider>
         </>
       ) : (
         <>
           <Component {...pageProps} />
         </>
       )}
-      {/* </SocketProvider> */}
     </>
-  ) : null;
+  ) ;
 }
