@@ -34,7 +34,7 @@ const activate = () => {
         );
 
         // setActivate(true);
-        router.push("/dashboard");
+        router.push("/chat");
         alert("jeue");
       } else {
         setError("Wrong code. Please try again.");
