@@ -51,6 +51,11 @@ export default function DashboardLayout({ children }: LayoutProps) {
   const [delayedLoading, setDelayedLoading] = useState(true);
   const [isLoading, setLoading] = useState(true);
   const [isIn, setIn] = useState(false);
+  const [invites, setInvites] = useState<string[]>([
+    "player1",
+    "player2",
+    "player3",
+  ]);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -144,9 +149,11 @@ export default function DashboardLayout({ children }: LayoutProps) {
       </div>
       <SocketProvider>
         <div className="flex flex-row h-full">
-          <div className="border-2 border-slate-700 z-50 absolute h-40 w-52 bottom-0 right-0 card bg-purple-700 text-primary-content">
-            <Card />
-          </div>
+          {invites.map((user, index) => (
+            <div key={index} style={{ bottom: `${index * 160}px` }} className="border-2 border-slate-700 z-50 absolute h-40 w-52 bottom-0 right-0 card bg-purple-700 text-primary-content">
+              <Card user={user}/>
+            </div>
+          ))}
           {windowWidth > 768 ? (
             <>
               <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">

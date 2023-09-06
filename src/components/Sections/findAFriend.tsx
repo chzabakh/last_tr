@@ -47,7 +47,7 @@ export interface Blockedpoeple {
   blockingUserNickname: string;
 }
 
-interface User {
+export interface User {
   id: number;
   createdAt: string;
   updatedAt: string;
