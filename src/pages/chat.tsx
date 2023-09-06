@@ -15,7 +15,6 @@ const Chat = () => {
     setItem(newValue);
     setDm(newDm);
   };
-  console.log("myItem", item);
   return (
     <>
       <DashboardLayout>

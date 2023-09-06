@@ -40,13 +40,11 @@ export const Register = () => {
     axios
       .post("http://localhost:9000/auth/register", data)
       .then((res: any) => {
-        console.log(res);
         setStatus("1");
         setMessage("Created successfully");
         router.push("/login");
       })
       .catch((err: any) => {
-        console.log(err);
         setStatus("-1");
         setMessage(err?.response?.data?.message);
       });

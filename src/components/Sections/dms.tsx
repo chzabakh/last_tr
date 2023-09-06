@@ -431,7 +431,6 @@ const Dms: React.FC<DmProps> = ({
         blockInfo.blockingUserNickname === blockingUserNickname &&
         blockInfo.blockedUserNickname === blockedUserNickname
       ) {
-        console.log("true returned");
         setIsblocked(true);
         return;
       }
@@ -453,7 +452,6 @@ const Dms: React.FC<DmProps> = ({
           }
         );
         setBlockedlist(res.data);
-        console.log("blocked: ", res.data);
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -465,7 +463,6 @@ const Dms: React.FC<DmProps> = ({
     blockedUsers();
   }, []);
 
-  console.log("objecttttttttttttttt");
   return (
     <>
       {profile ? (

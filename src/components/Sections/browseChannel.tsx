@@ -48,15 +48,9 @@ const BrowseChannel = () => {
       await getAllRooms();
 
       setIsLoading(false);
-
-      console.log("Rooms loaded:", rooms);
     }
     initialize();
   }, []);
-
-  useEffect(() => {
-    console.log(rooms);
-  }, [rooms]);
 
   function handleback() {
     setback(true);
@@ -79,7 +73,6 @@ const BrowseChannel = () => {
         headers,
       });
       setMyRooms(res.data);
-      console.log(myRooms);
     } catch (e) {
       if (axios.isAxiosError(e)) {
         if (e.request) console.log("No response received!", e.request);
@@ -100,7 +93,6 @@ const BrowseChannel = () => {
         isGroup: true,
         conversationId: uid,
       };
-      // console.log(requestBody);
       const res = await axios.post(
         "http://localhost:9000/chat/join-room",
         requestBody,
@@ -108,7 +100,6 @@ const BrowseChannel = () => {
       );
       if (res.status === 201) {
         setHide(true);
-        console.log("Room successfully joined!");
         console.log(res.data); // Assuming the backend sends the created room details
       }
     } catch (e) {
@@ -162,7 +153,6 @@ const BrowseChannel = () => {
         isPrivate: true,
         roomKey: roomId,
       };
-      console.log(requestBody);
 
       const res = await axios.post(
         "http://localhost:9000/chat/join-room",
@@ -171,8 +161,6 @@ const BrowseChannel = () => {
       );
       if (res.status === 201) {
         setChat(true);
-        console.log("Room successfully joined!");
-        console.log(res.data); // Assuming the backend sends the created room details
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
@@ -187,14 +175,12 @@ const BrowseChannel = () => {
 
   async function handlePublicRoom(Channel: Channel) {
     await joinPublicRoom(Channel.uid);
-    // console.log("THE CHANNEL ID:" ,Channel.id);
   }
 
   async function handleProtectRoom(Channel: Channel | undefined) {
     if (Channel) {
       await joinProtectRoom(Channel);
     }
-    // console.log("THE CHANNEL ID:" ,Channel.id);
   }
 
   async function getPublicChannels() {

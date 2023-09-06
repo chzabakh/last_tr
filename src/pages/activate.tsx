@@ -23,7 +23,6 @@ const activate = () => {
         Authorization: `Bearer ${Token}`,
         "Content-Type": "application/json",
       };
-      // console.log(data, data.code, typeof(data.code))
       const res = await axios.post("http://localhost:9000/2fa/verify", data, {
         headers,
       });
@@ -33,7 +32,7 @@ const activate = () => {
           {},
           { headers }
         );
-        console.log(auth);
+
         // setActivate(true);
         router.push("/dashboard");
         alert("jeue");

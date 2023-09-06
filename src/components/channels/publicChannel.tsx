@@ -32,7 +32,6 @@ const PublicChannel = () => {
           setChannelName('')   
         } else {
           setChannelName('')
-          console.log(response.status)
           alert('Failed to create room');
         }
       } catch (err: any) {

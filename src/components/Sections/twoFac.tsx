@@ -25,7 +25,6 @@ const TwoFac: React.FC<TwoFacProps> = ({ handle }) => {
     try {
       const Token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${Token}` };
-      console.log("The function to get the code is called");
       const res = await axios.post(
         "http://localhost:9000/2fa/generate",
         {},
@@ -50,7 +49,6 @@ const TwoFac: React.FC<TwoFacProps> = ({ handle }) => {
         Authorization: `Bearer ${Token}`,
         "Content-Type": "application/json",
       };
-      console.log(data, data.code, typeof data.code);
       const res = await axios.post("http://localhost:9000/2fa/verify", data, {
         headers,
       });
@@ -60,7 +58,6 @@ const TwoFac: React.FC<TwoFacProps> = ({ handle }) => {
           {},
           { headers }
         );
-        console.log(auth);
         setActivate(true);
         alert("jeue");
       } else {

@@ -93,17 +93,12 @@ const Dmpreview: React.FC<MessageProps> = ({
   chat,
   setChatList,
 }) => {
-  //   const [dm, setDm] = useState<string>("0");
-  // useEffect(() => {
-  // console.log("here " + dm )
-  // },[dm]
-  // )
+
   const [other, setOther] = useState<User>();
   const [pdp, setPdp] = useState<string | undefined>();
 
   useEffect(() => {
     setLastmsg(chat.messages[chat.messages.length - 1]?.content);
-    console.log("cht", chat);
   }, [chat]);
 
   useEffect(() => {
@@ -129,8 +124,6 @@ const Dmpreview: React.FC<MessageProps> = ({
           }
         );
         setPdp(URL.createObjectURL(response.data));
-
-        console.log("rty", res.data, chat.uid, "end");
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);

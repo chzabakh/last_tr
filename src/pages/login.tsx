@@ -7,7 +7,6 @@ import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import Image from "next/image";
 import fourty from "../../public/fourty.png";
-import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
 import Router, { useRouter } from "next/router";
 import Cookies from "js-cookie";
@@ -50,8 +49,6 @@ export const Login: React.FC = () => {
       const verify = res.data.isFirstLogin;
       const twoFac = res.data.isTwoFactorEnabled;
 
-      console.log("DATAAA", res);
-      // const two = res.data.two
       Cookies.set("token", tok, { path: "/" });
 
       if (verify) {
@@ -82,18 +79,15 @@ export const Login: React.FC = () => {
       "_blank",
       "width=350,height=450"
     );
-    console.log("token before: ", Cookies.get());
     if (authWindow) {
       const checkAuthComplete = setInterval(() => {
         const res = Cookies.get("token")?.replace("j:", "");
-        console.log("RESPOOONSE: ", res);
         if (!res || res === "undefined") {
           console.error('Token is not defined or is "undefined"');
           return;
         }
         let parsed;
         try {
-          console.log("RES :", res);
           parsed = JSON.parse(res);
         } catch (e) {
           console.error("Failed to parse token:", e);
@@ -107,7 +101,6 @@ export const Login: React.FC = () => {
           authWindow.close();
           clearInterval(checkAuthComplete);
           Cookies.set("token", token, { path: "/" });
-          console.log("token after setting cookies: ", Cookies.get("token"));
 
           if (isFirstLogin) Router.push("/addInfos");
           else {

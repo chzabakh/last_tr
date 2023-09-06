@@ -87,21 +87,16 @@ export default function DashboardLayout({ children }: LayoutProps) {
 
   useEffect(() => {
     const fetchData = async () => {
-      // const token = Cookies.get('token')
       const token = Cookies.get("token");
-      // alert(token);
-      console.log(token);
       if (!token) {
         router.push("/login");
         return;
       }
       try {
         const headers = { Authorization: `Bearer ${token}` };
-        console.log(headers);
         const res = await axios.get("http://localhost:9000/users/me", {
           headers,
         });
-        console.log(res.data);
         setUser(res.data.nickname);
 
         if (res.data.provider === "intra") {
@@ -111,7 +106,6 @@ export default function DashboardLayout({ children }: LayoutProps) {
             "http://localhost:9000/users/my-avatar",
             { headers, responseType: "blob" }
           );
-          console.log(avatarRes.data);
           const blob = new Blob([avatarRes.data], { type: "image/png" });
           const previewUrl = URL.createObjectURL(blob);
           setPreview(previewUrl);
