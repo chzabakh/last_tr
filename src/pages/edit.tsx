@@ -244,7 +244,7 @@ const Edit = () => {
 
   return (
     <>
-      <DashboardLayout>
+      {/* <DashboardLayout> */}
         {!showTwoFac ? (
           <div className="my-20 h-[80%] gap-3 justify-center flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white/20 bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
             <div className="border-2 flex overflow-scroll flex-col justify-between  h-[97%] border-opacity-30 border-violet-400 bg-opacity-7 bg-gradient-to-l from-[#4f117f33] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
@@ -336,7 +336,7 @@ const Edit = () => {
             {showTwoFac && <TwoFac handle={handleBack} />}{" "}
           </div>
         )}
-      </DashboardLayout>
+      {/* </DashboardLayout> */}
     </>
   );
 };

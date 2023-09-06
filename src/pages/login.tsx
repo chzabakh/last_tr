@@ -110,7 +110,7 @@ export const Login: React.FC = () => {
             // }
             // else
             {
-              router.push("/dashboard");
+              router.push("/chat");
             }
           }
         }

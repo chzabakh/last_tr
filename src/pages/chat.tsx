@@ -17,7 +17,7 @@ const Chat = () => {
   };
   return (
     <>
-      <DashboardLayout>
+      {/* <DashboardLayout> */}
         <div className="min-h-[500px] items-center justify-center my-20 h-[80%] gap-3 flex flex-row w-[85%] mx-[2rem] border-2  border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <div className="overflow-auto py-20 flex flex-col space-y-10 border-2  border-opacity-30 w-[15%] flex-auto border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
             <button
@@ -109,7 +109,7 @@ const Chat = () => {
           {item === "8" ? <Channels /> : null}
           {/* {item === "9" ? <Friends /> : null} */}
         </div>
-      </DashboardLayout>
+      {/* </DashboardLayout> */}
     </>
   );
 };

@@ -305,7 +305,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                       onClick={() => {
                         setMenu("off");
                         setItem("1");
-                        Router.push("/dashboard/leaderboard");
+                        Router.push("/leaderboard");
                       }}
                       className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
                         item === "1" ? "text-[#D6B3F1] bg-white" : ""

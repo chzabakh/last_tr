@@ -120,7 +120,7 @@ const addInfos = () => {
         return;
       }
     }
-    router.push("/dashboard");
+    router.push("/chat");
   }
 
   return (
