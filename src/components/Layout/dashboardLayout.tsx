@@ -153,7 +153,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
             <div
               key={index}
               style={{ bottom: `${index * 64}px` }}
-              className="justify-center items-center flex flex-row border-2 border-slate-700 z-50 absolute h-16 w-[500px] bottom-0 right-0 card bg-purple-700 text-primary-content"
+              className="px-5 justify-between items-center flex flex-row border-2 border-slate-700 z-50 absolute h-16 w-[400px] bottom-0 right-0 card bg-purple-700 text-primary-content"
             >
               <Card user={user} />
             </div>

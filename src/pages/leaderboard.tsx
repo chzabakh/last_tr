@@ -53,7 +53,7 @@ const Leaderboard = () => {
       <div className="my-20 h-[80%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
         <div className="flex border-2 h-[25%] flex-auto border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <div className="flex space-x-3">
-            <Image src="/place.png" width={50} height={50} alt="asd" />
+            <Image className="rounded-md" src="/place.png" width={90} height={80} alt="asd" />
             <div>
               <p>{me?.nickname}</p>
               <p>#12</p>
