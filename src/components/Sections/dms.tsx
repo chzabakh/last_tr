@@ -240,7 +240,7 @@ const Dms: React.FC<DmProps> = ({
             },
           }
         );
-        setOtherpdp(URL.createObjectURL(response.data));
+        setOtherpdp(URL.createObjectURL(responseother.data));
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -462,7 +462,7 @@ const Dms: React.FC<DmProps> = ({
     };
     blockedUsers();
   }, []);
-
+console.log("here: ",otherpdp);
   return (
     <>
       {profile ? (
@@ -472,7 +472,7 @@ const Dms: React.FC<DmProps> = ({
               <Image
                 className="object-cover mx-auto rounded-[20px]"
                 src={otherpdp}
-                alt="pdp"
+                alt="pdp1"
                 height={200}
                 width={200}
               />
@@ -480,7 +480,7 @@ const Dms: React.FC<DmProps> = ({
               <Image
                 className="object-cover mx-auto rounded-[20px]"
                 src={`${other.avatarUrl}`}
-                alt="pdp"
+                alt="pdp2"
                 height={200}
                 width={200}
               />
@@ -532,10 +532,10 @@ const Dms: React.FC<DmProps> = ({
                       <div className="w-50 rounded-full">
                         {other?.provider === "email" && pdp ? (
                           <Image
-                            src={pdp || "/jjjj.png"}
+                            src={otherpdp || "/jjjj.png"}
                             width={200}
                             height={200}
-                            alt="friend"
+                            alt="frriend"
                           />
                         ) : null}
                         {other?.provider === "intra" ? (

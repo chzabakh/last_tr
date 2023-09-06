@@ -6,10 +6,8 @@ const Card: React.FC<CardProps> = ({ user }) => {
   return (
     <>
       <div className="text-sm">{user} challenged you!</div>
-      <div className="">
-        <button className="text-sm btn ">Accept</button>
-        <button className="text-sm btn ">Deny</button>
-      </div>
+        <button className="btn">Accept</button>
+        <button className="btn">Deny</button>
     </>
   );
 };
