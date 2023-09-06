@@ -348,7 +348,7 @@ const BrowseChannel = () => {
                     {PublicRooms.map((ChannelName: Channel) =>
                       ChannelName.owner.email !== email ? (
                         findRoom(ChannelName) ? null : (
-                          <div
+                          <div    
                             key={ChannelName.id}
                             className="bg-gradient-to-r  from-black to-purple-500 p-4 rounded-md text-white shadow-md"
                           >

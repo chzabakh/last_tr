@@ -48,6 +48,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [details, setDetails] = useState<ChatRoom | null>(null);
+  const [roomId, setRoomId] = useState("");
+  const [windowPass, setWindowPass] = useState(false)
+  const [fadeOut, setFadeOut] = useState(false);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -56,6 +59,25 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const defaultStyle = {
+    transition: "opacity 0.5s",
+    opacity: 1,
+  };
+
+  const fadeOutStyle = {
+    transition: "opacity 0.5s",
+    opacity: 0,
+  };
+
+  const handleDelete = () => {
+    setFadeOut(true);
+    setTimeout(() => {
+      setWindowPass(false);
+      setFadeOut(false);
+    }, 500);
+  };
+
 
   const messageRef = useRef<HTMLDivElement>(null);
   const keyRef = useRef<HTMLDivElement>(null);
@@ -178,7 +200,34 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
   }
 
   async function handlePassword() {
-    alert("Password");
+
+    try {
+      const token = Cookies.get("token");
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const requestBody = {
+        password: roomId,
+        conversationId: room.uid,
+      };
+      const res = await axios.post(
+        "http://localhost:9000/chat/channel/set-password",
+        requestBody,
+        { headers }
+      );
+      setWindowPass(false);
+      if (res.status === 201) {
+        console.log(res.data); // Assuming the backend sends the created room details
+      }
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
+      } else {
+        console.log("Error: ", e);
+      }
+    }
+    
   }
 
   const handleOptions = (option: string) => {
@@ -214,7 +263,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     setSocket(socket);
 
     const conversationId = room.uid;
-    console.log("CONVERSATION", conversationId);
+
     socket?.emit("joinRoom", { conversationId });
 
     return () => {
@@ -239,8 +288,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
 
   const handleOptionsChannel = (option: string) => {
     switch (option) {
-      case "Add passowrd":
-        handlePassword();
+      case "Add password":
+        setWindowPass(true);
         break;
     }
   };
@@ -250,7 +299,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
       const getImages = users.map(async (user) => {
         const token = Cookies.get("token");
         const headers = { Authorization: `Bearer ${token}` };
-        // console.log(message + ' ' + room.uid);
         const response = await axios.get(
           `http://localhost:9000/users/${user.id}/avatar`,
           { headers, responseType: "blob" }
@@ -258,13 +306,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         if (user.provider === "email") {
           return URL.createObjectURL(response.data);
         }
-        console.log("Im Here EMAI!");
         return user.avatarUrl;
       });
 
       const images = await Promise.all(getImages);
       setImage(images);
-      console.log("IMAGES ", images);
     }
 
     fetchAvatars();
@@ -469,7 +515,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                             <div className="bg-green-500 w-2 h-2 rounded-full absolute left-10 bottom-1"></div>
                           )}
                           {user.state === "offline" && (
-                            <div className="bg-gray-500 w-2 h-2 rounded-full absolute left-0 top-0"></div>
+                            <div className="bg-gray-500 w-2 h-2 rounded-full absolute left-10 bottom-1"></div>
                           )}
                           {user.email === details?.owner.email && (
                             <div className="absolute left-4 bottom-10">
@@ -555,8 +601,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
           <div className="flex flex-col  p-0 m-0 justify-start w-full h-full pt-">
             <div className="flex flex-row justify-between">
               <div className="self-center w-[60%]  flex felx-row justify-end">
-                {details?.name}
+                {details?.name} 
               </div>
+              {
+                details?.isGroup === true ? 
+                (
+
+                <>
+
               <IconButton
                 style={{ color: "white" }}
                 aria-label="more-again"
@@ -594,6 +646,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                   </MenuItem>
                 ))}
               </Menu>
+                </>
+                ):
+                (
+                  null
+                )
+              }
             </div>
 
             <div className="mb-16 overflow-auto" />
@@ -716,7 +774,37 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
             </button>
           </div>
         </div>
+      {
+        windowPass && (
+          <div
+            style={fadeOut ? fadeOutStyle : defaultStyle}
+            className="w-[300px] h-[300px]] absolute top-1/2 left-1/2 flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2  border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]"
+          >
+            <button
+              onClick={handleDelete}
+              className=" self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg"
+            >
+              X
+            </button>
+            <div className="flex flex-col gap-7 items-center">
+              <h2>Enter the room ID:</h2>
+              <input
+                type="text"
+                className="bg-black/30 h-[20px] p-6 text-white mx-2"
+                onChange={(e) => setRoomId(e.target.value)}
+              ></input>
+            </div>
+            <button
+              className="rounded-lg border-4 border-[#3b0764] w-[40%] self-center"
+              onClick={handlePassword}
+            >
+              Enter
+            </button>
+          </div>
+        )
+      } 
       </div>
+
     </>
   );
 };
