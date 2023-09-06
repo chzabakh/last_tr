@@ -39,23 +39,23 @@ const CreateChannel = () => {
               >
                 Back
               </button>
-              <h1 className="self-start my-1">Create a channel:</h1>
+              <h1 className="self-start my-1 text-xl">Create a channel:</h1>
               <div className="w-full h-[78%]  flex justify-between items-center px-1">
                 <div className="flex flex-col justify-between gap-10">
-                  <div className="text-xs">Select type of channel:</div>
+                  <div className="text-md">Select type of channel:</div>
                   <div className="flex flex-col gap-1 flex-1">
                     <div>
                       <input
-                        id="default-radio-1"
+                        id="default-radio-0"
                         type="radio"
                         value="public"
                         name="default-radio"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        className=" mr-3  border-gray-300 "
                         onClick={activatePublic}
-                      ></input>
+                      />
                       <label
-                        htmlFor="default-radio-1"
-                        className="ml-2 text-sm font-medium text-white dark:text-gray-300"
+                        htmlFor="default-radio-0"
+                        className="text-sm  text-white dark:text-gray-300"
                       >
                         Public channel
                       </label>
@@ -66,12 +66,12 @@ const CreateChannel = () => {
                         type="radio"
                         value="private"
                         name="default-radio"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        className=" mr-3  border-gray-300 "
                         onClick={activatePrivate}
-                      ></input>
+                      />
                       <label
                         htmlFor="default-radio-1"
-                        className="ml-2 text-sm font-medium text-white dark:text-gray-300"
+                        className="text-sm  text-white dark:text-gray-300"
                       >
                         Private channel
                       </label>
@@ -79,16 +79,16 @@ const CreateChannel = () => {
 
                     <div>
                       <input
-                        id="default-radio-1"
+                        id="default-radio-2"
                         type="radio"
                         value="protected"
                         name="default-radio"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        className=" mr-3  border-gray-300 "
                         onClick={activateProtected}
-                      ></input>
+                      />
                       <label
-                        htmlFor="default-radio-1"
-                        className="ml-2 text-sm font-medium text-white dark:text-gray-300"
+                        htmlFor="default-radio-2"
+                        className="text-sm  text-white dark:text-gray-300"
                       >
                         Protected channel
                       </label>
@@ -97,7 +97,7 @@ const CreateChannel = () => {
                 </div>
                 <div className="border-[3px] border-opacity-50 border-violet-400 rounded-xl p-3 flex justify-center flex-col h-[100%] w-[70%]">
                   <div className="self-start text-md">
-                    <h1>Channel Information:</h1>
+                    <div className="text-lg">Channel Information:</div>
                   </div>
                   <div className=" p-5 h-full flex flex-col justify-evenly">
                     {active && active === "public" && <PublicChannel />}
