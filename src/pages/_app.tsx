@@ -10,7 +10,6 @@ export default function App({ Component, pageProps }: AppProps) {
   const pathname = usePathname();
   const shouldRenderSidebar = !["/login", "/register", "/"].includes(pathname);
   // useEffect(() => setRender(true), []);
-  console.log("test");
   return  (
     <>
       {shouldRenderSidebar ? (

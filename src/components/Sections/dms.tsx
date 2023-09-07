@@ -619,7 +619,7 @@ console.log("here: ",otherpdp);
                                 <div className="w-10 rounded-full">
                                   {pdp && chat.sender.provider === "email" ? (
                                     <Image
-                                      src={pdp || "/jjjj.png"}
+                                      src={otherpdp || "/jjjj.png"}
                                       width={100}
                                       height={100}
                                       alt="me"
