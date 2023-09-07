@@ -246,8 +246,8 @@ const Edit = () => {
     <>
       {/* <DashboardLayout> */}
         {!showTwoFac ? (
-          <div className="my-20 h-[80%] gap-3 justify-center flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-            <div className="border-2 flex overflow-scroll flex-col justify-between  h-[97%] border-opacity-30 border-violet-400 bg-opacity-7 bg-gradient-to-l from-[#4f117f33] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+          <div className="my-20 h-[80%] gap-3 overflow-scroll justify-between flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+            {/* <div className="border-2 flex overflow-scroll flex-col justify-between  h-[97%] border-opacity-30 border-violet-400 bg-opacity-7 bg-gradient-to-l from-[#4f117f33] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"> */}
               <div className="flex">
                 <div className="flex-1 w-[50%]">Change the Avatar:</div>
                 <div className="w-[50%]">
@@ -273,7 +273,7 @@ const Edit = () => {
                 <div className="flex  w-full flex-row ">
                   <div className="w-[50%]">Change username:</div>
                   <input
-                    className="p-2 rounded-lg w-[50%] text-white bg-black/20"
+                    className="border p-2 rounded-lg w-[50%] text-white bg-black/20 focus:outline-none"
                     value={Username}
                     type="text"
                     placeholder="Type new username"
@@ -285,13 +285,13 @@ const Edit = () => {
                     <div className="">Change password: </div>
                     <div className="flex flex-row justify-center flex-wrap">
                       <input
-                        className="px-6 py-4 rounded-lg text-white m-4 bg-black/20"
+                        className="border px-6 py-4 rounded-lg text-white m-4 bg-black/20 focus:outline-none"
                         type="password"
                         placeholder="Type old password"
                         onChange={handleOldPassChange}
                       />
                       <input
-                        className="px-6 py-4 rounded-lg text-white m-4 bg-black/20 mb-5"
+                        className="border px-6 py-4 rounded-lg text-white m-4 bg-black/20 mb-5 focus:outline-none"
                         type="password"
                         placeholder="Type new password"
                         onChange={handlePassChange}
@@ -305,7 +305,7 @@ const Edit = () => {
                 <div className="flex justify-between">
                   {status === "enabled" ? (
                     <button
-                      className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
+                      className="border-2 border-white hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
                       onClick={handleDisable}
                     >
                       {" "}
@@ -313,7 +313,7 @@ const Edit = () => {
                     </button>
                   ) : (
                     <button
-                      className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
+                      className="border-2 border-white hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
                       onClick={handleAuthClick}
                     >
                       {" "}
@@ -321,7 +321,7 @@ const Edit = () => {
                     </button>
                   )}
                   <button
-                    className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white  p-3 rounded-2xl"
+                    className="border-2 border-white hover:text-[#c084fc] hover:border-white  p-3 rounded-2xl"
                     onClick={handleSaveChanges}
                   >
                     Save changes
@@ -329,7 +329,7 @@ const Edit = () => {
                   {error && <p>{error}</p>}
                 </div>
               </div>
-            </div>
+            {/* </div> */}
           </div>
         ) : (
           <div className="h-screen w-full md:w-[90%] flex mx-auto ">
