@@ -10,8 +10,6 @@ import Card from "@/tools/card";
 import Loading from "@/components/Sections/loading";
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -141,18 +139,9 @@ export default function DashboardLayout({ children }: LayoutProps) {
     return <Loading />;
   }
 
+
   const addInvite = (user: string) => {
     setInvites((prevInvites) => [...prevInvites, user]);
-    toast("🦄 Wow so easy!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
   };
 
   return (
@@ -164,29 +153,13 @@ export default function DashboardLayout({ children }: LayoutProps) {
       {/* <SocketProvider> */}
       <div className="flex flex-row h-full">
         {invites.map((user, index) => (
-          // <div
-          //   key={index}
-          //   style={{ bottom: `${index * 64}px` }}
-          //   className="px-5 justify-between items-center flex flex-row border-2 border-slate-700 z-50 absolute h-16 w-[400px] bottom-0 right-0 card bg-purple-700 text-primary-content"
-          // >
-          //   <Card user={user} />
-          // </div>
-          <>
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-            />
-            {/* Same as */}
-            <ToastContainer />
-          </>
+          <div
+            key={index}
+            style={{ bottom: `${index * 64}px` }}
+            className="px-5 justify-between items-center flex flex-row border-2 border-slate-700 z-50 absolute h-16 w-[400px] bottom-0 right-0 card bg-purple-700 text-primary-content"
+          >
+            <Card user={user} />
+          </div>
         ))}
         {windowWidth > 768 ? (
           <>
