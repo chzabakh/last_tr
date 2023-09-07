@@ -61,7 +61,7 @@ export const Login  : React.FC  = () => {
       }
       else
       {
-        router.push('/dashboard');
+        router.push('/chat');
       }
      }
       catch (err) {
@@ -95,7 +95,7 @@ export const Login  : React.FC  = () => {
           clearInterval(checkAuthComplete);
           Cookies.set('token', token, {path: '/'});   
           console.log("token after setting cookies: ", Cookies.get('token'))       
-          Router.push('/dashboard'); 
+          router.push('/chat'); 
           // console.log("token after dashboard ", Cookies.get('token'))
         }
         console.log(token)
