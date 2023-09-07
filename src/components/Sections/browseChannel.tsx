@@ -364,6 +364,7 @@ const BrowseChannel = () => {
                                     onClick={() =>
                                       handlePublicRoom(ChannelName)
                                     }
+                                    
                                   >
                                     Join
                                   </button>
