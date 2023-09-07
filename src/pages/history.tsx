@@ -9,7 +9,7 @@ import Results from "@/tools/results";
 
 const MatchHistory = () => {
   const [me, setMe] = useState<User>();
-  const [users, setUsers] = useState();
+  const [games, setGames] = useState();
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -27,14 +27,14 @@ const MatchHistory = () => {
         }
       }
     };
-    const getUsers = async () => {
+    const getGames = async () => {
       try {
-        const users = await axios.get(`http://localhost:9000/users/all-users`, {
+        const gamesres = await axios.get(`http://localhost:9000/game/my-games`, {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
           },
         });
-        setUsers(users.data);
+        setGames(gamesres.data);
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -45,8 +45,9 @@ const MatchHistory = () => {
     };
 
     getUser();
-    getUsers();
+    getGames();
   }, []);
+  console.log(games);
 
   return (
     <>
@@ -70,23 +71,31 @@ const MatchHistory = () => {
           </div>
         </div>
         <div className="w-full overflow-y-scroll border-2 border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
-          <Results />
+          {/* { 
+          games ?
+          (
+
+            <>
+          
+          
+          {games.map(game, index => {
+            <Score key={index} game={game} />
+          })
+          
+        }
+          </>
+        )
+
+          : (
+            <>
+            <p>no games available!</p>
+            </>
+          )
+
+
+          
+          
+          } */}
         </div>
       </div>
     </>
