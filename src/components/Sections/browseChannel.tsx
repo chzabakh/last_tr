@@ -280,7 +280,7 @@ const BrowseChannel = () => {
                     className="bg-black/20 self-start w-[200px] border-4 rounded-full"
                     onClick={() => setPrivate(true)}
                   >
-                    Join Private{" "}
+                    Join Private
                   </button>
 
                   {isprivate && (

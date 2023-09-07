@@ -30,7 +30,17 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     "Send Private Message",
     "Invite to Game",
     "See Profile",
-    "Set New Admin",
+    "Set as Admin",
+  ];
+
+  const optionsMemberAdmin = [
+    "Ban",
+    "Mute",
+    "Kick",
+    "Send Private Message",
+    "Invite to Game",
+    "See Profile",
+    "Remove Admin",
   ];
 
   const optionsChannel = ["Add password"];
@@ -51,6 +61,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
   const [roomId, setRoomId] = useState("");
   const [windowPass, setWindowPass] = useState(false)
   const [fadeOut, setFadeOut] = useState(false);
+  const [dialog, setDialog] = useState(false);
+  const [Otherdialog, setOtherDialog] = useState(false);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -73,10 +85,19 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
   const handleDelete = () => {
     setFadeOut(true);
     setTimeout(() => {
-      setWindowPass(false);
+      setDialog(false);
       setFadeOut(false);
     }, 500);
   };
+
+  const handleDeleteRemove = () => {
+    setFadeOut(true);
+    setTimeout(() => {
+      setOtherDialog(false);
+      setFadeOut(false);
+    }, 500);
+  };
+
 
 
   const messageRef = useRef<HTMLDivElement>(null);
@@ -195,8 +216,62 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     alert("Profile");
   }
 
-  async function handleAdmin() {
-    alert("Admin");
+  async function handleRemoveAdmin(id : number) {
+    try {
+      const token = Cookies.get("token");
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const requestBody = {
+        updatedUser: id,
+        conversationId: room.uid,
+      };
+      const res = await axios.post(
+        "http://localhost:9000/chat/removeAdmin",
+        requestBody,
+        { headers }
+      );
+      if (res.status === 201) {
+        setOtherDialog(true);
+        console.log(res.data); // Assuming the backend sends the created room details
+      }
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
+      } else {
+        console.log("Error: ", e);
+      }
+    }
+  }
+
+  async function handleAdmin(id : number) {
+    try {
+      const token = Cookies.get("token");
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const requestBody = {
+        updatedUser: id,
+        conversationId: room.uid,
+      };
+      const res = await axios.post(
+        "http://localhost:9000/chat/setadmin",
+        requestBody,
+        { headers }
+      );
+      if (res.status === 201) {
+        setDialog(true);
+        console.log(res.data); // Assuming the backend sends the created room details
+      }
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
+      } else {
+        console.log("Error: ", e);
+      }
+    }
   }
 
   async function handlePassword() {
@@ -230,28 +305,39 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     
   }
 
-  const handleOptions = (option: string) => {
+  const handleOptions = (option: string, id: number) => {
     switch (option) {
       case "Bane":
         handleBane();
+        setAnchorEl(null);
         break;
       case "Mute":
         handleMute();
+        setAnchorEl(null);
         break;
       case "Kick":
         handleKick();
+        setAnchorEl(null);
         break;
       case "Send Private Message":
         handleMessage();
+        setAnchorEl(null);
         break;
       case "Invite to Game":
         handleInvite();
+        setAnchorEl(null);
         break;
       case "See Profile":
         handleProfile();
+        setAnchorEl(null);
         break;
-      case "Set As Admin":
-        handleAdmin();
+      case "Set as Admin":
+        handleAdmin(id);
+        setAnchorEl(null);
+        break;
+      case "Remove Admin":
+        handleRemoveAdmin(id);
+        setAnchorEl(null);
         break;
     }
   };
@@ -451,6 +537,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     return details?.admins.some((admin) => nickname === admin.nickname);
   }
 
+  function isUserAdmin(user : User) {
+    return details?.admins.some((admin) => admin.nickname === user.nickname);
+  }
+
   if (isLoading) {
     return <Loading />;
   }
@@ -491,7 +581,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
               <div className="flex gap-4 flex-col h-full ">
                 <div className="flex flex-col gap-1 w-full h-full items-center overflow-scroll">
                   {users.map((user, index) => (
-                    <div className="w-full flex p-3">
+                    <div className="w-full flex p-3  bg-[#3c005a] rounded-lg">
                       <div className="flex-1 w-[50%]">
                         {user.provider === "intra" ? (
                           <>
@@ -501,16 +591,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                               alt={details!.owner.avatarUrl}
                               height={80}
                               width={80}
-                              className="rounded-full max-w-[50px] max-h-[50px] relative"
+                              className="rounded-full max-w-[50px] max-h-[50px] relative "
                             />
                           </>
                         ) : (
-                          <>
+                          <div className="border-1 w-[50px] h-[50px] z-3">
                             <Avatar currentUser={user} />
-                          </>
+                          </div>
                         )}
+                      
 
                         <div className="relative">
+                         
                           {user.state === "online" && (
                             <div className="bg-green-500 w-2 h-2 rounded-full absolute left-10 bottom-1"></div>
                           )}
@@ -529,17 +621,23 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                           )}
                           {/* {
 
-                  //TODO : CHANGE TO PLAYING MODE
-                   user.state === "inGame" &&
-                   (
-                       <div className="relative left-1 top-4"><Image src={pong} width={20} height={20} alt="crone" /></div>
-                   )
+                          //TODO : CHANGE TO PLAYING MODE
+                          user.state === "inGame" &&
+                          (
+                              <div className="relative left-1 top-4"><Image src={pong} width={20} height={20} alt="crone" /></div>
+                          )
 
-                } */}
+                        } */}
                         </div>
                       </div>
                       <div className="flex-1 w-[50%] pt-3 ">
-                        {user.nickname}
+                      {
+                            isUserAdmin(user)? 
+                            (
+                              <div className="text-yellow-400">{user.nickname}</div>
+                            ):
+                            <div className="text-purple-400">{user.nickname}</div>
+                        }
                       </div>
 
                       <div className="flex justify-end  w-[50%] self-end">
@@ -555,7 +653,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                                 aria-haspopup="true"
                                 onClick={handleClick}
                                 className="bg-white"
-                              >
+                                >
                                 <MoreHorizIcon />
                               </IconButton>
                               <Menu
@@ -575,15 +673,35 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                                     // useTransition: '2sec'
                                   },
                                 }}
-                              >
-                                {optionsMember.map((option) => (
-                                  <MenuItem
-                                    key={option}
-                                    onClick={() => handleOptions(option)}
-                                  >
-                                    {option}
-                                  </MenuItem>
-                                ))}
+                             >
+                                {
+                                  !isUserAdmin(user)?
+                                  (
+                                    <div>
+                                    {optionsMember.map((option) => (
+                                      <MenuItem
+                                        key={option}
+                                        onClick={() => handleOptions(option, user.id)}
+                                      >
+                                        {option}
+                                      </MenuItem>
+                                    ))}
+                                    </div>
+                                  )
+                                  :
+                                  (
+                                    <div>
+                                    {optionsMemberAdmin.map((option) => (
+                                      <MenuItem
+                                        key={option}
+                                        onClick={() => handleOptions(option, user.id)}
+                                      >
+                                        {option}
+                                      </MenuItem>
+                                    ))}
+                                    </div>
+                                  )
+                                }
                               </Menu>
                             </>
                           )
@@ -803,6 +921,49 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
           </div>
         )
       } 
+
+      {
+        dialog ?
+        (
+          <>
+            <div
+              style={fadeOut ? fadeOutStyle : defaultStyle}
+              className="w-[300px] h-[200px] absolute top-1/2 left-1/2 flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2  border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]"
+            >
+              <button
+                onClick={handleDelete}
+                className=" self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg"
+              >
+                X
+              </button>
+              <div className="flex flex-col items-center m-4">
+                  A new Admin is Added!
+              </div>
+            </div>
+          </>
+        ): null
+      }
+        {
+        Otherdialog ?
+        (
+          <>
+            <div
+              style={fadeOut ? fadeOutStyle : defaultStyle}
+              className="w-[300px] h-[200px] absolute top-1/2 left-1/2 flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2  border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]"
+            >
+              <button
+                onClick={handleDeleteRemove}
+                className=" self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg"
+              >
+                X
+              </button>
+              <div className="flex flex-col items-center m-4">
+                  The admin is removed!
+              </div>
+            </div>
+          </>
+        ): null
+      }
       </div>
 
     </>

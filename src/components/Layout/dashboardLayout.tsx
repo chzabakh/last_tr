@@ -160,7 +160,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
           ))}
           {windowWidth > 768 ? (
             <>
-              <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
+              <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
                 <div>
                   <Image
                     className="object-cover flex-auto mx-auto rounded-[30px]"
@@ -180,7 +180,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                       setItem("1");
                       router.push("/leaderboard");
                     }}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
+                    className={`hover:text-[#D6B3F1] hover:bg-black py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
               ${item !== "1" ? "hover:bg-white/30" : ""} ${
                       pathname === "/leaderboard"
                         ? "text-[#D6B3F1] bg-white"

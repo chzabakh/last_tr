@@ -10,9 +10,13 @@
   font-family: "Source Code Pro", monospace;
 }
 
+::-webkit-scrollbar {
+  display: none; /* Hide on Chrome, Safari, and newer Edge */
+}
+
 html,
 body {
- 
+
     position: relative;
     width: 100%;
     height: 100%;
