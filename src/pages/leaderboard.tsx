@@ -51,8 +51,8 @@ console.log("theusers:",users);
   return (
     <>
       {/* <DashboardLayout> */}
-      <div className="my-20 h-[80%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-        <div className="flex border-2 h-[10em] flex-auto border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+      <div className="my-20 h-[80%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+        <div className="flex border-2 h-[10em] flex-auto border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(114,39,175,0.2)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <div className="flex space-x-3">
             <Image className="rounded-md w-auto" src="/place.png" width={90} height={80} alt="asd" />
             <div className="flex flex-col my-auto">
@@ -61,7 +61,7 @@ console.log("theusers:",users);
             </div>
           </div>
         </div>
-        <div className="overflow-y-auto border-2 flex-auto border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+        <div className="overflow-y-auto border-2 flex-auto border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(165,89,228,0.2)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <Score />
           <Score />
           <Score />

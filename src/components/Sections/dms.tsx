@@ -525,7 +525,7 @@ console.log("here: ",otherpdp);
         <>
           {windowWidth > 1000 ? (
             <>
-              <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+              <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 bg-[#571d86] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                 <div className="w-[400px] flex flex-xol justify-center">
                   <div className="w-[50%] mt-10">
                     <div className="chat-image avatar mx-auto">

@@ -246,7 +246,7 @@ const Edit = () => {
     <>
       {/* <DashboardLayout> */}
         {!showTwoFac ? (
-          <div className="my-20 h-[80%] gap-3 justify-center flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white/20 bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+          <div className="my-20 h-[80%] gap-3 justify-center flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
             <div className="border-2 flex overflow-scroll flex-col justify-between  h-[97%] border-opacity-30 border-violet-400 bg-opacity-7 bg-gradient-to-l from-[#4f117f33] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
               <div className="flex">
                 <div className="flex-1 w-[50%]">Change the Avatar:</div>
@@ -256,7 +256,7 @@ const Edit = () => {
                     alt=""
                     width={200}
                     height={200}
-                    className="border-2 self-center"
+                    className="self-center"
                   />
                   <input
                     key="avatar"
@@ -285,13 +285,13 @@ const Edit = () => {
                     <div className="">Change password: </div>
                     <div className="flex flex-row justify-center flex-wrap">
                       <input
-                        className="p-2 rounded-lg text-white m-4 bg-black/20"
+                        className="px-6 py-4 rounded-lg text-white m-4 bg-black/20"
                         type="password"
                         placeholder="Type old password"
                         onChange={handleOldPassChange}
                       />
                       <input
-                        className="p-2 rounded-lg text-white m-4 bg-black/20 mb-5"
+                        className="px-6 py-4 rounded-lg text-white m-4 bg-black/20 mb-5"
                         type="password"
                         placeholder="Type new password"
                         onChange={handlePassChange}

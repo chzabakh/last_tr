@@ -163,7 +163,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
         ))}
         {windowWidth > 768 ? (
           <>
-            <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-white bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
+            <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
               <div>
                 <Image
                   className="object-cover flex-auto mx-auto rounded-[30px]"
@@ -183,9 +183,9 @@ export default function DashboardLayout({ children }: LayoutProps) {
                     setItem("1");
                     router.push("/leaderboard");
                   }}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
+                  className={`hover:text-[#a733ff] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
               ${item !== "1" ? "hover:bg-white/30" : ""} ${
-                    pathname === "/leaderboard" ? "text-[#D6B3F1] bg-white" : ""
+                    pathname === "/leaderboard" ? "text-[#a733ff] bg-white" : ""
                   }
 
               `}
@@ -197,10 +197,10 @@ export default function DashboardLayout({ children }: LayoutProps) {
                     setItem("2");
                     router.push("/chat");
                   }}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
+                  className={`hover:text-[#a733ff] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
                    
                        ${item !== "2" ? "hover:bg-white/30" : ""}
-                       ${pathname === "/chat" ? "text-[#D6B3F1] bg-white" : ""}
+                       ${pathname === "/chat" ? "text-[#a733ff] bg-white" : ""}
                               `}
                 >
                   Chat
@@ -210,11 +210,11 @@ export default function DashboardLayout({ children }: LayoutProps) {
                     setItem("3");
                     router.push("/game");
                   }}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
+                  className={`hover:text-[#a733ff] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
                     
               
               ${item !== "3" ? "hover:bg-white/30" : ""}
-              ${pathname === "/game" ? "text-[#D6B3F1] bg-white" : ""}
+              ${pathname === "/game" ? "text-[#a733ff] bg-white" : ""}
 
               `}
                 >
@@ -225,11 +225,11 @@ export default function DashboardLayout({ children }: LayoutProps) {
                     setItem("4");
                     router.push("/history");
                   }}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
+                  className={`hover:text-[#a733ff] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in 
                   
               
               ${item !== "4" ? "hover:bg-white/30" : ""}
-              ${pathname === "/history" ? "text-[#D6B3F1] bg-white" : ""}
+              ${pathname === "/history" ? "text-[#a733ff] bg-white" : ""}
 
               `}
                 >
@@ -240,11 +240,11 @@ export default function DashboardLayout({ children }: LayoutProps) {
                     setItem("5");
                     router.push("/edit");
                   }}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in
+                  className={`hover:text-[#a733ff] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in
                     
               
               ${item !== "5" ? "hover:bg-white/30" : ""}
-              ${pathname === "/edit" ? "text-[#D6B3F1] bg-white" : ""}
+              ${pathname === "/edit" ? "text-[#a733ff] bg-white" : ""}
 
               `}
                 >
@@ -255,7 +255,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                     Cookies.remove("token", { path: "/" });
                     router.push("/login");
                   }}
-                  className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in
+                  className={`hover:text-[#a733ff] hover:bg-white py-5 text-left pl-4 text-xs sm:text-sm md:text-md lg:text-lg xl:text-xl transition-all duration-300 ease-in
               ${item !== "6" ? "hover:bg-white/30" : ""}
               `}
                 >
@@ -308,8 +308,8 @@ export default function DashboardLayout({ children }: LayoutProps) {
                       setItem("1");
                       Router.push("/leaderboard");
                     }}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
-                      item === "1" ? "text-[#D6B3F1] bg-white" : ""
+                    className={`hover:text-[#a733ff] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                      item === "1" ? "text-[#a733ff] bg-white" : ""
                     } ${item !== "1" ? "hover:bg-white/30" : ""}`}
                   >
                     LeaderBoard
@@ -319,8 +319,8 @@ export default function DashboardLayout({ children }: LayoutProps) {
                       setMenu("off");
                       setItem("2");
                     }}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in 
-                      ${item === "2" ? "text-[#D6B3F1] bg-white" : ""}
+                    className={`hover:text-[#a733ff] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in 
+                      ${item === "2" ? "text-[#a733ff] bg-white" : ""}
                       ${item === "2" ? "hover:bg-white/30" : ""}`}
                   >
                     Chat
@@ -330,8 +330,8 @@ export default function DashboardLayout({ children }: LayoutProps) {
                       setMenu("off");
                       setItem("3");
                     }}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
-                      item === "3" ? "text-[#D6B3F1] bg-white" : ""
+                    className={`hover:text-[#a733ff] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                      item === "3" ? "text-[#a733ff] bg-white" : ""
                     }${item !== "3" ? "hover:bg-white/30" : ""}`}
                   >
                     Play Game
@@ -341,8 +341,8 @@ export default function DashboardLayout({ children }: LayoutProps) {
                       setMenu("off");
                       setItem("4");
                     }}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
-                      item === "4" ? "text-[#D6B3F1] bg-white" : ""
+                    className={`hover:text-[#a733ff] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                      item === "4" ? "text-[#a733ff] bg-white" : ""
                     }${item !== "4" ? "hover:bg-white/30" : ""}`}
                   >
                     Match history
@@ -352,8 +352,8 @@ export default function DashboardLayout({ children }: LayoutProps) {
                       setMenu("off");
                       setItem("5");
                     }}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
-                      item === "5" ? "text-[#D6B3F1] bg-white" : ""
+                    className={`hover:text-[#a733ff] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                      item === "5" ? "text-[#a733ff] bg-white" : ""
                     }${item !== "5" ? "hover:bg-white/30" : ""}`}
                   >
                     Edit Profile
@@ -363,8 +363,8 @@ export default function DashboardLayout({ children }: LayoutProps) {
                       Cookies.remove("token", { path: "/" });
                       router.push("/login");
                     }}
-                    className={`hover:text-[#D6B3F1] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
-                      item === "6" ? "text-[#D6B3F1] bg-white" : ""
+                    className={`hover:text-[#a733ff] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
+                      item === "6" ? "text-[#a733ff] bg-white" : ""
                     }${item !== "6" ? "hover:bg-white/30" : ""}`}
                   >
                     Logout

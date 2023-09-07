@@ -11,7 +11,7 @@ const Play = () => {
     <Options />
   ) : (
     <DashboardLayout>
-      <div className="my-6 h-[90%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-white bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+      <div className="my-6 h-[90%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
         <button
           className="self-start border-2 py-2 w-[100px] rounded-full"
           onClick={() => setBack(true)}
