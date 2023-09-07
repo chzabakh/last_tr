@@ -6,19 +6,17 @@ import DashboardLayout from "@/components/Layout/dashboardLayout";
 import { usePathname } from "next/navigation";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [render, setRender] = useState(false);
   const pathname = usePathname();
   const shouldRenderSidebar = !["/login", "/register", "/"].includes(pathname);
-  // useEffect(() => setRender(true), []);
-  return  (
+  return (
     <>
       {shouldRenderSidebar ? (
         <>
-      <SocketProvider>
-          <DashboardLayout>
-            <Component {...pageProps} />
-          </DashboardLayout>
-      </SocketProvider>
+          <SocketProvider>
+            <DashboardLayout>
+              <Component {...pageProps} />
+            </DashboardLayout>
+          </SocketProvider>
         </>
       ) : (
         <>
@@ -26,5 +24,5 @@ export default function App({ Component, pageProps }: AppProps) {
         </>
       )}
     </>
-  ) ;
+  );
 }
