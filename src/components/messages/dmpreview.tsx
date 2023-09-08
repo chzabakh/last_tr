@@ -93,7 +93,6 @@ const Dmpreview: React.FC<MessageProps> = ({
   chat,
   setChatList,
 }) => {
-
   const [other, setOther] = useState<User>();
   const [pdp, setPdp] = useState<string | undefined>();
 
@@ -161,7 +160,7 @@ const Dmpreview: React.FC<MessageProps> = ({
             <div className="w-10 rounded-full">
               {other?.provider === "email" && pdp ? (
                 <Image
-                  src={pdp || "/jjjj.png"}
+                  src={pdp || "/place.png"}
                   width={100}
                   height={100}
                   alt="friend"

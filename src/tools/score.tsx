@@ -7,8 +7,8 @@ const Score = () => {
           <Image
             className="w-5 sm:w-20 rounded-md"
             src="/place.png"
-            width={50}
-            height={80}
+            width={100}
+            height={100}
             alt="asd"
           />
         <p className="text-xs lg:text-lg">username</p>

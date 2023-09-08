@@ -884,7 +884,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                 {friend.provider === "email" && searchimage ? (
                   <Image
                     className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
-                    src={searchimage || "/jjjj.png"}
+                    src={searchimage || "/place.png"}
                     alt="pdp"
                     height={200}
                     width={200}
@@ -979,7 +979,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                                   alt="1"
                                   height={200}
                                   width={200}
-                                  src={invitesimages[i] || "/jjjj.png"}
+                                  src={invitesimages[i] || "/place.png"}
                                 />
                               </>
                             ) : (
@@ -1049,7 +1049,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                   </div>
                   <div className="qmx-auto min-w[350px] 2xl:w-[50%] overflow-auto h-[100%]">
                     <p className="mb-10 mt-5 2xl:mt-0">Friends list: </p>
-                    {myfriends.map((friend, index) => (
+                    {myfriends.map((friend) => (
                       <div
                         className="min-w[350px] flex items-center mx-1 h-20 my-5 border-2 border-purple-500 relative bg-gray-500 rounded-lg"
                         key={friend.id}
@@ -1113,7 +1113,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                   {friend.provider === "email" && searchimage ? (
                     <Image
                       className="object-cover mx-auto rounded-[20px]"
-                      src={searchimage || "/jjjj.png"}
+                      src={searchimage || "/place.png"}
                       alt="pdp"
                       height={200}
                       width={200}

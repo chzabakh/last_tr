@@ -152,7 +152,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
       </div>
       {/* <SocketProvider> */}
       <div className="flex flex-row h-full">
-        {invites.map((user, index) => (
+        {/* {invites.map((user, index) => (
           <div
             key={index}
             style={{ bottom: `${index * 64}px` }}
@@ -160,7 +160,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
           >
             <Card user={user} />
           </div>
-        ))}
+        ))} */}
         {windowWidth > 768 ? (
           <>
             <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
@@ -270,7 +270,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
         ) : (
           <>
             <button
-              className="text-4xl absolute top-5 left-5 bg-purple-800 p-2 rounded-md"
+              className="z-10 text-4xl absolute top-5 left-5 bg-purple-800 p-2 rounded-md"
               onClick={() => setMenu("on")}
             >
               <HiBars4 />
@@ -281,7 +281,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
               } transition-transform duration-700`}
             >
               <button
-                className="text-6xl absolute top-5 left-5 bg-red-700 p-0 rounded-md"
+                className="text-6xl absolute top-5 left-5 p-0 rounded-md"
                 onClick={() => setMenu("off")}
               >
                 <HiMiniXCircle />
@@ -318,6 +318,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                     onClick={() => {
                       setMenu("off");
                       setItem("2");
+                      Router.push("/chat");
                     }}
                     className={`hover:text-[#a733ff] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in 
                       ${item === "2" ? "text-[#a733ff] bg-white" : ""}
@@ -329,6 +330,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                     onClick={() => {
                       setMenu("off");
                       setItem("3");
+                      Router.push("/game");
                     }}
                     className={`hover:text-[#a733ff] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
                       item === "3" ? "text-[#a733ff] bg-white" : ""
@@ -340,6 +342,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                     onClick={() => {
                       setMenu("off");
                       setItem("4");
+                      Router.push("/history");
                     }}
                     className={`hover:text-[#a733ff] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
                       item === "4" ? "text-[#a733ff] bg-white" : ""
@@ -351,6 +354,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                     onClick={() => {
                       setMenu("off");
                       setItem("5");
+                      Router.push("/edit");
                     }}
                     className={`hover:text-[#a733ff] hover:bg-white py-5 text-center pl-4 text-xl  transition-all duration-300 ease-in ${
                       item === "5" ? "text-[#a733ff] bg-white" : ""

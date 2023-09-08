@@ -462,7 +462,7 @@ const Dms: React.FC<DmProps> = ({
     };
     blockedUsers();
   }, []);
-console.log("here: ",otherpdp);
+  console.log("here: ", otherpdp);
   return (
     <>
       {profile ? (
@@ -532,7 +532,7 @@ console.log("here: ",otherpdp);
                       <div className="w-50 rounded-full">
                         {other?.provider === "email" && pdp ? (
                           <Image
-                            src={otherpdp || "/jjjj.png"}
+                            src={otherpdp || "/place.png"}
                             width={200}
                             height={200}
                             alt="frriend"
@@ -595,7 +595,7 @@ console.log("here: ",otherpdp);
                                 <div className="w-10 rounded-full">
                                   {pdp && chat.sender.provider === "email" ? (
                                     <Image
-                                      src={pdp || "/jjjj.png"}
+                                      src={pdp || "/place.png"}
                                       width={100}
                                       height={100}
                                       alt="me"
@@ -619,7 +619,7 @@ console.log("here: ",otherpdp);
                                 <div className="w-10 rounded-full">
                                   {pdp && chat.sender.provider === "email" ? (
                                     <Image
-                                      src={otherpdp || "/jjjj.png"}
+                                      src={otherpdp || "/place.png"}
                                       width={100}
                                       height={100}
                                       alt="me"
@@ -692,7 +692,7 @@ console.log("here: ",otherpdp);
                         <div className="w-12 rounded-full">
                           {other?.provider === "email" && pdp ? (
                             <Image
-                              src={pdp || "/jjjj.png"}
+                              src={pdp || "/place.png"}
                               width={200}
                               height={200}
                               alt="friend"
@@ -743,7 +743,7 @@ console.log("here: ",otherpdp);
                         <div className="w-12 rounded-full">
                           {other?.provider === "email" && pdp ? (
                             <Image
-                              src={pdp || "/jjjj.png"}
+                              src={pdp || "/place.png"}
                               width={200}
                               height={200}
                               alt="friend"
@@ -805,7 +805,7 @@ console.log("here: ",otherpdp);
                                 <div className="w-10 rounded-full">
                                   {pdp && chat.sender.provider === "email" ? (
                                     <Image
-                                      src={pdp || "/jjjj.png"}
+                                      src={pdp || "/place.png"}
                                       width={100}
                                       height={100}
                                       alt="me"
@@ -829,7 +829,7 @@ console.log("here: ",otherpdp);
                                 <div className="w-10 rounded-full">
                                   {pdp && chat.sender.provider === "email" ? (
                                     <Image
-                                      src={pdp || "/jjjj.png"}
+                                      src={pdp || "/place.png"}
                                       width={100}
                                       height={100}
                                       alt="me"
