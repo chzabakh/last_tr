@@ -32,25 +32,25 @@ const CreateChannel = () => {
       ) : (
         <>
           {
-            <div className="flex p-1 h-[90%] flex-col  px-2 border-2 items-center gap-2 w-[90%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#360b6b33] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
+            <div className="overflow-y-auto overflow-x-hidden flex flex-col border-2 h-full w-[77%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
               <button
-                className="self-start hover:border-[#2dd4bf] hover:transition  w-[100px] border-[3px] border-opacity-40 border-violet-400 rounded-full"
+                className="self-start m-4 hover:border-[#b564eb] hover:transition  w-[100px] border-[3px] border-opacity-40 border-violet-400 rounded-full"
                 onClick={handleback}
               >
                 Back
               </button>
-              <h1 className="self-start my-1 text-xl">Create a channel:</h1>
+              <h1 className="self-start my-1 text-xl m-5">Create a channel:</h1>
               <div className="w-full h-[78%]  flex justify-between items-center px-1">
-                <div className="flex flex-col justify-between gap-10">
-                  <div className="text-md">Select type of channel:</div>
-                  <div className="flex flex-col gap-1 flex-1">
+                <div className="flex flex-col justify-between gap-1">
+                  <div className="text-md mx-5 font-[40px]">Select type of channel:</div>
+                  <div className="flex m-5 flex-col gap-1 flex-1">
                     <div>
                       <input
                         id="default-radio-0"
                         type="radio"
                         value="public"
                         name="default-radio"
-                        className=" mr-3  border-gray-300 "
+                        className=" mr-3 text-xs border-gray-300 "
                         onClick={activatePublic}
                       />
                       <label
@@ -95,9 +95,9 @@ const CreateChannel = () => {
                     </div>
                   </div>
                 </div>
-                <div className="border-[3px] border-opacity-50 border-violet-400 rounded-xl p-3 flex justify-center flex-col h-[100%] w-[70%]">
+                <div className="border-[3px] border-opacity-50 border-violet-400 rounded-xl p-3 flex justify-center flex-col h-[100%] w-[70%] mr-5">
                   <div className="self-start text-md">
-                    <div className="text-lg">Channel Information:</div>
+                    <div className="text-md">Channel Information:</div>
                   </div>
                   <div className=" p-5 h-full flex flex-col justify-evenly">
                     {active && active === "public" && <PublicChannel />}

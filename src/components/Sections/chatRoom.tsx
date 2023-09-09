@@ -27,9 +27,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     "Ban",
     "Mute",
     "Kick",
-    "Send Private Message",
     "Invite to Game",
-    "See Profile",
     "Set as Admin",
   ];
 
@@ -37,9 +35,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     "Ban",
     "Mute",
     "Kick",
-    "Send Private Message",
     "Invite to Game",
-    "See Profile",
     "Remove Admin",
   ];
 
@@ -126,7 +122,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     console.log(rooms);
   };
 
-  async function handleBane() {
+  async function handleBane(id : number) {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
@@ -134,13 +130,17 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
 
       requestBody = {
         conversationId: room.uid,
+        targetUser: id,
       };
       const res = await axios.post(
         "http://localhost:9000/chat/ban",
         requestBody,
         { headers }
       );
-      console.log(res.data);
+      if(res.status === 201)
+      {
+        alert("it is banned")
+      }
     } catch (e) {
       if (axios.isAxiosError(e)) {
         if (e.request) console.log("No response received!", e.request);
@@ -152,7 +152,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     }
   }
 
-  async function handleMute() {
+  async function handleMute(id :number) {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
@@ -160,6 +160,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
 
       requestBody = {
         conversationId: room.uid,
+        targetUser: id,
       };
       const res = await axios.post(
         "http://localhost:9000/chat/mute",
@@ -178,7 +179,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     }
   }
 
-  async function handleKick() {
+  async function handleKick(id : number) {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
@@ -186,13 +187,17 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
 
       requestBody = {
         conversationId: room.uid,
+        targetUser: id,
       };
       const res = await axios.post(
         "http://localhost:9000/chat/kick",
         requestBody,
         { headers }
       );
-      console.log(res.data);
+      if (res.status === 201)
+      {
+        alert("kicked")
+      }
     } catch (e) {
       if (axios.isAxiosError(e)) {
         if (e.request) console.log("No response received!", e.request);
@@ -204,16 +209,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     }
   }
 
-  async function handleMessage() {
-    alert("Message");
-  }
-
   async function handleInvite() {
     alert("Invite");
-  }
-
-  async function handleProfile() {
-    alert("Profile");
   }
 
   async function handleRemoveAdmin(id : number) {
@@ -307,30 +304,23 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
 
   const handleOptions = (option: string, id: number) => {
     switch (option) {
-      case "Bane":
-        handleBane();
+      case "Ban":
+        handleBane(id);
         setAnchorEl(null);
-        break;
+        break;  
       case "Mute":
-        handleMute();
+        handleMute(id);
         setAnchorEl(null);
         break;
       case "Kick":
-        handleKick();
-        setAnchorEl(null);
-        break;
-      case "Send Private Message":
-        handleMessage();
+        handleKick(id);
         setAnchorEl(null);
         break;
       case "Invite to Game":
         handleInvite();
         setAnchorEl(null);
         break;
-      case "See Profile":
-        handleProfile();
-        setAnchorEl(null);
-        break;
+
       case "Set as Admin":
         handleAdmin(id);
         setAnchorEl(null);
@@ -553,7 +543,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         <div className="w-[40%] flex flex-col h-full  gap-10">
           <div className="flex flex-col h-[60%] items-center gap-5">
             <button
-              className="border-2 p-2 rounded-lg w-[50%]"
+              className="hover:border-[#b564eb] hover:transition  w-[50%] border-[3px] border-opacity-40 border-violet-400 rounded-full "
               onClick={() => setBack(true)}
             >
               Back
@@ -718,13 +708,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         <div className="flex flex-col w-[60%]">
           <div className="flex flex-col  p-0 m-0 justify-start w-full h-full pt-">
             <div className="flex flex-row justify-between">
-              <div className="self-center w-[60%]  flex felx-row justify-end">
+              <div className="self-center w-[60%] font-bold text-xl  flex felx-row justify-end">
                 {details?.name} 
               </div>
               {
                 details?.isGroup === true ? 
                 (
-
+                  isAdmin() ?
+                  (
                 <>
 
               <IconButton
@@ -765,6 +756,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                 ))}
               </Menu>
                 </>
+
+                  ):
+                  null
+
                 ):
                 (
                   null

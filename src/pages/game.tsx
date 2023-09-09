@@ -9,6 +9,17 @@ import { Friend, User } from "@/components/Sections/types";
 import PongGame from "@/components/Game/PongGame";
 import Avatar from "@/components/avatar";
 import DashboardLayout from "@/components/Layout/dashboardLayout";
+import Switch from '@mui/material/Switch';
+import { styled } from '@mui/material/styles';
+
+const CustomSwitch = styled(Switch)(({ checked }) => ({
+  '& .MuiSwitch-thumb': {
+    backgroundColor: checked ? 'white' : 'purple', 
+  },
+  '& .MuiSwitch-track': {
+    backgroundColor: checked ? 'purple' : 'white', 
+  },
+}));
 
 export interface Player {
   id: number;
@@ -64,6 +75,8 @@ const Options = () => {
   const [player2, setPlayer2] = useState<User>();
   const [player1Score, setPlayer1Score] = useState<number>(0);
   const [player2Score, setPlayer2Score] = useState<number>(0);
+  const [checked, setChecked] = React.useState(true);
+  const [toggleState, setToggleState] = React.useState("classic");
 
   const defaultStyle = {
     transition: "opacity 0.5s",
@@ -204,6 +217,11 @@ const Options = () => {
       };
     }
   }, [socket]);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+    setToggleState(event.target.checked ? "classic" : "space");
+  };
 
   useEffect(() => {
     if (socket) {
@@ -454,29 +472,40 @@ const Options = () => {
                     <p className="text-green-500 mt-2">In Queue...</p>
                   </>
                 ) : (
-                  <>
-                    <Button className="border-2 border-white px-4 m-8 rounded-full w-[200px] p-3 ">
-                      Try Playing
-                    </Button>
+                  <div className="flex flex-col justify-center items-center">
+                    
+                    <div className="self-center ">You play in mode : <>{toggleState}</></div>
+                    <CustomSwitch
+                      checked={checked}
+                      onChange={handleChange}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                    
+                 
+                  <div>
                     <Button
                       onClick={playWithRandom}
-                      className="border-2 border-white px-4 m-8 rounded-full w-[200px] p-3"
+                      className="border-opacity-40 border-violet-400 hover:border-[#b564eb]
+                      border-[3px]  rounded-full m-4 w-[200px] p-3"
                     >
                       Play
                     </Button>
                     <Button
-                      className="border-2 border-white px-4 m-8 rounded-full w-[200px] p-3"
+                      className="border-opacity-40 m-4 border-violet-400 hover:border-[#b564eb]
+                      border-[3px] rounded-full w-[200px] p-3"
                       onClick={() => setInvite(true)}
                     >
                       Invite
                     </Button>
-                  </>
+
+                  </div>
+                  </div>
                 )}
 
                 {invite ? (
                   <div
                     style={fadeOut ? fadeOutStyle : defaultStyle}
-                    className="w-[300px] h-[300px] absolute top-1/2 left-[50%] flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2   bg-[#7e22c3] bg-opacity-6 rounded-[30px]"
+                    className="w-[300px] h-[300px] absolute top-1/2 left-[50%] flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2   bg-[#46126d] bg-opacity-6 rounded-[30px]"
                   >
                     <button
                       onClick={handleDelete}

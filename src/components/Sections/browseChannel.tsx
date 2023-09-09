@@ -7,6 +7,7 @@ import Channels from "./channels";
 import ChatRoom from "../../components/Sections/chatRoom";
 import Loading from "@/components/Sections/loading";
 import { Channel, Owner, Users } from "./types/index";
+import SmallButton from "../Button/smallButton";
 
 const BrowseChannel = () => {
   const defaultStyle = {
@@ -271,13 +272,13 @@ const BrowseChannel = () => {
               <div className="flex flex-col   h-[80%] w-[90%] gap-8">
                 <div className="flex justify-between gap-10 w-full">
                   <button
-                    className="bg-black/20 self-start w-[100px] border-4 rounded-full"
+                    className="hover:border-[#b564eb] hover:transition  w-[100px] border-[3px] border-opacity-40 border-violet-400 rounded-full "
                     onClick={handleback}
                   >
                     Back
                   </button>
                   <button
-                    className="bg-black/20 self-start w-[200px] border-4 rounded-full"
+                    className="hover:border-[#b564eb] hover:transition  w-[200px] border-[3px] border-opacity-40 border-violet-400 rounded-full"
                     onClick={() => setPrivate(true)}
                   >
                     Join Private

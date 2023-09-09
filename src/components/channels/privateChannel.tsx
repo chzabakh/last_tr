@@ -87,8 +87,8 @@ const PrivateChannel = () => {
     <input type="text"  className="focus:border-none outline-none  border-gray-300 text-white/60 text-sm rounded-lg p-3 w-full bg-black/40" onChange={handleName} placeholder="Enter name..." value={roomName} required></input>
 
 
-    <button className="border-opacity-40 border-violet-400 hover:border-[#2dd4bf]
-     border-[3px] p-2 rounded-full w-[150px] self-center text-xs mt-3" onClick={handleSubmit}>Create Channel</button>
+    <button className="border-opacity-40 border-violet-400 hover:border-[#b564eb]
+  border-[3px] p-2 rounded-full w-[200px] self-center text-xs " onClick={handleSubmit}>Create Private Channel</button>
     </>
 
   )
