@@ -56,7 +56,7 @@ export const Register = () => {
     <Stars />
     <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen max-h-screen">
       <Layout>
-        <div className="flex w-[100%] flex-col items-center gap-4 mx-auto justify-center relative mb-5">
+        <div className="flex w-[100%] flex-col items-center gap-4 ml-3 justify-center relative mb-2">
           <div className={styles.auth}>
           </div>
           <form className={styles.formy} onSubmit={handleSubmit}>
@@ -101,7 +101,7 @@ export const Register = () => {
                 Register
               </button>
             </div>
-            <Link href="login">Already have an account ? Log In.</Link>
+            <Link href="login" className="text-sm">Already have an account ? Log In.</Link>
           </form>
         </div>
       </Layout>

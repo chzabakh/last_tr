@@ -12,6 +12,7 @@ import Router, { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import activate from "./activate";
 import { match } from "assert";
+import Stars from "@/components/Sections/stars";
 
 export const Login: React.FC = () => {
   const router = useRouter();
@@ -141,12 +142,7 @@ export const Login: React.FC = () => {
 
   return (
     <>
-       <div className="absolute left-0 z-[-1] w-[50%] h-screen max-h-screen max-w-screen overflow-hidden">
-      <div id="stars"></div>
-      </div>
-      <div className="absolute right-0 z-[-1] w-[50%] h-screen max-h-screen max-w-screen overflow-hidden">
-      <div id="stars"></div>
-      </div>
+      <Stars/>
       <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen max-h-screen">
         <Layout>
           <div className="w-full flex flex-col items-center justify-center x-auto max-h-full h-full">
@@ -185,7 +181,7 @@ export const Login: React.FC = () => {
                   Login
                 </button>
               </div>
-              <Link href="register">You do not have an account ? Sign Up.</Link>
+              <Link href="register" className="text-sm">You do not have an account ? Sign Up.</Link>
             </form>
           </div>
         </Layout>
