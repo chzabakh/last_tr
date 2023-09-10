@@ -137,37 +137,39 @@ const roomName = () => {
     }
   }, [countdown, gameSocket, gameTable, user, largeScreenMediaQuery]);
 
-  useEffect(() => {
-    if (gameSocket) {
-      const playerScored = (data: any) => {
-        // console.log(data);
+  // useEffect(() => {
+  //   if (gameSocket) {
+  const playerScored = (data: any) => {
+    // console.log(data);
 
-        const { player1Score, player2Score } = data;
-        // playerNickname !== user?.nickname
-        //   ? setPlayer1Score(player1Score + 1)
-        //   : setPlayer2Score(player2Score + 1);
-        // console.log("Player1 Scored");
+    const { player1Score, player2Score } = data;
+    // playerNickname !== user?.nickname
+    //   ? setPlayer1Score(player1Score + 1)
+    //   : setPlayer2Score(player2Score + 1);
+    // console.log("Player1 Scored");
 
-        setPlayer1Score(player1Score);
-        setPlayer2Score(player2Score);
-      };
+    setPlayer1Score(player1Score);
+    setPlayer2Score(player2Score);
+  };
 
-      // const player2ScoredHandler = () => {
-      // gameTable?.player1?.nickname === user?.nickname
-      //   ? setPlayer1Score(player1Score + 1)
-      //   : setPlayer2Score(player2Score + 1);
-      //   console.log("Player2 Scored");
+  // const player2ScoredHandler = () => {
+  // gameTable?.player1?.nickname === user?.nickname
+  //   ? setPlayer1Score(player1Score + 1)
+  //   : setPlayer2Score(player2Score + 1);
+  //   console.log("Player2 Scored");
 
-      //   gameSocket.off("player2Scored", player2ScoredHandler);
-      // };
+  //   gameSocket.off("player2Scored", player2ScoredHandler);
+  // };
 
-      gameSocket.on("playerScored", playerScored);
+  gameSocket?.removeAllListeners("playerScored");
 
-      return () => {
-        gameSocket?.off("playerScored", playerScored);
-      };
-    }
-  }, [gameSocket]);
+  gameSocket?.on("playerScored", playerScored);
+
+  //     return () => {
+  //       gameSocket?.off("playerScored", playerScored);
+  //     };
+  //   }
+  // }, [gameSocket]);
 
   useEffect(() => {
     if (gameSocket) {

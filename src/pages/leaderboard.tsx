@@ -13,6 +13,7 @@ export interface Scoreuser {
   updatedAt: string;
   email: string;
   nickname: string;
+  isChanged: boolean;
   hash: string;
   TwofaAutSecret: null | string;
   TwofaAutEnabled: boolean;
@@ -94,16 +95,18 @@ const Leaderboard = () => {
         <div className="flex border-2 h-[10em] flex-auto border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(114,39,175,0.2)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <div className="flex space-x-6 w-full">
             <div className="my-auto w-[35%] flex flex-row items-center space-x-4">
-              {me?.provider === "email" ? (
-                <Avatar currentUser={me} />
+              {me?.provider === "intra" && me?.isChanged === false ? (
+                <>
+                  <Image
+                    className="w-15 h-15 sm:w-20 sm:h-20 rounded-md"
+                    src={me?.avatarUrl!}
+                    width={100}
+                    height={100}
+                    alt="asd"
+                  />
+                </>
               ) : (
-                <Image
-                  className="w-15 h-15 sm:w-20 sm:h-20 rounded-md"
-                  src={me?.avatarUrl!}
-                  width={100}
-                  height={100}
-                  alt="asd"
-                />
+                <>{me ? <Avatar currentUser={me} /> : null}</>
               )}
               <p className="text-sm sm:text-lg md:text-3xl">{me?.nickname}</p>
             </div>
@@ -125,25 +128,9 @@ const Leaderboard = () => {
           >
             {users?.length! > 0 ? (
               users!.map((user, index) => (
-                <Score key={index} user={user} rank={index + 1} />
-              ))
-            ) : (
-              <p className="h-full flex justify-center items-center md:text-lg lg:text-2xl">
-                no games available!
-              </p>
-            )}
-            {users?.length! > 0 ? (
-              users!.map((user, index) => (
-                <Score key={index} user={user} rank={index + 1} />
-              ))
-            ) : (
-              <p className="h-full flex justify-center items-center md:text-lg lg:text-2xl">
-                no games available!
-              </p>
-            )}
-            {users?.length! > 0 ? (
-              users!.map((user, index) => (
-                <Score key={index} user={user} rank={index + 1} />
+                <>
+                  <Score key={index} user={user} rank={index + 1} />
+                </>
               ))
             ) : (
               <p className="h-full flex justify-center items-center md:text-lg lg:text-2xl">

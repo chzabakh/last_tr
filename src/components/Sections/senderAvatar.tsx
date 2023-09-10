@@ -3,14 +3,15 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { Sender } from "./findAFriend";
 
-interface AvatarProps {
-  currentUser: User;
-  custom?: string;
+interface SenderAvatarProps {
+  currentUser: Sender;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ currentUser, custom }) => {
+const SenderAvatar: React.FC<SenderAvatarProps> = ({ currentUser }) => {
   const [imageURL, setImageURL] = useState<string>();
+
   console.log(currentUser);
 
   useEffect(() => {
@@ -37,12 +38,10 @@ const Avatar: React.FC<AvatarProps> = ({ currentUser, custom }) => {
         alt="asd"
         width={100}
         height={100}
-        className={`rounded-full ${
-          custom ? `max-w-[${custom}] max-h-[${custom}]` : "max-w-[50px]"
-        }  max-h-[50px]`}
+        className="rounded-full max-w-[50px] max-h-[50px]"
       />
     </>
   );
 };
 
-export default Avatar;
+export default SenderAvatar;

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Dms from "../Sections/dms";
 import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
+import Avatar from "../avatar";
 
 interface User {
   id: number;
@@ -159,22 +160,24 @@ const Dmpreview: React.FC<MessageProps> = ({
         >
           <div className="flex flex-col chat-image avatar -z-10">
             <div className="w-10 rounded-full">
-              {other?.provider === "email" && pdp ? (
+              {other?.provider === "intra" && other?.isChanged === false ? (
                 <Image
-                  src={pdp || "/place.png"}
+                  src={other.avatarUrl || "/place.png"}
                   width={100}
                   height={100}
                   alt="friend"
                 />
-              ) : null}
-              {other?.provider === "intra" && !other?.isChanged ? (
+              ) : (
+                <>{other ? <Avatar currentUser={other} /> : null}</>
+              )}
+              {/* {other?.provider === "intra" && !other?.isChanged ? (
                 <Image
                   src={`${other?.avatarUrl}`}
                   width={100}
                   height={100}
                   alt="friend"
                 />
-              ) : null}
+              ) : null} */}
             </div>
           </div>
           {!chat.messages[chat.messages.length - 1]?.content ? (

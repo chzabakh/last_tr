@@ -567,7 +567,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                   {users.map((user, index) => (
                     <div className="w-full flex p-3  bg-[#3c005a] rounded-lg">
                       <div className="flex-1 w-[50%]">
-                        {user.provider === "intra" && !user.isChanged ? (
+                        {user.provider === "intra" &&
+                        user.isChanged === false ? (
                           <>
                             <Image
                               key={index}
@@ -762,7 +763,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
 
                       <div>
                         {msg.sender.provider === "intra" &&
-                        !msg.sender.isChanged ? (
+                        msg.sender.isChanged === false ? (
                           <>
                             <Image
                               src={msg.sender.avatarUrl || "/place.png"}
@@ -790,7 +791,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                     <div className="flex self-start gap-2">
                       <div>
                         {msg.sender.provider === "intra" &&
-                        !msg.sender.isChanged ? (
+                        msg.sender.isChanged === false ? (
                           <>
                             <Image
                               src={msg.sender.avatarUrl || "/place.png"}

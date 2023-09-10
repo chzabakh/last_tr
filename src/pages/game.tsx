@@ -190,37 +190,38 @@ const Options = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (gameSocket) {
-      const playerScored = (data: any) => {
-        // console.log(data);
+  // useEffect(() => {
+  // if (gameSocket) {
+  const playerScored = (data: any) => {
+    console.log(data);
 
-        const { player1Score, player2Score } = data;
-        // playerNickname !== user?.nickname
-        //   ? setPlayer1Score(player1Score + 1)
-        //   : setPlayer2Score(player2Score + 1);
-        // console.log("Player1 Scored");
+    const { player1Score, player2Score } = data;
+    // playerNickname !== user?.nickname
+    //   ? setPlayer1Score(player1Score + 1)
+    //   : setPlayer2Score(player2Score + 1);
+    // console.log("Player1 Scored");
 
-        setPlayer1Score(player1Score);
-        setPlayer2Score(player2Score);
-      };
+    setPlayer1Score(player1Score);
+    setPlayer2Score(player2Score);
+  };
 
-      // const player2ScoredHandler = () => {
-      // gameTable?.player1?.nickname === user?.nickname
-      //   ? setPlayer1Score(player1Score + 1)
-      //   : setPlayer2Score(player2Score + 1);
-      //   console.log("Player2 Scored");
+  // const player2ScoredHandler = () => {
+  // gameTable?.player1?.nickname === user?.nickname
+  //   ? setPlayer1Score(player1Score + 1)
+  //   : setPlayer2Score(player2Score + 1);
+  //   console.log("Player2 Scored");
 
-      //   gameSocket.off("player2Scored", player2ScoredHandler);
-      // };
+  //   gameSocket.off("player2Scored", player2ScoredHandler);
+  // };
+  gameSocket?.removeAllListeners("playerScored");
 
-      gameSocket.on("playerScored", playerScored);
+  gameSocket?.on("playerScored", playerScored);
 
-      return () => {
-        gameSocket?.off("playerScored", playerScored);
-      };
-    }
-  }, [gameSocket]);
+  // return () => {
+  //   gameSocket?.off("playerScored", playerScored);
+  // };
+  // }
+  // }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -248,11 +249,12 @@ const Options = () => {
         // console.log(winner);
         setWinner(winner);
         setGameEnded(true);
-        setInterval(() => {
-          router.push("/history");
-        }, 3000);
+        // setInterval(() => {
+        //   router.push("/history");
+        // }, 3000);
         // setGamestart(false);
         setInQueue(false);
+        socket?.off("gameEnded", gameEnded);
       };
 
       gameSocket.on("gameEnded", gameEnded);
@@ -409,7 +411,7 @@ const Options = () => {
                           ) : (
                             <>
                               {player2?.provider === "intra" &&
-                              !player1?.isChanged ? (
+                              player2?.isChanged === false ? (
                                 <>
                                   <Image
                                     src={player2?.avatarUrl || place}

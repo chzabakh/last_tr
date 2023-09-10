@@ -77,17 +77,19 @@ const MatchHistory = () => {
       <div className="my-20 h-[80%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-blackdashboard bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
         <div className="flex flex-row border-2 h-[10em] flex-auto border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <div className="space-x-2 flex flex-row w-1/2 items-center pl-3">
-           {me?.provider === "email" ?
-         <Avatar currentUser={me} />
-         :
-         <Image
-              className="w-15 h-15 sm:w-20 sm:h-20 rounded-md"
-              src={me?.avatarUrl!}
-              width={100}
-              height={100}
-              alt="asd"
-            />
-           }
+            {me?.provider === "intra" && me?.isChanged === false ? (
+              <>
+                <Image
+                  className="w-15 h-15 sm:w-20 sm:h-20 rounded-md"
+                  src={me?.avatarUrl!}
+                  width={100}
+                  height={100}
+                  alt="asd"
+                />
+              </>
+            ) : (
+              <>{me ? <Avatar currentUser={me} /> : null}</>
+            )}
             <div className="flex flex-col my-auto">
               <p className="text-xs lg:text-lg">{me?.nickname}</p>
             </div>
@@ -99,9 +101,13 @@ const MatchHistory = () => {
         </div>
         <div className="w-full h-full overflow-y-scroll border-2 border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           {games?.matches?.length! > 0 ? (
-            games?.matches.map((match, index) => <Results key={index} match={match} />)
+            games?.matches.map((match, index) => (
+              <Results key={index} match={match} />
+            ))
           ) : (
-            <p className="h-full flex justify-center items-center md:text-lg lg:text-2xl">no games available!</p>
+            <p className="h-full flex justify-center items-center md:text-lg lg:text-2xl">
+              no games available!
+            </p>
           )}
         </div>
       </div>

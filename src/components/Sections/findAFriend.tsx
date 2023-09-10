@@ -9,6 +9,7 @@ import { useSocket } from "@/components/socket_context";
 import FriendAvatar from "../avatar";
 import PublicAvatar from "../FriendAvatar";
 import Avatar from "../avatar";
+import SenderAvatar from "./senderAvatar";
 
 interface ChatProps {
   dmm: string;
@@ -26,7 +27,7 @@ export interface Friend {
   isChanged: boolean;
 }
 
-interface Sender {
+export interface Sender {
   nickname: string;
   id: number;
   avatarUrl: string;
@@ -54,16 +55,16 @@ export interface User {
   id: number;
   createdAt: string;
   updatedAt: string;
-  FirstLogin: boolean;
-  TwofaAutEnabled: boolean;
-  TwofaAutSecret: string | null;
-  avatarUrl: string;
   email: string;
-  friendStatus: string;
-  hash: string;
   nickname: string;
-  provider: string;
+  hash: string;
+  TwofaAutSecret: null | string;
+  TwofaAutEnabled: boolean;
+  FirstLogin: boolean;
+  avatarUrl: string;
   state: string;
+  provider: string;
+  friendStatus: string;
   isChanged: boolean;
 }
 
@@ -186,7 +187,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     setItem(newValue);
     setDm(newDm);
   };
-  const [friend, setFriend] = useState<Friend>({
+  const [friend, setFriend] = useState<User>({
     avatarUrl: "null",
     id: -1,
     nickname: "null",
@@ -195,6 +196,12 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     friendStatus: "null",
     provider: "null",
     isChanged: false,
+    createdAt: "",
+    FirstLogin: false,
+    hash: "",
+    TwofaAutEnabled: false,
+    TwofaAutSecret: "",
+    updatedAt: "",
   });
   // const { login, accessToken } = useAuth();
   const [invites, setInvites] = useState<Invitation[]>([]);
@@ -311,6 +318,12 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           friendStatus: "null",
           provider: "null",
           isChanged: false,
+          createdAt: "",
+          FirstLogin: false,
+          hash: "",
+          TwofaAutEnabled: false,
+          TwofaAutSecret: "",
+          updatedAt: "",
         });
       } else {
         setFriend(res.data);
@@ -497,6 +510,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
             },
           }
         );
+        // console.log(res.data);
         setInvites(res.data);
         console.log("wwwwWWWW", res.data);
       } catch (err) {
@@ -665,6 +679,8 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
       }
     }
   };
+
+  console.log(myfriends);
 
   const handleFrReq = async (
     nickname: string,
@@ -976,23 +992,23 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                         key={invitation.senderID}
                       >
                         <div className="chat-image avatar my-auto mx-3">
-                          {/* <div className="w-14 rounded-full">
+                          <div className="w-14 rounded-full">
                             {invitation.sender.provider === "intra" &&
-                            !invitation.sender.isChanged ? (
+                            invitation.sender.isChanged === false ? (
                               <>
                                 <Image
                                   alt="friendReqPic"
                                   height={200}
                                   width={200}
-                                  src={`${invitation.sender.avatarUrl}`}
+                                  src={invitation.sender.avatarUrl}
                                 />
                               </>
                             ) : (
                               <>
-                                <Avatar currentUser={invitation.sender} />
+                                <PublicAvatar currentUser={invitation.sender} />
                               </>
                             )}
-                          </div> */}
+                          </div>
                         </div>
                         <p className="mx-3 text-xl">
                           {invitation.sender.nickname}
@@ -1058,16 +1074,16 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                       >
                         <div className="chat-image avatar my-auto mx-3">
                           <div className="w-14 rounded-full">
+                            {/* {friend.isChanged} */}
                             {friend.provider === "intra" &&
-                            !friend.isChanged ? (
+                            friend.isChanged === false ? (
                               <>
-                                {friend.avatarUrl}
-                                {/* <Image
+                                <Image
                                   alt="friendReqPic"
                                   height={200}
                                   width={200}
                                   src={friend.avatarUrl}
-                                /> */}
+                                />
                               </>
                             ) : (
                               <>
@@ -1077,6 +1093,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                           </div>
                         </div>
                         <div className="flex flex-wrap">
+                          {/* <span>{friend.isChanged}</span> */}
                           <span>{friend.nickname} :</span>
                           <span>{friend.state}</span>
                         </div>
