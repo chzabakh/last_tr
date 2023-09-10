@@ -571,8 +571,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
               <div className="flex gap-4 flex-col h-full ">
                 <div className="flex flex-col gap-1 w-full h-full items-center overflow-scroll">
                   {users.map((user, index) => (
-                    <div className="w-full flex p-3  bg-[#3c005a] rounded-lg">
+                    <div className="w-full  md:flex-row flex-col-reverse flex p-3  bg-[#3c005a] rounded-lg">
                       <div className="flex-1 w-[50%]">
+                        
                         {user.provider === "intra" ? (
                           <div className="hidden sm:block">
                             <Image
@@ -597,10 +598,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                             <div className="bg-green-500 w-2 h-2 rounded-full absolute md:left-10 md:bottom-1 sm:left-0 sm:bottom-auto"></div>
                           )}
                           {user.state === "offline" && (
-                            <div className="bg-gray-500 w-2 h-2 rounded-full absolute left-10 bottom-1"></div>
+                            <div className="bg-gray-500 w-2 h-2 rounded-full absolute md:left-10 md:bottom-1 sm:left-0 sm:bottom-auto"></div>
                           )}
                           {user.email === details?.owner.email && (
-                            <div className="absolute left-4 bottom-10">
+                            <div className="absolute left-4 bottom-10 hidden sm:block ">
                               <Image
                                 src={crone}
                                 width={20}
@@ -612,7 +613,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                           {
                           user.state === "playing" &&
                           (
-                            <div className="w-2 h-2 rounded-full absolute left-10 bottom-1"><Image src={pong} width={20} height={20} alt="crone" /></div>
+                            <div className="absolute left-4 bottom-10"><Image src={pong} width={20} height={20} alt="crone" /></div>
                           )
                         }
                         </div>
@@ -627,7 +628,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                         }
                       </div>
 
-                      <div className="flex justify-end  w-[50%] self-end">
+                      <div className="flex md:flex-row flex-col  justify-end  w-[50%] self-end">
                         {!isAdmin() ? null : isAdmin() ? (
                           nickname === user.nickname ? null : (
                             <>
