@@ -300,10 +300,10 @@ const Edit = () => {
               </div>
 
               <div className="flex flex-col justify-between">
-                <div className="flex justify-between">
+                <div className="flex gap-4 justify-between md:flex-row flex-col">
                   {status === "enabled" ? (
                     <button
-                      className="border-2 border-white hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
+                      className="border-2 border-purple-400 hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
                       onClick={handleDisable}
                     >
                       {" "}
@@ -311,7 +311,7 @@ const Edit = () => {
                     </button>
                   ) : (
                     <button
-                      className="border-2 border-white hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
+                      className="border-2 border-purple-400 hover:text-[#c084fc] hover:border-white p-3 rounded-2xl "
                       onClick={handleAuthClick}
                     >
                       {" "}

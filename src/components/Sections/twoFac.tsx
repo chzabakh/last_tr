@@ -93,35 +93,35 @@ const TwoFac: React.FC<TwoFacProps> = ({ handle }) => {
         <>
         {/* my-20 h-[80%] gap-3 overflow-scroll justify-between flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px] */}
           {/* <div className="my-20 h-[70%] gap-3 flex justify-center items-center flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"> */}
-            <div className="my-20 h-[80%] gap-3  flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-            <div className="bg-black">
+            <div className="my-20  h-[70%] gap-20 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+       
             <button
               onClick={handle}
-              className=" self-start bg-purple-500 m-3 text-white p-2  rounded-full"
+              className=" text-xs self-start bg-purple-500 m-3 text-white p-2 h-[30px]  rounded-lg"
             >
               X
             </button>
-            </div>
-            <div className="m-20 gap-10 items-center border-2 h-[60%] w-[90%] flex lg:flex-row  flex-col-reverse justify-between border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+       
+            <div className="m-3 gap-10 md:gap-1 items-center h-[60%] w-[90%] flex lg:flex-row  flex-col-reverse justify-between  p-4 ">
 
               <Image
                 src={qr || Place}
                 alt="qr"
                 width={100}
                 height={100}
-                className="lg:w-[20rem] lg:h-[20rem] h-[10rem] w-[10rem] bg-black flex-1 text-center"
+                className="lg:w-[20rem] lg:h-[20rem] h-[10rem] w-[10rem] bg-black flex-1 md:ml-10 text-center max-w-[400px]"
               />
 
-              <div className="flex flex-col justify-between flex-1 lg:gap-20">
+              <div className="flex flex-col  gap-10 justify-between  lg:gap-30">
                 <div className="self-center lg:text-2xl text-md font-extrabold">
                   <h1>Enable Two Factor</h1>
                 </div>
-                <div className="flex flex-col lg:gap-4  gap-1 justify-between">
-                  <p className="text-xs">
+                <div className="flex flex-col lg:gap-4 gap-4 justify-between">
+                  <p className="text-[10px] md:text-sm">
                     Scan the QR Code and enter the code:
                   </p>
                   <input
-                    className="lg:p-5 p-3 rounded-2xl bg-black/40"
+                    className="lg:p-5 p-3 rounded-2xl bg-black/40 border-2 border-white"
                     type="text"
                     placeholder="Enter the digits"
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -132,7 +132,7 @@ const TwoFac: React.FC<TwoFacProps> = ({ handle }) => {
                     <p className="text-xs self-center text-red-700">{error}</p>
                   )}
                   <button
-                    className="border-2 border-[#5eead4] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl w-[70%] self-center"
+                    className="border-2 border-[#531f88] hover:text-[#c084fc] hover:border-white p-3 rounded-2xl w-[70%] self-center"
                     onClick={submitCode}
                   >
                     Activate
