@@ -100,8 +100,9 @@ export const Register = () => {
               <button type="submit" className={styles.register}>
                 Register
               </button>
+              
+            <Link href="login" className="text-xs">Already have an account ? Log In.</Link>
             </div>
-            <Link href="login" className="text-sm">Already have an account ? Log In.</Link>
           </form>
         </div>
       </Layout>
