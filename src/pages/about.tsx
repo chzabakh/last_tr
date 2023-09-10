@@ -46,7 +46,7 @@ const About = () => {
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-evenly w-full h-full">
             {contributers.map((member) => (
-              <div className="mb-4 sm:mb-0 hidden sm:block" key={member.id}>
+              <div className="mb-4 sm:mb-0  hidden sm:block" key={member.id}>
                 <Card
                   name={member.name}
                   linkedin={member.linkedin}
