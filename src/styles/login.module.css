@@ -86,7 +86,8 @@
     border-right: none;
     box-shadow:0px 4px 4px 0px hwb(286 48% 7%);
     transition: transform 0.3s;
-    margin-top: 3rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
     align-self: center;
 }
 
@@ -102,7 +103,7 @@
     font-size: 2rem;
     font-weight: 400;
     color: white;
-    margin-bottom: 1rem;
+    margin-bottom: 0.4rem;
     align-self: center;
 }
 
@@ -124,7 +125,7 @@
 }
 
 .or{
-    margin: 2rem;
+    margin: 0.44rem;
 }
 
 .logIn{

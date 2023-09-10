@@ -54,9 +54,9 @@ export const Register = () => {
   return (
     <>
     <Stars />
-    <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen max-h-screen">
+    <div className="flex flex-col overflow-y-hidden justify-between max-w-full md:mx-[6rem] h-full max-h-full">
       <Layout>
-        <div className="flex w-[100%] flex-col items-center gap-4 ml-3 justify-center relative mb-2">
+        <div className="flex overflow-y-hidden w-[100%] flex-col items-center gap-4 justify-center relative mb-2">
           <div className={styles.auth}>
           </div>
           <form className={styles.formy} onSubmit={handleSubmit}>

@@ -143,9 +143,9 @@ export const Login: React.FC = () => {
   return (
     <>
       <Stars/>
-      <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen max-h-screen">
+      <div className="flex flex-col overflow-y-hidden justify-between max-w-full md:mx-[6rem] h-full max-h-full">
         <Layout>
-          <div className="w-full flex flex-col items-center justify-center x-auto max-h-full h-full">
+          <div className="w-full flex overflow-y-hidden flex-col items-center justify-center x-auto max-h-full h-full">
             <a className={styles.button} onClick={openNewWindow}>
               <Image className={styles.logo} alt="" src={fourty} />
               <p className="sm:text-lg">Login with Intra</p>
