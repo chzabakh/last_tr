@@ -11,6 +11,7 @@ import Layout from "@/components/Layout/layout";
 import Router, { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import activate from "./activate";
+import { match } from "assert";
 
 export const Login: React.FC = () => {
   const router = useRouter();
@@ -82,17 +83,35 @@ export const Login: React.FC = () => {
     if (authWindow) {
       const checkAuthComplete = setInterval(() => {
         const res = Cookies.get("token")?.replace("j:", "");
-        if (!res || res === "undefined") {
-          console.error('Token is not defined or is "undefined"');
-          return;
-        }
-        let parsed;
-        try {
-          parsed = JSON.parse(res);
-        } catch (e) {
-          console.error("Failed to parse token:", e);
-          return;
-        }
+        const pattern = /"isTwoFactorEnabled":(true|false),|"isFirstLogin":(true|false),|"access_token":"(.*?)"/g;
+        let parsed = {
+          isTwoFactorEnabled: false,
+          isFirstLogin: true,
+          access_token: ""
+        };
+        let found;
+        if(res)
+        {
+            while((found = pattern.exec(res)) !== null)
+            {
+                if(found.index === pattern.lastIndex)
+                {
+                  pattern.lastIndex++;
+                }
+                if(found[1] !== undefined)
+                {
+                  parsed.isTwoFactorEnabled = found[1] ==='true';
+                }
+                else if(found[2] !== undefined)
+                {
+                  parsed.isFirstLogin = found[2] === 'true';
+                }
+                else if(found[3] !== undefined)
+                {
+                  parsed.access_token = found[3];
+                }
+            }            
+          }
         const token = parsed.access_token;
         const isFirstLogin = parsed.isFirstLogin;
         const isTwoFactorEnabled = parsed.isTwoFactorEnabled;
@@ -101,14 +120,13 @@ export const Login: React.FC = () => {
           authWindow.close();
           clearInterval(checkAuthComplete);
           Cookies.set("token", token, { path: "/" });
-
           if (isFirstLogin) Router.push("/addInfos");
           else {
-            // if(isTwoFactorEnabled === true)
-            // {
-            //   router.push('/activate')
-            // }
-            // else
+            if(isTwoFactorEnabled === true)
+            {
+              router.push('/activate')
+            }
+            else
             {
               router.push("/chat");
             }
@@ -122,9 +140,11 @@ export const Login: React.FC = () => {
 
   return (
     <>
-      <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
-        <div id="stars"></div>
-        <div id="stars1"></div>
+       <div className="absolute left-0 z-[-1] w-[50%] h-screen max-h-screen max-w-screen overflow-hidden">
+      <div id="stars"></div>
+      </div>
+      <div className="absolute right-0 z-[-1] w-[50%] h-screen max-h-screen max-w-screen overflow-hidden">
+      <div id="stars"></div>
       </div>
       <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen max-h-screen">
         <Layout>

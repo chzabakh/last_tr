@@ -4,6 +4,7 @@ import Link from "next/link";
 import styles from "./page.module.css";
 import SmallButton from "../Button/smallButton";
 import contact from "@/pages/contact";
+import about from "@/pages/about";
 // import {Link} from 'react-router-dom'
 const links = [
   {
@@ -43,7 +44,6 @@ const Navbar = () => {
         ))}
       </div>
       <SmallButton url="contact" text="Contact Us" />
-      {/* <Link to="/contact">Hello</Link> */}
     </div>
   );
 };

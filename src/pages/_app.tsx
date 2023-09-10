@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 
 export default function App({ Component, pageProps }: AppProps) {
   const pathname = usePathname();
-  const shouldRenderSidebar = !["/login", "/register", "/"].includes(pathname);
+  const shouldRenderSidebar = !["/login", "/register", "/", "/about", "/contact"].includes(pathname);
   return (
     <>
       {shouldRenderSidebar ? (

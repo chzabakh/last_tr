@@ -8,6 +8,7 @@ import { TypeAnimation } from "react-type-animation";
 import Layout from "@/components/Layout/layout";
 import SmallButton from "@/components/Button/smallButton";
 
+
 export default function Homepage() {
 
   const animationStyle = {

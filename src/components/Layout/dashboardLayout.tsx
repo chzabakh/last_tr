@@ -146,9 +146,11 @@ export default function DashboardLayout({ children }: LayoutProps) {
 
   return (
     <>
-      <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
-        <div id="stars"></div>
-        <div id="stars1"></div>
+     <div className="absolute left-0 z-[-1] w-[50%] h-screen max-h-screen max-w-screen overflow-hidden">
+      <div id="stars"></div>
+      </div>
+      <div className="absolute right-0 z-[-1] w-[50%] h-screen max-h-screen max-w-screen overflow-hidden">
+      <div id="stars"></div>
       </div>
       {/* <SocketProvider> */}
       <div className="flex flex-row h-full">
