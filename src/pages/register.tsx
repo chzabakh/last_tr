@@ -97,7 +97,7 @@ export const Register = () => {
               {status === "1" ? <p>{message}</p> : null}
               {status === "-1" ? <p>{message}</p> : null}
 
-              <button type="submit" className={styles.logIn}>
+              <button type="submit" className={styles.register}>
                 Register
               </button>
             </div>
