@@ -162,7 +162,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                   width={200}
                   priority={true}
                 />
-                <p className="font-serif text-center py-5 text-xl">
+                <p className="font-inter tracking-widest  text-center py-5 text-xl">
                   {username}
                 </p>
               </div>
@@ -265,7 +265,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
               <HiBars4 />
             </button>
             <div
-              className={`absolute z-50 bg-purple-800 h-screen w-screen ${
+              className={`absolute z-50 bg-gradient-to-r from-black to-purple-900 h-screen w-screen ${
                 menu === "off" ? "-translate-x-full" : ""
               } transition-transform duration-700`}
             >
@@ -286,7 +286,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                     width={200}
                     priority={true}
                   />
-                  <p className="font-serif text-center py-5 text-xl">
+                  <p className="font-inter tracking-widest text-center py-5 text-xl">
                     {username}
                   </p>
                 </div>

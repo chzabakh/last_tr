@@ -10,7 +10,7 @@ import BrowseChannel from "@/components/Sections/browseChannel";
 import Loading from "./loading";
 
 import Image from "next/image";
-import pong from "../../public/pong.png";
+import pong from "../../../public/pong.png";
 import Avatar from "@/components/avatar";
 import { io, Socket } from "socket.io-client";
 import crone from "../../../public/crone.png";
@@ -428,7 +428,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         message: message,
         RoomId: room.uid,
       };
-      console.log(message + " " + room.uid);
+      // console.log(message + " " + room.uid);
       const res = await axios.post(
         "http://localhost:9000/chat/send-message",
         requestBody,
@@ -539,7 +539,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     <Channels />
   ) : (
     <>
-      <div className="absolute top-0 z-2 flex justify-evenly border-2 rounded-3xl  border-opacity-30 w-[99.9%] h-full  border-violet-400  bg-[#571d86]  bg-blur-md backdrop-filter backdrop-blur-md p-4">
+      <div className="absolute top-0 z-2 flex  justify-evenly border-2 rounded-3xl  border-opacity-30 w-[99.9%] h-full  border-violet-400  bg-[#571d86]  bg-blur-md backdrop-filter backdrop-blur-md p-4">
         <div className="w-[40%] flex flex-col h-full  gap-10">
           <div className="flex flex-col h-[60%] items-center gap-5">
             <button
@@ -566,15 +566,15 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
 
           <div className="h-full mt-2 flex flex-col ">
             <div className="flex flex-col gap-3  h-[90%] w-full ">
-              <div className="text-lg self-center">Group members:</div>
+              <div className="md:text-lg self-center text-xs text-center ">Group members:</div>
 
               <div className="flex gap-4 flex-col h-full ">
                 <div className="flex flex-col gap-1 w-full h-full items-center overflow-scroll">
                   {users.map((user, index) => (
-                    <div className="w-full flex p-3  bg-[#3c005a] rounded-lg">
+                    <div className="w-full flex md:p-3  bg-[#3c005a] rounded-lg">
                       <div className="flex-1 w-[50%]">
                         {user.provider === "intra" ? (
-                          <>
+                          <div className="hidden sm:block">
                             <Image
                               key={index}
                               src={user.avatarUrl || "/place.png"}
@@ -583,9 +583,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                               width={80}
                               className="rounded-full max-w-[50px] max-h-[50px] relative "
                             />
-                          </>
+                          </div>
                         ) : (
-                          <div className="border-1 w-[50px] h-[50px] z-3">
+                          <div className="border-1 md:w-[50px] h-[50px] z-3 hidden sm:block">
                             <Avatar currentUser={user} />
                           </div>
                         )}
@@ -594,7 +594,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                         <div className="relative">
                          
                           {user.state === "online" && (
-                            <div className="bg-green-500 w-2 h-2 rounded-full absolute left-10 bottom-1"></div>
+                            <div className="bg-green-500 w-2 h-2 rounded-full absolute md:left-10 md:bottom-1 sm:left-0 sm:bottom-auto"></div>
                           )}
                           {user.state === "offline" && (
                             <div className="bg-gray-500 w-2 h-2 rounded-full absolute left-10 bottom-1"></div>
@@ -609,15 +609,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                               />
                             </div>
                           )}
-                          {/* {
-
-                          //TODO : CHANGE TO PLAYING MODE
-                          user.state === "inGame" &&
+                          {
+                          user.state === "playing" &&
                           (
-                              <div className="relative left-1 top-4"><Image src={pong} width={20} height={20} alt="crone" /></div>
+                            <div className="w-2 h-2 rounded-full absolute left-10 bottom-1"><Image src={pong} width={20} height={20} alt="crone" /></div>
                           )
-
-                        } */}
+                        }
                         </div>
                       </div>
                       <div className="flex-1 w-[50%] pt-3 ">
