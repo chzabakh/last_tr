@@ -54,7 +54,7 @@ export const Register = () => {
   return (
     <>
     <Stars />
-    <div className="flex flex-col overflow-y-hidden justify-between max-w-full md:mx-[6rem] h-full max-h-full">
+    <div className="flex flex-col overflow-y-hidden justify-between max-w-full md:mx-[6rem]  h-full lg:h-screen max-h-full">
       <Layout>
         <div className="flex overflow-y-hidden w-[100%] flex-col items-center gap-4 justify-center relative mb-2">
           <div className={styles.auth}>
