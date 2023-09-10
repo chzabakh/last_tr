@@ -43,7 +43,7 @@ const About = () => {
       <Layout>
         <Stars />
         <div className='flex flex-col gap-2 w-full h-[70%]'>
-        <div className='self-center text-[30px] font-code'>The Team:</div>
+        <div className='self-center text-[19px] font-code'>This project is made by:</div>
         <div className="flex flex-row items-center justify-evenly max-h-ful w-full h-full">
           {contributers.map((member) => (
             <Card

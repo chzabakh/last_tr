@@ -6,17 +6,12 @@ import SmallButton from "../Button/smallButton";
 import contact from "@/pages/contact";
 import about from "@/pages/about";
 // import {Link} from 'react-router-dom'
-const links = [
+const link = [
   {
     id: 1,
     title: "Home",
     url: "/",
-  },
-  {
-    id: 2,
-    title: "About",
-    url: "/about",
-  },
+  }
 ];
 
 const Navbar = () => {
@@ -37,13 +32,13 @@ const Navbar = () => {
         </svg>
       </Link>
       <div className={styles.links}>
-        {links.map((link) => (
+        {link.map((link) => (
           <Link key={link.id} href={link.url} className={styles.link}>
             {link.title}
           </Link>
         ))}
       </div>
-      <SmallButton url="contact" text="Contact Us" />
+      <SmallButton url="about" text="About Us" />
     </div>
   );
 };
