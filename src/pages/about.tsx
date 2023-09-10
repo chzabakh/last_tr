@@ -56,8 +56,8 @@ const About = () => {
               </div>
             ))}
             {contributers.map((member) => (
-              <div className="mb-4 sm:hidden" key={member.id}>
-                <Link href={member.github} className="hover:text-purple-500">{member.name}</Link>
+              <div className="mb-4 sm:hidden hover:text-purple-500 font-inter font-bold  tracking-widest " key={member.id}>
+                <Link href={member.github} target="blank" className="hover:text-purple-500 border-2 px-4 py-2  rounded-full text-purple-300">{member.name}</Link>
               </div>
             ))}
           </div>
