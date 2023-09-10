@@ -539,7 +539,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     <Channels />
   ) : (
     <>
-      <div className="absolute top-0 z-2 flex  justify-evenly border-2 rounded-3xl  border-opacity-30 w-[99.9%] h-full  border-violet-400  bg-[#571d86]  bg-blur-md backdrop-filter backdrop-blur-md p-4">
+      <div className="absolute top-0 z-2 flex justify-evenly border-2 rounded-3xl  border-opacity-30 w-[99.9%] h-full  border-violet-400  bg-[#571d86]  bg-blur-md backdrop-filter backdrop-blur-md p-4">
         <div className="w-[40%] flex flex-col h-full  gap-10">
           <div className="flex flex-col h-[60%] items-center gap-5">
             <button
@@ -566,12 +566,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
 
           <div className="h-full mt-2 flex flex-col ">
             <div className="flex flex-col gap-3  h-[90%] w-full ">
-              <div className="md:text-lg self-center text-xs text-center ">Group members:</div>
+              <div className="text-lg self-center">Group members:</div>
 
               <div className="flex gap-4 flex-col h-full ">
                 <div className="flex flex-col gap-1 w-full h-full items-center overflow-scroll">
                   {users.map((user, index) => (
-                    <div className="w-full flex md:p-3  bg-[#3c005a] rounded-lg">
+                    <div className="w-full flex p-3  bg-[#3c005a] rounded-lg">
                       <div className="flex-1 w-[50%]">
                         {user.provider === "intra" ? (
                           <div className="hidden sm:block">
@@ -841,6 +841,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                 )
               )}
             </div>
+          </div>
           <div className="flex bottom-4 w-full border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
             <input
               className="w-[100%] bg-transparent pl-3 py-4 focus:outline-none"
@@ -881,7 +882,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                 <path d="M21 3L14.5 21a.55 .55 0 0 1 -1 0L10 14L3 10.5a.55 .55 0 0 1 0 -1L21 3" />
               </svg>
             </button>
-          </div>
           </div>
         </div>
       {
