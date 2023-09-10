@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image';
 import ReactCardFlip from 'react-card-flip';
 import oufisaou from "../../public/oufisaou.jpeg"
+import Stars from '@/components/Sections/stars';
 const About = () => {
     const [isFlipped, setIsFlipped] = useState(false);
 
@@ -22,11 +23,8 @@ const About = () => {
   return (
     <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen  max-h-screen">
     <Layout>
-         <div className="absolute left-0 z-[-1] w-[50%] h-screen max-h-screen max-w-screen overflow-hidden">
-      <div id="stars"></div>
-      </div>
-      <div className="absolute right-0 z-[-1] w-[50%] h-screen max-h-screen max-w-screen overflow-hidden">
-      <div id="stars"></div>
+      <div>
+         <Stars />
       </div>
         <div className="flex flex-row items-center justify-evenly max-h-ful w-full h-full">
     <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
@@ -44,12 +42,13 @@ oufisaou
         </div>
         <div className="flex flex-col justify-center items-center gap-3 w-[300px]  h-[300px] rounded-lg bg-[#0000008b]">
           <div className='flex flex-col justify-center gap-4 items-center font-inter' >
-            <button className='rounded-full border-2 border-white m-2 w-[200px] px-6 py-4'>My Github</button>
-            <button className='rounded-full border-2 border-white m-2 w-[200px] px-6 py-4'>My LinkedIn</button>
+            <button className='rounded-full border-2 border-white m-2 w-[200px] px-6 py-4' >My Github</button>
+            <button className='rounded-full border-2 border-white m-2 w-[200px] px-6 py-4' >My LinkedIn</button>
           </div>
         </div>
     </ReactCardFlip>
         </div>
+      <div/>
     </Layout>
     </div>
   )

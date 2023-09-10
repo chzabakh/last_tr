@@ -92,6 +92,7 @@ export const Login: React.FC = () => {
         let found;
         if(res)
         {
+          //exec returns an array of matches or null
             while((found = pattern.exec(res)) !== null)
             {
                 if(found.index === pattern.lastIndex)

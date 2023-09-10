@@ -10,6 +10,7 @@ import Card from "@/tools/card";
 import Loading from "@/components/Sections/loading";
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import Stars from "../Sections/stars";
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -146,12 +147,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
 
   return (
     <>
-     <div className="absolute left-0 z-[-1] w-[50%] h-screen max-h-screen max-w-screen overflow-hidden">
-      <div id="stars"></div>
-      </div>
-      <div className="absolute right-0 z-[-1] w-[50%] h-screen max-h-screen max-w-screen overflow-hidden">
-      <div id="stars"></div>
-      </div>
+      <Stars />
       {/* <SocketProvider> */}
       <div className="flex flex-row h-full">
         {/* {invites.map((user, index) => (
