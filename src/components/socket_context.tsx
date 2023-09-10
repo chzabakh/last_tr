@@ -38,7 +38,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         },
       })
       .then((res) => {
-        var newSocket = io("http://localhost:9000/global", {
+        var newSocket = io("http://localhost:9000/main", {
           query: res.data,
         });
         setSocket(newSocket);

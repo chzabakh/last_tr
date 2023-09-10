@@ -2,10 +2,10 @@ import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-
 import io, { Socket } from "socket.io-client";
 import { Blockedpoeple, Chat } from "./findAFriend";
 import { HiRocketLaunch, HiUser } from "react-icons/hi2";
+import Avatar from "../avatar";
 
 interface User {
   id: number;
@@ -21,6 +21,7 @@ interface User {
   nickname: string;
   provider: string;
   state: string;
+  isChanged: boolean;
 }
 
 interface Seen {
@@ -62,7 +63,7 @@ interface Message {
   recieverID: number;
   roomID: string;
   seen: Seen[];
-  sender: Sender;
+  sender: User;
 }
 
 // interface Chat {
@@ -240,7 +241,8 @@ const Dms: React.FC<DmProps> = ({
             },
           }
         );
-        setOtherpdp(URL.createObjectURL(responseother.data));
+        const url = URL.createObjectURL(responseother.data);
+        setOtherpdp(url);
       } catch (err) {
         if (err instanceof AxiosError) {
           console.log(err.response?.data.message);
@@ -473,8 +475,8 @@ const Dms: React.FC<DmProps> = ({
                 className="object-cover mx-auto rounded-[20px]"
                 src={otherpdp}
                 alt="pdp1"
-                height={200}
-                width={200}
+                height={100}
+                width={100}
               />
             ) : (
               <Image
@@ -530,27 +532,28 @@ const Dms: React.FC<DmProps> = ({
                   <div className="w-[50%] mt-10">
                     <div className="chat-image avatar mx-auto">
                       <div className="w-50 rounded-full">
-                        {other?.provider === "email" && pdp ? (
-                          <Image
-                            src={otherpdp || "/place.png"}
-                            width={200}
-                            height={200}
-                            alt="frriend"
-                          />
-                        ) : null}
-                        {other?.provider === "intra" ? (
-                          <Image
-                            src={`${other.avatarUrl}`}
-                            width={200}
-                            height={200}
-                            alt="friend"
-                          />
-                        ) : null}
+                        {other?.provider === "email" ? (
+                          <>
+                            <Avatar currentUser={other} />
+                          </>
+                        ) : (
+                          <>
+                            <Image
+                              src={`${other.avatarUrl}`}
+                              width={200}
+                              height={200}
+                              alt="asd"
+                            />
+                          </>
+                        )}
+                        {/* {other?.provider === "intra" ? (
+                          
+                        ) : null} */}
                       </div>
                     </div>
                     {other ? (
                       <p className="text-center">
-                        {other?.nickname} STATUS: Playing
+                        {other?.nickname} Status: {other?.state}
                       </p>
                     ) : null}
                     <div className="flex flex-col">
@@ -598,15 +601,16 @@ const Dms: React.FC<DmProps> = ({
                                       src={pdp || "/place.png"}
                                       width={100}
                                       height={100}
-                                      alt="me"
+                                      alt="HELLO"
                                     />
                                   ) : null}
-                                  {chat.sender.provider === "intra" ? (
+                                  {chat.sender.provider === "intra" &&
+                                  !chat.sender.isChanged ? (
                                     <Image
                                       src={`${chat.sender.avatarUrl}`}
                                       width={100}
                                       height={100}
-                                      alt="me"
+                                      alt="HELLO"
                                     />
                                   ) : null}
                                 </div>
@@ -622,15 +626,16 @@ const Dms: React.FC<DmProps> = ({
                                       src={otherpdp || "/place.png"}
                                       width={100}
                                       height={100}
-                                      alt="me"
+                                      alt="HELLO"
                                     />
                                   ) : null}
-                                  {chat.sender.provider === "intra" ? (
+                                  {chat.sender.provider === "intra" &&
+                                  !chat.sender.isChanged ? (
                                     <Image
                                       src={`${chat.sender.avatarUrl}`}
                                       width={100}
                                       height={100}
-                                      alt="me"
+                                      alt="HELLO"
                                     />
                                   ) : null}
                                 </div>
@@ -690,27 +695,28 @@ const Dms: React.FC<DmProps> = ({
                     <div className="flex flex-col">
                       <div className="chat-image avatar mx-auto my-auto">
                         <div className="w-12 rounded-full">
-                          {other?.provider === "email" && pdp ? (
-                            <Image
-                              src={pdp || "/place.png"}
-                              width={200}
-                              height={200}
-                              alt="friend"
-                            />
-                          ) : null}
-                          {other?.provider === "intra" ? (
-                            <Image
-                              src={`${other.avatarUrl}`}
-                              width={200}
-                              height={200}
-                              alt="friend"
-                            />
-                          ) : null}
+                          {other?.provider === "email" ? (
+                            <>
+                              <Avatar currentUser={other} />
+                            </>
+                          ) : (
+                            <>
+                              <Image
+                                src={`${other.avatarUrl}`}
+                                width={200}
+                                height={200}
+                                alt="friend"
+                              />
+                            </>
+                          )}
+                          {/* {other?.provider === "intra" ? (
+                            
+                          ) : null} */}
                         </div>
                       </div>
                       {other ? (
                         <p className="text-center text-xs mt-2">
-                          {other?.nickname}: Playing
+                          {other?.nickname}: {other.state}
                         </p>
                       ) : null}
                     </div>
@@ -741,27 +747,25 @@ const Dms: React.FC<DmProps> = ({
                     <div className="flex flex-col">
                       <div className="chat-image avatar mx-auto my-auto">
                         <div className="w-12 rounded-full">
-                          {other?.provider === "email" && pdp ? (
-                            <Image
-                              src={pdp || "/place.png"}
-                              width={200}
-                              height={200}
-                              alt="friend"
-                            />
-                          ) : null}
-                          {other?.provider === "intra" ? (
-                            <Image
-                              src={`${other.avatarUrl}`}
-                              width={200}
-                              height={200}
-                              alt="friend"
-                            />
-                          ) : null}
+                          {other?.provider === "email" ? (
+                            <>
+                              <Avatar currentUser={other} />
+                            </>
+                          ) : (
+                            <>
+                              <Image
+                                src={`${other.avatarUrl}`}
+                                width={200}
+                                height={200}
+                                alt="friend"
+                              />
+                            </>
+                          )}
                         </div>
                       </div>
                       {other ? (
                         <p className="text-center text-xs mt-2">
-                          {other?.nickname}: Playing
+                          {other?.nickname}: {other?.state}
                         </p>
                       ) : null}
                     </div>
@@ -787,7 +791,7 @@ const Dms: React.FC<DmProps> = ({
                   </div>
                 </div>
               )}
-              <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+              <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#571d86] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                 <div className="mt-0 flex Hello flex-col justify-center w-full h-full pt-5">
                   <div
                     className="flex-1 overflow-y-auto mt-[100px]"
@@ -808,15 +812,16 @@ const Dms: React.FC<DmProps> = ({
                                       src={pdp || "/place.png"}
                                       width={100}
                                       height={100}
-                                      alt="me"
+                                      alt="HELLO"
                                     />
                                   ) : null}
-                                  {chat.sender.provider === "intra" ? (
+                                  {chat.sender.provider === "intra" &&
+                                  !chat.sender.isChanged ? (
                                     <Image
                                       src={`${chat.sender.avatarUrl}`}
                                       width={100}
                                       height={100}
-                                      alt="me"
+                                      alt="HELLO"
                                     />
                                   ) : null}
                                 </div>
@@ -827,22 +832,21 @@ const Dms: React.FC<DmProps> = ({
                             <div className="chat chat-start">
                               <div className="chat-image avatar">
                                 <div className="w-10 rounded-full">
-                                  {pdp && chat.sender.provider === "email" ? (
-                                    <Image
-                                      src={pdp || "/place.png"}
-                                      width={100}
-                                      height={100}
-                                      alt="me"
-                                    />
-                                  ) : null}
-                                  {chat.sender.provider === "intra" ? (
-                                    <Image
-                                      src={`${chat.sender.avatarUrl}`}
-                                      width={100}
-                                      height={100}
-                                      alt="me"
-                                    />
-                                  ) : null}
+                                  {chat.sender.provider === "email" ? (
+                                    <Avatar currentUser={chat.sender} />
+                                  ) : (
+                                    <>
+                                      <Image
+                                        src={`${chat.sender.avatarUrl}`}
+                                        width={100}
+                                        height={100}
+                                        alt="me"
+                                      />
+                                    </>
+                                  )}
+                                  {/* {chat.sender.provider === "intra" ? (
+                                    
+                                  ) : null} */}
                                 </div>
                               </div>
                               <div className="chat-bubble">{chat.content}</div>

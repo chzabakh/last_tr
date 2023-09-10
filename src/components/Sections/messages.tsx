@@ -18,6 +18,7 @@ interface User {
   nickname: string;
   provider: string;
   state: string;
+  isChanged: boolean;
 }
 
 interface Seen {

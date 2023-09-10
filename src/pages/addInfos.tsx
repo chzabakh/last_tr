@@ -17,7 +17,7 @@ const addInfos = () => {
           headers,
         });
 
-        if (response.data.provider === "intra") {
+        if (response.data.provider === "intra" && !response.data.isChanged) {
           setPreview(response.data.avatarUrl);
         } else {
           const res = await axios.get("http://localhost:9000/users/my-avatar", {

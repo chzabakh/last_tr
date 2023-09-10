@@ -1,13 +1,19 @@
 interface CardProps {
   user: string;
+  onAcceptClick: () => void;
+  onDeclineClick: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ user }) => {
+const Card: React.FC<CardProps> = ({ user, onAcceptClick, onDeclineClick }) => {
   return (
     <>
       <div className="text-sm">{user} challenged you!</div>
-        <button className="btn">Accept</button>
-        <button className="btn">Deny</button>
+      <button onClick={onAcceptClick} className="btn">
+        Accept
+      </button>
+      <button onClick={onDeclineClick} className="btn">
+        Deny
+      </button>
     </>
   );
 };

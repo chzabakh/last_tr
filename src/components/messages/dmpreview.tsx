@@ -18,6 +18,7 @@ interface User {
   nickname: string;
   provider: string;
   state: string;
+  isChanged: boolean;
 }
 
 interface Seen {
@@ -166,7 +167,7 @@ const Dmpreview: React.FC<MessageProps> = ({
                   alt="friend"
                 />
               ) : null}
-              {other?.provider === "intra" ? (
+              {other?.provider === "intra" && !other?.isChanged ? (
                 <Image
                   src={`${other?.avatarUrl}`}
                   width={100}

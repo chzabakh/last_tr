@@ -13,6 +13,7 @@ interface User {
   state: string;
   provider: string;
   friendStatus: string;
+  isChanged: boolean;
 }
 
 const Friends = () => {
@@ -32,6 +33,7 @@ const Friends = () => {
     state: "",
     provider: "",
     friendStatus: "",
+    isChanged: false,
   });
 
   const [friend, setFriend] = useState<string[]>([]);

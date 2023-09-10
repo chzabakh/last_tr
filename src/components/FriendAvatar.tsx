@@ -3,12 +3,13 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { Friend } from "./Sections/findAFriend";
 
-interface AvatarProps {
-  currentUser: User;
+interface PublicAvatarProps {
+  currentUser: Friend;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ currentUser }) => {
+const PublicAvatar: React.FC<PublicAvatarProps> = ({ currentUser }) => {
   const [imageURL, setImageURL] = useState<string>();
 
   useEffect(() => {
@@ -32,13 +33,13 @@ const Avatar: React.FC<AvatarProps> = ({ currentUser }) => {
     <>
       <Image
         src={imageURL || "/place.png"}
-        alt="asd"
-        width={100}
-        height={100}
-        className="rounded-full max-w-[50px] max-h-[50px]"
+        alt="aasdsd"
+        width={200}
+        height={200}
+        className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
       />
     </>
   );
 };
 
-export default Avatar;
+export default PublicAvatar;

@@ -7,6 +7,8 @@ import Dms from "./dms";
 // import Messages from "./messages";
 import { useSocket } from "@/components/socket_context";
 import FriendAvatar from "../avatar";
+import PublicAvatar from "../FriendAvatar";
+import Avatar from "../avatar";
 
 interface ChatProps {
   dmm: string;
@@ -21,6 +23,7 @@ export interface Friend {
   state: string;
   friendStatus: string;
   provider: string;
+  isChanged: boolean;
 }
 
 interface Sender {
@@ -32,7 +35,7 @@ interface Sender {
 
 interface Invitation {
   id: number;
-  sender: Sender;
+  sender: User;
   createdAt: string;
   updatedAt: string;
   senderID: number;
@@ -61,6 +64,7 @@ export interface User {
   nickname: string;
   provider: string;
   state: string;
+  isChanged: boolean;
 }
 
 interface Seen {
@@ -190,6 +194,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
     state: "null",
     friendStatus: "null",
     provider: "null",
+    isChanged: false,
   });
   // const { login, accessToken } = useAuth();
   const [invites, setInvites] = useState<Invitation[]>([]);
@@ -269,16 +274,22 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         }
       );
 
-      const response = await axios.get(
-        `http://localhost:9000/users/${res.data.id}/avatar`,
-        {
-          responseType: "blob",
-          headers: {
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
-        }
-      );
-      setSearchimage(URL.createObjectURL(response.data));
+      if (
+        res.data.provider === "email" ||
+        (res.data.provider === "intra" && !res.data.isChanged)
+      ) {
+        console.log("Im here");
+        const response = await axios.get(
+          `http://localhost:9000/users/${res.data.id}/avatar`,
+          {
+            responseType: "blob",
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        );
+        setSearchimage(URL.createObjectURL(response.data));
+      }
 
       console.log(res.data);
       setToblk(input);
@@ -299,6 +310,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           state: "null",
           friendStatus: "null",
           provider: "null",
+          isChanged: false,
         });
       } else {
         setFriend(res.data);
@@ -881,22 +893,16 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                   </svg>
                 </button>
-                {friend.provider === "email" && searchimage ? (
+                {friend.provider === "intra" && friend.isChanged === false ? (
                   <Image
                     className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
-                    src={searchimage || "/place.png"}
-                    alt="pdp"
+                    src={`${friend.avatarUrl}`}
+                    alt="pdpp"
                     height={200}
                     width={200}
                   />
                 ) : (
-                  <Image
-                    className="object-cover h-12 w-12 sm:h-20 sm:w-20 md:h-w-30 md:w-30 xl:h-40 xl:w-40 2xl:h-60 2xl:w-60 mx-auto rounded-[20px]"
-                    src={`${friend.avatarUrl}`}
-                    alt="pdp"
-                    height={200}
-                    width={200}
-                  />
+                  <PublicAvatar currentUser={friend} />
                 )}
                 <p className="font-serif text-center py-5 text-xl">
                   {friend.nickname}
@@ -970,27 +976,23 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                         key={invitation.senderID}
                       >
                         <div className="chat-image avatar my-auto mx-3">
-                          <div className="w-14 rounded-full">
-                            {invitation.sender.provider === "email" &&
-                            invitesimages ? (
+                          {/* <div className="w-14 rounded-full">
+                            {invitation.sender.provider === "intra" &&
+                            !invitation.sender.isChanged ? (
                               <>
                                 <Image
-                                  // key={i}
-                                  alt="1"
+                                  alt="friendReqPic"
                                   height={200}
                                   width={200}
-                                  src={invitesimages[i] || "/place.png"}
+                                  src={`${invitation.sender.avatarUrl}`}
                                 />
                               </>
                             ) : (
-                              <Image
-                                alt="friendReqPic"
-                                height={200}
-                                width={200}
-                                src={`${invitation.sender.avatarUrl}`}
-                              />
+                              <>
+                                <Avatar currentUser={invitation.sender} />
+                              </>
                             )}
-                          </div>
+                          </div> */}
                         </div>
                         <p className="mx-3 text-xl">
                           {invitation.sender.nickname}
@@ -1056,18 +1058,20 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                       >
                         <div className="chat-image avatar my-auto mx-3">
                           <div className="w-14 rounded-full">
-                            {friend.provider === "email" ? (
+                            {friend.provider === "intra" &&
+                            !friend.isChanged ? (
                               <>
-                                <FriendAvatar currentUser={friend} />
-                              </>
-                            ) : (
-                              <>
-                                <Image
+                                {friend.avatarUrl}
+                                {/* <Image
                                   alt="friendReqPic"
                                   height={200}
                                   width={200}
                                   src={friend.avatarUrl}
-                                />
+                                /> */}
+                              </>
+                            ) : (
+                              <>
+                                <FriendAvatar currentUser={friend} />
                               </>
                             )}
                           </div>
@@ -1110,19 +1114,19 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
             <>
               <div className="absolute z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-[100%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                 <div className="w-[40%]">
-                  {friend.provider === "email" && searchimage ? (
+                  {friend.provider === "intra" && !friend.isChanged ? (
                     <Image
                       className="object-cover mx-auto rounded-[20px]"
-                      src={searchimage || "/place.png"}
-                      alt="pdp"
+                      src={`${friend.avatarUrl}`}
+                      alt="pasddp"
                       height={200}
                       width={200}
                     />
                   ) : (
                     <Image
                       className="object-cover mx-auto rounded-[20px]"
-                      src={`${friend.avatarUrl}`}
-                      alt="pdp"
+                      src={searchimage || "/place.png"}
+                      alt="pasdasdasddp"
                       height={200}
                       width={200}
                     />

@@ -26,7 +26,6 @@ export const Login: React.FC = () => {
     password: "",
   });
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
       ...data,
@@ -38,8 +37,6 @@ export const Login: React.FC = () => {
     e.preventDefault();
     await postData(data);
   };
-
-
 
   const postData = async (data: { email: string; password: string }) => {
     try {
@@ -82,16 +79,28 @@ export const Login: React.FC = () => {
     if (authWindow) {
       const checkAuthComplete = setInterval(() => {
         const res = Cookies.get("token")?.replace("j:", "");
-        if (!res || res === "undefined") {
-          console.error('Token is not defined or is "undefined"');
-          return;
-        }
-        let parsed;
-        try {
-          parsed = JSON.parse(res);
-        } catch (e) {
-          console.error("Failed to parse token:", e);
-          return;
+        const pattern =
+          /"isTwoFactorEnabled":(true|false),|"isFirstLogin":(true|false),|"access_token":"(.*?)"/g;
+        let parsed = {
+          isTwoFactorEnabled: false,
+          isFirstLogin: true,
+          access_token: "",
+        };
+        let found;
+        if (res) {
+          //exec returns an array of matches or null
+          while ((found = pattern.exec(res)) !== null) {
+            if (found.index === pattern.lastIndex) {
+              pattern.lastIndex++;
+            }
+            if (found[1] !== undefined) {
+              parsed.isTwoFactorEnabled = found[1] === "true";
+            } else if (found[2] !== undefined) {
+              parsed.isFirstLogin = found[2] === "true";
+            } else if (found[3] !== undefined) {
+              parsed.access_token = found[3];
+            }
+          }
         }
         const token = parsed.access_token;
         const isFirstLogin = parsed.isFirstLogin;
@@ -101,15 +110,11 @@ export const Login: React.FC = () => {
           authWindow.close();
           clearInterval(checkAuthComplete);
           Cookies.set("token", token, { path: "/" });
-
           if (isFirstLogin) Router.push("/addInfos");
           else {
-            // if(isTwoFactorEnabled === true)
-            // {
-            //   router.push('/activate')
-            // }
-            // else
-            {
+            if (isTwoFactorEnabled === true) {
+              router.push("/activate");
+            } else {
               router.push("/chat");
             }
           }

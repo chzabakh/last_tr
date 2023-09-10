@@ -9,15 +9,17 @@ import { Friend, User } from "@/components/Sections/types";
 import PongGame from "@/components/Game/PongGame";
 import Avatar from "@/components/avatar";
 import DashboardLayout from "@/components/Layout/dashboardLayout";
-import Switch from '@mui/material/Switch';
-import { styled } from '@mui/material/styles';
+import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
+import { useSocket } from "@/components/socket_context";
+import { useRouter } from "next/navigation";
 
 const CustomSwitch = styled(Switch)(({ checked }) => ({
-  '& .MuiSwitch-thumb': {
-    backgroundColor: checked ? 'white' : 'purple', 
+  "& .MuiSwitch-thumb": {
+    backgroundColor: checked ? "white" : "purple",
   },
-  '& .MuiSwitch-track': {
-    backgroundColor: checked ? 'purple' : 'white', 
+  "& .MuiSwitch-track": {
+    backgroundColor: checked ? "purple" : "white",
   },
 }));
 
@@ -40,7 +42,7 @@ export class GameTable {
   roomName: string | undefined;
 }
 
-interface Result {
+export interface Result {
   player1Id: number;
   player2Id: number;
   winnerId: number;
@@ -48,17 +50,8 @@ interface Result {
   player2Score: number;
 }
 
-interface gameInvite {
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  player1Id: number;
-  player2Id: number;
-  player1: { nickname: string };
-}
-
 const Options = () => {
-  const [socket, setSocket] = useState<Socket>();
+  const [gameSocket, setGameSocket] = useState<Socket>();
   const [inQueue, setInQueue] = useState(false); // State to track inQueue status
   const [friends, setFriends] = useState<Friend[]>([]);
   const [gameStart, setGamestart] = useState(false);
@@ -77,6 +70,15 @@ const Options = () => {
   const [player2Score, setPlayer2Score] = useState<number>(0);
   const [checked, setChecked] = React.useState(true);
   const [toggleState, setToggleState] = React.useState("classic");
+  const { socket } = useSocket();
+  const router = useRouter();
+
+  const handleSendInvite = (friendID: number, friendNickname: string) => {
+    socket?.emit("send-invite", {
+      recipientId: friendID,
+      sender: friendNickname,
+    });
+  };
 
   const defaultStyle = {
     transition: "opacity 0.5s",
@@ -89,73 +91,75 @@ const Options = () => {
   };
 
   useEffect(() => {
-    const token = Cookies.get("token");
+    if (gameTable) {
+      const token = Cookies.get("token");
 
-    const headers = { Authorization: `Bearer ${token}` };
-    if (gameTable?.player1?.nickname === user?.nickname) {
-      axios
-        .get("http://localhost:9000/users/me", { headers })
-        .then((response) => {
-          setPlayer1(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      axios
-        .get(
-          `http://localhost:9000/users/${gameTable?.player2?.nickname}/other`,
-          { headers }
-        )
-        .then((response) => {
-          setPlayer1(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+      const headers = { Authorization: `Bearer ${token}` };
+      if (gameTable?.player1?.nickname === user?.nickname) {
+        axios
+          .get("http://localhost:9000/users/me", { headers })
+          .then((response) => {
+            setPlayer1(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios
+          .get(
+            `http://localhost:9000/users/${gameTable?.player2?.nickname}/other`,
+            { headers }
+          )
+          .then((response) => {
+            setPlayer1(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
 
-    if (gameTable?.player1?.nickname === user?.nickname) {
-      axios
-        .get(
-          `http://localhost:9000/users/${gameTable?.player2?.nickname}/other`,
-          {
-            headers,
-          }
-        )
-        .then((response) => {
-          // console.log(response.data);
-          setPlayer2(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      axios
-        .get(
-          `http://localhost:9000/users/${gameTable?.player1?.nickname}/other`,
-          {
-            headers,
-          }
-        )
-        .then((response) => {
-          // console.log(response.data);
-          setPlayer2(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (gameTable?.player1?.nickname === user?.nickname) {
+        axios
+          .get(
+            `http://localhost:9000/users/${gameTable?.player2?.nickname}/other`,
+            {
+              headers,
+            }
+          )
+          .then((response) => {
+            // console.log(response.data);
+            setPlayer2(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios
+          .get(
+            `http://localhost:9000/users/${gameTable?.player1?.nickname}/other`,
+            {
+              headers,
+            }
+          )
+          .then((response) => {
+            // console.log(response.data);
+            setPlayer2(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     }
   }, [gameTable]);
 
   useEffect(() => {
     if (countdown === null) {
       if (canvasRef.current) {
-        if (socket) {
+        if (gameSocket) {
           const userID = user?.id!;
           const pongGame = new PongGame(
             canvasRef.current,
-            socket,
+            gameSocket,
             gameTable,
             userID,
             largeScreenMediaQuery
@@ -164,11 +168,11 @@ const Options = () => {
         }
       }
     }
-  }, [countdown, socket, gameTable, user, largeScreenMediaQuery]);
+  }, [countdown, gameSocket, gameTable, user, largeScreenMediaQuery]);
 
   useEffect(() => {
     const newSocket = io("http://localhost:9000/game");
-    setSocket(newSocket);
+    setGameSocket(newSocket);
     const token = Cookies.get("token");
 
     const headers = { Authorization: `Bearer ${token}` };
@@ -187,7 +191,7 @@ const Options = () => {
   }, []);
 
   useEffect(() => {
-    if (socket) {
+    if (gameSocket) {
       const playerScored = (data: any) => {
         // console.log(data);
 
@@ -207,16 +211,16 @@ const Options = () => {
       //   : setPlayer2Score(player2Score + 1);
       //   console.log("Player2 Scored");
 
-      //   socket.off("player2Scored", player2ScoredHandler);
+      //   gameSocket.off("player2Scored", player2ScoredHandler);
       // };
 
-      socket.on("playerScored", playerScored);
+      gameSocket.on("playerScored", playerScored);
 
       return () => {
-        socket?.off("playerScored", playerScored);
+        gameSocket?.off("playerScored", playerScored);
       };
     }
-  }, [socket]);
+  }, [gameSocket]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -224,11 +228,11 @@ const Options = () => {
   };
 
   useEffect(() => {
-    if (socket) {
+    if (gameSocket) {
       const eventListener = (data: any) => {
         setInQueue(true);
         setGameEnded(false);
-        socket.off("inQueue", eventListener);
+        gameSocket.off("inQueue", eventListener);
       };
 
       const gameStarted = (gameTable: GameTable) => {
@@ -236,7 +240,7 @@ const Options = () => {
         setGameTable(gameTable);
         setGamestart(true);
 
-        socket.off("gameStarted", eventListener);
+        gameSocket.off("gameStarted", eventListener);
       };
 
       const gameEnded = (data: { winner: string; result: Result }) => {
@@ -244,15 +248,18 @@ const Options = () => {
         // console.log(winner);
         setWinner(winner);
         setGameEnded(true);
+        setInterval(() => {
+          router.push("/history");
+        }, 3000);
         // setGamestart(false);
         setInQueue(false);
       };
 
-      socket.on("gameEnded", gameEnded);
-      socket.on("gameStarted", gameStarted);
-      socket.on("inQueue", eventListener);
+      gameSocket.on("gameEnded", gameEnded);
+      gameSocket.on("gameStarted", gameStarted);
+      gameSocket.on("inQueue", eventListener);
     }
-  }, [socket]);
+  }, [gameSocket]);
 
   const handleDelete = () => {
     setFadeOut(true);
@@ -308,8 +315,8 @@ const Options = () => {
   }, [gameStart, countdown]);
 
   const playWithRandom = () => {
-    if (socket) {
-      socket.emit("joinQueue", {
+    if (gameSocket) {
+      gameSocket.emit("joinQueue", {
         id: user?.id,
         username: user?.nickname,
         playOption: `playWithRandom`,
@@ -320,168 +327,157 @@ const Options = () => {
   return (
     <>
       {/* <DashboardLayout> */}
-        <div className="my-6 h-[95%] gap-3 flex justify-center items-center flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-          <div className="flex w-full h-full justify-center items-center">
-            {gameStart ? (
-              <>
-                {countdown !== null ? (
-                  <h1 className="text-7xl">{countdown}</h1>
-                ) : (
-                  <>
-                    <div className="flex h-full w-full justify-center items-center">
-                      <div className="my-6 bg-black h-[94%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20  bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-                        <div className="border-2 h-[10%] flex justify-between border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#45167233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-                          <div className="flex justify-between w-[30%]">
-                            {player1?.provider === "intra" ? (
-                              <>
-                                <Image
-                                  src={player1?.avatarUrl || place}
-                                  width={50}
-                                  height={50}
-                                  alt=""
-                                  className="rounded-full"
-                                />
-                              </>
-                            ) : (
-                              <>
-                                <Avatar currentUser={player1!} />
-                              </>
-                            )}
-                            <div>
-                              <div>{user?.nickname}</div>
-                              <div>
-                                {gameTable?.player1?.nickname ===
-                                user?.nickname ? (
-                                  <>{player1Score}</>
-                                ) : (
-                                  <>{player2Score}</>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex justify-between w-[30%]">
-                            <div>
-                              {gameTable?.player1?.nickname ===
-                              user?.nickname ? (
-                                <>
-                                  <div>{gameTable?.player2?.nickname}</div>
-                                </>
-                              ) : (
-                                <>
-                                  <div>{gameTable?.player1?.nickname}</div>
-                                </>
-                              )}
-                              <div>
-                                {gameTable?.player1?.nickname ===
-                                user?.nickname ? (
-                                  <>{player2Score}</>
-                                ) : (
-                                  <>{player1Score}</>
-                                )}
-                              </div>
-                            </div>
-                            {gameTable?.player1?.nickname === user?.nickname ? (
-                              <>
-                                {player2?.provider === "intra" ? (
-                                  <>
-                                    <Image
-                                      src={player2?.avatarUrl || place}
-                                      width={50}
-                                      height={50}
-                                      alt=""
-                                      className="rounded-full"
-                                    />
-                                  </>
-                                ) : (
-                                  <>
-                                    <Avatar currentUser={player2!} />
-                                  </>
-                                )}
-                              </>
-                            ) : (
-                              <>
-                                {player2?.provider === "intra" ? (
-                                  <>
-                                    <Image
-                                      src={player2?.avatarUrl || place}
-                                      width={50}
-                                      height={50}
-                                      alt=""
-                                      className="rounded-full"
-                                    />
-                                  </>
-                                ) : (
-                                  <>
-                                    <Avatar currentUser={player2!} />
-                                  </>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        </div>
-                        <div className="Game border-2 flex h-[90%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#53139233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-                          {gameEnded ? (
+      <div className="my-6 h-[95%] gap-3 flex justify-center items-center flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+        <div className="flex w-full h-full justify-center items-center">
+          {gameStart ? (
+            <>
+              {countdown !== null ? (
+                <h1 className="text-7xl">{countdown}</h1>
+              ) : (
+                <>
+                  <div className="flex h-full w-full justify-center items-center">
+                    <div className="my-6 bg-black h-[94%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20  bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+                      <div className="border-2 h-[10%] flex justify-between border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#45167233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+                        <div className="flex justify-between w-[30%]">
+                          {player1?.provider === "intra" &&
+                          !player1.isChanged ? (
                             <>
-                              <div className="text-7xl w-full">Game Ended</div>
-                              <div className="text-7xl">
-                                The Winner {winner}
-                              </div>
+                              <Image
+                                src={player1?.avatarUrl || place}
+                                width={50}
+                                height={50}
+                                alt=""
+                                className="rounded-full"
+                              />
                             </>
                           ) : (
                             <>
-                              <canvas
-                                className="bg-black lg:w-full lg:h-full lg:flex lg:justify-center lg:top-[25%] lg:left-[25%] lg:rotate-0 -rotate-90"
-                                width={700}
-                                height={400}
-                                ref={canvasRef}
-                                id="gameCanvas"
-                              ></canvas>
+                              <Avatar currentUser={player1!} />
+                            </>
+                          )}
+                          <div>
+                            <div>{user?.nickname}</div>
+                            <div>
+                              {gameTable?.player1?.nickname ===
+                              user?.nickname ? (
+                                <>{player1Score}</>
+                              ) : (
+                                <>{player2Score}</>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex justify-between w-[30%]">
+                          <div>
+                            {gameTable?.player1?.nickname === user?.nickname ? (
+                              <>
+                                <div>{gameTable?.player2?.nickname}</div>
+                              </>
+                            ) : (
+                              <>
+                                <div>{gameTable?.player1?.nickname}</div>
+                              </>
+                            )}
+                            <div>
+                              {gameTable?.player1?.nickname ===
+                              user?.nickname ? (
+                                <>{player2Score}</>
+                              ) : (
+                                <>{player1Score}</>
+                              )}
+                            </div>
+                          </div>
+                          {gameTable?.player1?.nickname === user?.nickname ? (
+                            <>
+                              {player2?.provider === "intra" &&
+                              !player2.isChanged ? (
+                                <>
+                                  <Image
+                                    src={player2?.avatarUrl || place}
+                                    width={50}
+                                    height={50}
+                                    alt=""
+                                    className="rounded-full"
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <Avatar currentUser={player2!} />
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              {player2?.provider === "intra" &&
+                              !player1?.isChanged ? (
+                                <>
+                                  <Image
+                                    src={player2?.avatarUrl || place}
+                                    width={50}
+                                    height={50}
+                                    alt=""
+                                    className="rounded-full"
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <Avatar currentUser={player2!} />
+                                </>
+                              )}
                             </>
                           )}
                         </div>
-                        <div className="border-2 h-[15%] flex justify-around border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#45167233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-                          <Button className="border-2 border-white px-4 m-1 rounded-full ">
-                            Left
-                          </Button>
-                          <Button className="border-2 border-white px-4 m-1 rounded-full ">
-                            Right
-                          </Button>
-                        </div>
                       </div>
-                      {/* <div
-                    className={`flex justify-center absolute top-[25%] left-[25%] 
-              `}
-                  >
-                    <canvas
-                      className="lg:flex lg:justify-center lg:absolute lg:top-[25%] lg:left-[25%] lg:rotate-0 bg-black -rotate-90"
-                      width={700}
-                      height={400}
-                      ref={canvasRef}
-                      id="gameCanvas"
-                    ></canvas>
-                  </div> */}
-                    </div>{" "}
-                  </>
-                )}
-              </>
-            ) : (
-              <>
-                {/* <h1 className="text-7xl">Pong Game Lobby</h1> */}
-                {inQueue ? (
-                  <>
-                    <p className="text-green-500 mt-2">In Queue...</p>
-                  </>
-                ) : (
-                  <div className="flex flex-col justify-center items-center">
-                    
-                    <div className="self-center ">You play in mode : <>{toggleState}</></div>
-                    <CustomSwitch
-                      checked={checked}
-                      onChange={handleChange}
-                      inputProps={{ 'aria-label': 'controlled' }}
-                    />
-                    
-                 
+                      <div className="Game border-2 flex h-[90%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#53139233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+                        {gameEnded ? (
+                          <>
+                            <div className="text-7xl w-full">Game Ended</div>
+                            <div className="text-7xl">The Winner {winner}</div>
+                          </>
+                        ) : (
+                          <>
+                            <canvas
+                              className={`${
+                                checked ? "bg-black" : ""
+                              } lg:w-full lg:h-full lg:flex lg:justify-center lg:top-[25%] lg:left-[25%] lg:rotate-0 -rotate-90`}
+                              width={700}
+                              height={400}
+                              ref={canvasRef}
+                              id="gameCanvas"
+                            ></canvas>
+                          </>
+                        )}
+                      </div>
+                      {/* <div className="border-2 h-[15%] flex justify-around border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#45167233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+                        <Button className="border-2 border-white px-4 m-1 rounded-full ">
+                          Left
+                        </Button>
+                        <Button className="border-2 border-white px-4 m-1 rounded-full ">
+                          Right
+                        </Button>
+                      </div> */}
+                    </div>
+                  </div>
+                </>
+              )}
+            </>
+          ) : (
+            <>
+              {inQueue ? (
+                <>
+                  <p className="text-green-500 mt-2">In Queue...</p>
+                </>
+              ) : (
+                <div className="flex flex-col justify-center items-center">
+                  <div className="self-center ">
+                    You play in mode : <>{toggleState}</>
+                  </div>
+                  <CustomSwitch
+                    checked={checked}
+                    onChange={handleChange}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+
                   <div>
                     <Button
                       onClick={playWithRandom}
@@ -497,43 +493,47 @@ const Options = () => {
                     >
                       Invite
                     </Button>
-
                   </div>
-                  </div>
-                )}
+                </div>
+              )}
 
-                {invite ? (
-                  <div
-                    style={fadeOut ? fadeOutStyle : defaultStyle}
-                    className="w-[300px] h-[300px] absolute top-1/2 left-[50%] flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2   bg-[#46126d] bg-opacity-6 rounded-[30px]"
+              {invite ? (
+                <div
+                  style={fadeOut ? fadeOutStyle : defaultStyle}
+                  className="w-[300px] h-[300px] absolute top-1/2 left-[50%] flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2   bg-[#46126d] bg-opacity-6 rounded-[30px]"
+                >
+                  <button
+                    onClick={handleDelete}
+                    className=" self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg"
                   >
-                    <button
-                      onClick={handleDelete}
-                      className=" self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg"
-                    >
-                      X
-                    </button>
-                    <div className="flex flex-col gap-7 items-center">
-                      <h2>Invite friends:</h2>
-                    </div>
-                    <div className="flex flex-col gap-2 ">
-                      {friends.map((friend) => (
-                        <div key={friend.id} className="flex justify-evenly">
-                          <div className="text-[purple-500]">
-                            {friend.nickname}
-                          </div>
-                          <button className="border-4 border-[#3b0764] px-2 rounded-full">
-                            Invite
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                    X
+                  </button>
+                  <div className="flex flex-col gap-7 items-center">
+                    <h2>Invite friends:</h2>
                   </div>
-                ) : null}
-              </>
-            )}
-          </div>
+                  <div className="flex flex-col gap-2 ">
+                    {friends.map((friend) => (
+                      <div key={friend.id} className="flex justify-evenly">
+                        <div className="text-[purple-500]">
+                          {friend.nickname}
+                        </div>
+                        <button
+                          onClick={() => {
+                            handleSendInvite(friend.id, user?.nickname!);
+                          }}
+                          className="border-4 border-[#3b0764] px-2 rounded-full"
+                        >
+                          Invite
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </>
+          )}
         </div>
+      </div>
       {/* </DashboardLayout> */}
     </>
   );
