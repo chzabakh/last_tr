@@ -102,7 +102,7 @@ const TwoFac: React.FC<TwoFacProps> = ({ handle }) => {
               X
             </button>
        
-            <div className="m-3 gap-10 md:gap-1 items-center h-[60%] w-[90%] flex lg:flex-row  flex-col-reverse justify-between  p-4 ">
+            <div className="m-3 gap-10 md:gap-0 items-center h-[60%] w-[90%] flex lg:flex-row  flex-col-reverse justify-between p-4 ">
 
               <Image
                 src={qr || Place}
