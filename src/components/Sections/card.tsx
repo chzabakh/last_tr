@@ -37,8 +37,8 @@ const Card: React.FC<CardProps> = ({picture, name, github, linkedin}) => {
     <div className="front w-[300px] h-[300px] rounded-lg">
     <div className='flex flex-col justify-center w-full items-center' >
         <Image alt="" width={100} height={100} src={picture} className="relative w-full rounded-lg h-full"/>
-        <div className="absolute top-0 left-0 w-full h-full bg-[#00000080] "></div>
-        <div className='absolute bottom-4 font-inter font-bold text-xl'>
+        {/* <div className="absolute top-0 left-0 w-full h-full bg-[#00000080] "></div> */}
+        <div className='absolute bottom-0 font-inter font-bold text-xl bg-black/70 w-full text-center h-[50px] flex justify-center items-center tracking-widest'>
         {name}
         </div>
     </div>

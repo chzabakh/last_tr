@@ -1,7 +1,6 @@
 import Layout from '@/components/Layout/layout'
 import Card from '@/components/Sections/card'
 import Stars from '@/components/Sections/stars'
-
 import React, { useState } from 'react'
 
 const contributers = [
@@ -14,25 +13,25 @@ const contributers = [
   },
   {
     id: 2,
-    name: "oufisaou",
-    linkedin: "https://www.linkedin.com/in/oumaimafisaoui/",
-    github: "https://github.com/Oumaimafisaoui",
-    picture: "/oufisaou.jpeg",
+    name: "sayar",
+    linkedin: "https://www.linkedin.com/in/saad-ayar/",
+    github: "https://github.com/DayneeBoiiz",
+    picture: "/sayar.jpeg",
 
   },
   {
     id: 3,
-    name: "oufisaoum",
-    linkedin: "https://www.linkedin.com/in/oumaimafisaoui/",
-    github: "https://github.com/Oumaimafisaoui",
-    picture: "/oufisaou.jpeg",
+    name: "chzabakh",
+    linkedin: "https://www.linkedin.com/in/charaf-eddine-zabakh-a52732130/",
+    github: "https://github.com/chzabakh",
+    picture: "/chzabakh.jpeg",
   },
   {
     id: 4,
-    name: "oufisaouj",
+    name: "schahid",
     linkedin: "https://www.linkedin.com/in/oumaimafisaoui/",
     github: "https://github.com/Oumaimafisaoui",
-    picture: "/oufisaou.jpeg",
+    picture: "/schahid.jpeg",
   }
 ]
 
@@ -43,7 +42,7 @@ const About = () => {
       <Layout>
         <Stars />
         <div className='flex flex-col gap-2 w-full h-[70%]'>
-        <div className='self-center text-[19px] font-code'>This project is made by:</div>
+        <div className='self-center text-[19px] font-inter tracking-wider'>This project is made by:</div>
         <div className="flex flex-row items-center justify-evenly max-h-ful w-full h-full">
           {contributers.map((member) => (
             <Card
