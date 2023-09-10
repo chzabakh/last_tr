@@ -844,7 +844,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                 )
               )}
             </div>
-          </div>
           <div className="flex bottom-4 w-full border border-opacity-30  border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md rounded-[15px]">
             <input
               className="w-[100%] bg-transparent pl-3 py-4 focus:outline-none"
@@ -885,6 +884,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                 <path d="M21 3L14.5 21a.55 .55 0 0 1 -1 0L10 14L3 10.5a.55 .55 0 0 1 0 -1L21 3" />
               </svg>
             </button>
+          </div>
           </div>
         </div>
       {

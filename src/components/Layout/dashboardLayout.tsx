@@ -148,17 +148,8 @@ export default function DashboardLayout({ children }: LayoutProps) {
   return (
     <>
       <Stars />
-      {/* <SocketProvider> */}
+
       <div className="flex flex-row h-full">
-        {/* {invites.map((user, index) => (
-          <div
-            key={index}
-            style={{ bottom: `${index * 64}px` }}
-            className="px-5 justify-between items-center flex flex-row border-2 border-slate-700 z-50 absolute h-16 w-[400px] bottom-0 right-0 card bg-purple-700 text-primary-content"
-          >
-            <Card user={user} />
-          </div>
-        ))} */}
         {windowWidth > 768 ? (
           <>
             <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
@@ -380,7 +371,6 @@ export default function DashboardLayout({ children }: LayoutProps) {
           {children}
         </div>
       </div>
-      {/* </SocketProvider> */}
     </>
   );
 }

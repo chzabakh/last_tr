@@ -49,10 +49,7 @@ const Edit = () => {
       const res = await axios.get("http://localhost:9000/users/me", {
         headers,
       });
-      // setUserEmail(res.data.email);
       setProvider(res.data.provider);
-      // console.log(email);
-      // console.log(res.data.email)
     } catch (e) {
       if (axios.isAxiosError(e)) {
         if (e.request) console.log("No response received!", e.request);
@@ -72,6 +69,7 @@ const Edit = () => {
         alert("File is too large. Please upload a file smaller than 5 MB.");
         return;
       }
+    
       const previewUrl = URL.createObjectURL(file);
       setPreview(previewUrl);
       setIsAvatarChanged(true);
@@ -208,7 +206,7 @@ const Edit = () => {
       const auth = await axios.get("http://localhost:9000/2fa/status", {
         headers,
       });
-      console.log("STATUS  DATA", auth.data);
+      
       auth.data === true ? setStatus("enabled") : setStatus("disabled");
     } catch (e) {
       if (axios.isAxiosError(e)) {
