@@ -1,7 +1,8 @@
 import Layout from '@/components/Layout/layout'
 import Card from '@/components/Sections/card'
 import Stars from '@/components/Sections/stars'
-import React, { useState } from 'react'
+import Link from 'next/link'
+import React from 'react'
 
 const contributers = [
   {
@@ -17,7 +18,6 @@ const contributers = [
     linkedin: "https://www.linkedin.com/in/saad-ayar/",
     github: "https://github.com/DayneeBoiiz",
     picture: "/sayar.jpeg",
-
   },
   {
     id: 3,
@@ -35,29 +35,36 @@ const contributers = [
   }
 ]
 
-
 const About = () => {
   return (
     <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen max-h-screen">
       <Layout>
         <Stars />
         <div className='flex flex-col gap-2 w-full h-[70%]'>
-        <div className='self-center text-[19px] font-inter tracking-wider'>This project is made by:</div>
-        <div className="flex flex-row items-center justify-evenly max-h-ful w-full h-full">
-          {contributers.map((member) => (
-            <Card
-              key={member.id}
-              name={member.name}
-              linkedin={member.linkedin}
-              github={member.github}
-              picture={member.picture}
-            />
-          ))}
-        </div>
+          <div className='self-center text-[19px] font-inter tracking-wider'>
+            This project is made by:
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-evenly w-full h-full">
+            {contributers.map((member) => (
+              <div className="mb-4 sm:mb-0 hidden sm:block" key={member.id}>
+                <Card
+                  name={member.name}
+                  linkedin={member.linkedin}
+                  github={member.github}
+                  picture={member.picture}
+                />
+              </div>
+            ))}
+            {contributers.map((member) => (
+              <div className="mb-4 sm:hidden" key={member.id}>
+                <Link href={member.github} className="hover:text-purple-500">{member.name}</Link>
+              </div>
+            ))}
+          </div>
         </div>
       </Layout>
     </div>
   );
 };
 
-export default About
+export default About;
