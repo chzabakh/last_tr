@@ -46,8 +46,8 @@ const Card: React.FC<CardProps> = ({picture, name, github, linkedin}) => {
     <div className="back w-[300px] h-[300px] rounded-lg">
     <div className="flex flex-col justify-center items-center gap-3 w-[300px]  h-[300px] rounded-lg bg-[#0000008b]">
       <div className='flex flex-col justify-center gap-4 items-center font-inter' >
-        <Link href={github} className='text-sm transition ease-in-out delay-15 hover:-translate-y-1 hover:scale-110  text-center rounded-full border-2 border-white m-2 w-[150px] px-6 py-4 hover:border-[#8b11ba]'>My Github</Link>
-        <Link href={linkedin} className='text-sm transition ease-in-out delay-15 hover:-translate-y-1 hover:scale-110   text-center rounded-full border-2 border-white m-2 w-[150px] px-6 py-4 hover:border-[#8b11ba]'>My LinkedIn</Link>
+        <Link href={github} target="blank" className='text-sm transition ease-in-out delay-15 hover:-translate-y-1 hover:scale-110  text-center rounded-full border-2 border-white m-2 w-[150px] px-6 py-4 hover:border-[#8b11ba]'>My Github</Link>
+        <Link href={linkedin} target="blank" className='text-sm transition ease-in-out delay-15 hover:-translate-y-1 hover:scale-110   text-center rounded-full border-2 border-white m-2 w-[150px] px-6 py-4 hover:border-[#8b11ba]'>My LinkedIn</Link>
       </div>
     </div>
     </div>
