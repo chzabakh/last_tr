@@ -18,7 +18,7 @@ export default function Homepage() {
   return (
     <Layout>
       <div className="flex flex-row items-center max-h-full">
-        <div className="flex justify-evenly flex-col md:w-[40%] h-[500px] sm:w-[100%]">
+        <div className={`flex justify-evenly flex-col md:w-[40%] h-[500px] sm:w-[100%] ${styles.content}`}>
           <TypeAnimation
             sequence={[
               "Welcome to the online Pong Game!",
@@ -34,7 +34,9 @@ export default function Homepage() {
           <p className={styles.desc}>
             Join us now and dive into the fun of Pong Game! 
           </p>
+          <div className={styles.play}>
           <SmallButton url="login" text="Play now" />
+          </div>
         </div>
         <div className={`w-[50%] flex justify-items-end justify-end  ${styles['item2']}`}>
           <Image alt="" src={bg} className="h-[650px] w-[700px] hidden md:block" />
