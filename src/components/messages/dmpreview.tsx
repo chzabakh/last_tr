@@ -182,15 +182,15 @@ const Dmpreview: React.FC<MessageProps> = ({
           </div>
           {!chat.messages[chat.messages.length - 1]?.content ? (
             <div className="flex flex-col flex-grow">
-              <p className="text-xs italic text-left">{other?.nickname}</p>
-              <p className="italic text-xs xs:lg lg:text-xl text-left">
+              <p className="italic text-xs xs:lg lg:text-xl text-left">{other?.nickname}</p>
+              <p className="text-xs italic text-left">
                 You are new friends, Start chatting now!
               </p>
             </div>
           ) : (
             <div className="flex flex-col flex-grow">
-              <p className="text-xs italic text-left">{other?.nickname}</p>
-              <p className="text-xs xs:text-lg lg:text-xl text-left">
+              <p className="italic text-xs xs:lg lg:text-xl text-left">{other?.nickname}</p>
+              <p className="text-xs italic text-left">
                 {/* {chat.messages[chat.messages.length - 1]?.content} */}
                 {lastmsg}
               </p>
