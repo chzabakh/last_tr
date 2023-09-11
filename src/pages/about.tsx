@@ -29,8 +29,8 @@ const contributers = [
   {
     id: 4,
     name: "schahid",
-    linkedin: "https://www.linkedin.com/in/oumaimafisaoui/",
-    github: "https://github.com/Oumaimafisaoui",
+    linkedin: "https://www.linkedin.com/in/soufiane-chahid-b15931204",
+    github: "https://github.com/chahid001",
     picture: "/schahid.jpeg",
   }
 ]

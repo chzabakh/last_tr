@@ -221,7 +221,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                   width={200}
                   priority={true}
                 />
-                <p className="font-inter tracking-widest  text-center py-5 text-xl">
+                <p className="font-inter text-purple-400 tracking-widest  text-center py-5 text-xl">
                   {username}
                 </p>
               </div>

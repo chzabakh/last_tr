@@ -478,7 +478,7 @@ const Options = () => {
               ) : (
                 <div className="flex flex-col justify-center items-center">
                   <div className="self-center ">
-                    You play in mode : <>{toggleState}</>
+                    You play in mode : <span className="text-purple-600">{toggleState}</span>
                   </div>
                   <CustomSwitch
                     checked={checked}
