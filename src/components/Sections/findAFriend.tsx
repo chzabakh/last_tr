@@ -854,7 +854,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
         </div>
       ) : (
         <>
-          <div className="min-w[400px] flex flex-col gap-10 border-2  border-opacity-30 flex-auto h-full w-[70%] border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+          <div className="sm:min-w[400px] z-full flex flex-col gap-10 border-2  border-opacity-30 flex-auto h-full w-full border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
             <div className="flex border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md spx-5 rounded-[30px]">
               <input
                 className="w-full bg-transparent pl-3 focus:outline-none"
