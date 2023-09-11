@@ -14,8 +14,6 @@ import { styled } from "@mui/material/styles";
 import { useSocket } from "@/components/socket_context";
 import { useRouter } from "next/navigation";
 import Stars from "@/components/Sections/stars";
-import Loading from "@/components/Sections/loading";
-import LoadingGame from "@/components/Sections/loadingGame";
 
 const CustomSwitch = styled(Switch)(({ checked }) => ({
   "& .MuiSwitch-thumb": {

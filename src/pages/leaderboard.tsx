@@ -108,19 +108,19 @@ const Leaderboard = () => {
               ) : (
                 <>{me ? <Avatar currentUser={me} /> : null}</>
               )}
-              <p className="text-sm sm:text-lg md:text-3xl">{me?.nickname}</p>
+              <p className="text-sm sm:text-lg md:text-3xl text-purple-700">{me?.nickname}</p>
             </div>
             <div className="flex flex-row my-auto w-[65%] justify-end sm:justify-center">
               <p className="text-sm sm:text-lg md:text-3xl">Your Rank:</p>
-              <p className="text-sm sm:text-lg md:text-3xl">#{rank}</p>
+              <p className="text-sm sm:text-lg text-purple-700 md:text-3xl">#{rank}</p>
             </div>
           </div>
         </div>
         <div className="w-full h-full overflow-y-hidden border-2 flex-auto border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(165,89,228,0.2)] bg-blur-md backdrop-filter backdrop-blur-md py-4 rounded-[30px]">
           <div className="flex justify-around w-full h-[4em] py-4">
-            <p>User</p>
-            <p className="">Score</p>
-            <p>Rank</p>
+            <p className="text-purple-700">User</p>
+            <p className="text-purple-700">Score</p>
+            <p className="text-purple-700">Rank</p>
           </div>
           <div
             style={{ height: "calc(100% - 4em)" }}
