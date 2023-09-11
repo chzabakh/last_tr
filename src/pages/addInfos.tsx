@@ -2,7 +2,6 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 import Router, { useRouter } from "next/router";
-import Dashboard from "./bakindex";
 import Place from "../../public/place.png";
 import Cookies from "js-cookie";
 

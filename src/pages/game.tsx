@@ -8,7 +8,6 @@ import place from "../../public/place.png";
 import { Friend, User } from "@/components/Sections/types";
 import PongGame from "@/components/Game/PongGame";
 import Avatar from "@/components/avatar";
-import DashboardLayout from "@/components/Layout/dashboardLayout";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import { useSocket } from "@/components/socket_context";
@@ -329,11 +328,11 @@ const Options = () => {
 
   return (
     <>
-    <Stars/>
+      <Stars />
       {/* <DashboardLayout> */}
       <div className="my-6 h-[95%] gap-3 flex justify-center items-center flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
         <div className="flex w-full h-full justify-center items-center">
-        <Stars/>
+          <Stars />
           {gameStart ? (
             <>
               {countdown !== null ? (
@@ -361,8 +360,10 @@ const Options = () => {
                             </>
                           )}
                           <div className="flex flex-col justify-center items-center">
-                            <div className="font-inter tracking-wider text-purple-500">{user?.nickname}</div>
-                            <div >
+                            <div className="font-inter tracking-wider text-purple-500">
+                              {user?.nickname}
+                            </div>
+                            <div>
                               {gameTable?.player1?.nickname ===
                               user?.nickname ? (
                                 <div className="text-xl">{player1Score}</div>
@@ -376,19 +377,27 @@ const Options = () => {
                           <div className=" tracking-wider ">
                             {gameTable?.player1?.nickname === user?.nickname ? (
                               <>
-                                <div className="font-inter text-purple-500">{gameTable?.player2?.nickname}</div>
+                                <div className="font-inter text-purple-500">
+                                  {gameTable?.player2?.nickname}
+                                </div>
                               </>
                             ) : (
                               <>
-                                <div className="font-inter text-purple-500">{gameTable?.player1?.nickname}</div>
+                                <div className="font-inter text-purple-500">
+                                  {gameTable?.player1?.nickname}
+                                </div>
                               </>
                             )}
                             <div className="flex flex-col justify-center items-center">
                               {gameTable?.player1?.nickname ===
                               user?.nickname ? (
-                                <div className="text-md font-bold">{player2Score}</div>
+                                <div className="text-md font-bold">
+                                  {player2Score}
+                                </div>
                               ) : (
-                                <div className="text-md font-bold">{player1Score}</div>
+                                <div className="text-md font-bold">
+                                  {player1Score}
+                                </div>
                               )}
                             </div>
                           </div>
@@ -436,10 +445,17 @@ const Options = () => {
                       <div className="Game border-2 flex flex-col h-[90%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#53139233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                         {gameEnded ? (
                           <div className="flex flex-col w-full h-full gap-9 justify-center">
-                            <Stars/>
-                            <div className="text-6xl w-full bg-black text-center">Game Ended</div>
+                            <Stars />
+                            <div className="text-6xl w-full bg-black text-center">
+                              Game Ended
+                            </div>
                             <div className="flex flex-row">
-                              <div className=" w-full text-2xl  text-center " >The Winner is: <span className="text-purple-700">{winner}</span> </div>
+                              <div className=" w-full text-2xl  text-center ">
+                                The Winner is:{" "}
+                                <span className="text-purple-700">
+                                  {winner}
+                                </span>{" "}
+                              </div>
                             </div>
                           </div>
                         ) : (
@@ -473,12 +489,15 @@ const Options = () => {
             <>
               {inQueue ? (
                 <>
-                  <p className="text-purple-400 tracking-widest text-xl mt-2">In Queue...</p>
+                  <p className="text-purple-400 tracking-widest text-xl mt-2">
+                    In Queue...
+                  </p>
                 </>
               ) : (
                 <div className="flex flex-col justify-center items-center">
                   <div className="self-center ">
-                    You play in mode : <span className="text-purple-600">{toggleState}</span>
+                    You play in mode :{" "}
+                    <span className="text-purple-600">{toggleState}</span>
                   </div>
                   <CustomSwitch
                     checked={checked}
@@ -505,7 +524,7 @@ const Options = () => {
                 </div>
               )}
 
-             {invite ? (
+              {invite ? (
                 <div
                   style={fadeOut ? fadeOutStyle : defaultStyle}
                   className="w-[300px] h-[300px] absolute top-1/2 left-[50%] flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2   bg-[#46126d] bg-opacity-6 rounded-[30px]"
