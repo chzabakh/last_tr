@@ -2,7 +2,12 @@ import React from 'react'
 import error from '../../public/404.jpeg'
 import Image from 'next/image'
 import Stars from '@/components/Sections/stars'
-const Error = () => {
+import { useSocket } from '@/components/socket_context'
+
+const Custum404 = () => {
+
+  // const {socket} = useSocket();
+
   return (
 <div className='relative w-screen h-screen'>
       <div
@@ -29,4 +34,4 @@ const Error = () => {
     </div>
   )
 }
-export default Error
+export default Custum404

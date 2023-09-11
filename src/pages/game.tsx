@@ -8,6 +8,7 @@ import place from "../../public/place.png";
 import { Friend, User } from "@/components/Sections/types";
 import PongGame from "@/components/Game/PongGame";
 import Avatar from "@/components/avatar";
+
 import DashboardLayout from "@/components/Layout/dashboardLayout";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
@@ -341,9 +342,9 @@ const Options = () => {
               ) : (
                 <>
                   <div className="flex h-full w-full justify-center items-center">
-                    <div className="my-6 bg-black h-[94%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20  bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+                    <div className="my-6  h-[94%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20  bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                       <div className="border-2 h-[14%] flex justify-between border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#45167233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-                        <div className="flex justify-between w-[30%]">
+                        <div className="flex justify-between items-center w-[30%]">
                           {player1?.provider === "intra" &&
                           !player1.isChanged ? (
                             <>
@@ -352,7 +353,7 @@ const Options = () => {
                                 width={100}
                                 height={100}
                                 alt=""
-                                className="rounded-full w-[50px] h-[50px]"
+                                className="rounded-full md:w-[50px] md:h-[50px] hidden sm:block"
                               />
                             </>
                           ) : (
@@ -372,7 +373,7 @@ const Options = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="flex justify-between w-[30%]">
+                        <div className="flex justify-between  items-center w-[30%]">
                           <div className=" tracking-wider ">
                             {gameTable?.player1?.nickname === user?.nickname ? (
                               <>
@@ -402,7 +403,7 @@ const Options = () => {
                                     width={100}
                                     height={100}
                                     alt=""
-                                    className="rounded-full  w-[50px] h-[50px]"
+                                    className="rounded-full  md:w-[50px] md:h-[50px] hidden sm:block"
                                   />
                                 </>
                               ) : (
@@ -421,7 +422,7 @@ const Options = () => {
                                     width={100}
                                     height={100}
                                     alt=""
-                                    className="rounded-full"
+                                    className="rounded-full md:w-[50px] md:h-[50px] hidden sm:block"
                                   />
                                 </>
                               ) : (
@@ -437,7 +438,7 @@ const Options = () => {
                         {gameEnded ? (
                           <div className="flex flex-col w-full h-full gap-9 justify-center">
                             <Stars/>
-                            <div className="text-6xl w-full bg-black text-center">Game Ended</div>
+                            <div className="text-6xl w-full  text-center">Game Ended</div>
                             <div className="flex flex-row">
                               <div className=" w-full text-2xl  text-center " >The Winner is: <span className="text-purple-700">{winner}</span> </div>
                             </div>

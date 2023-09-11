@@ -31,7 +31,7 @@ const Avatar: React.FC<AvatarProps> = ({ currentUser, custom }) => {
   }, []);
 
   return (
-    <>
+    <div className="md:w-[50px] md:h-[50px] hidden sm:block">
       <Image
         src={imageURL || "/place.png"}
         alt="asd"
@@ -41,7 +41,7 @@ const Avatar: React.FC<AvatarProps> = ({ currentUser, custom }) => {
           custom ? `max-w-[${custom}] max-h-[${custom}]` : "max-w-[50px]"
         }  max-h-[50px]`}
       />
-    </>
+    </div>
   );
 };
 
