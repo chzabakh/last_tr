@@ -47,8 +47,19 @@
 }
 
 @media (max-width: 768px) {
-  .links
+  .links, .about
   {
     visibility: hidden;
   }
+
+  .container
+  {
+    justify-content: center;
+    align-items: center; 
+    flex-direction: column; 
+  }
+  .logo {
+    margin-top: 90px;
+  }
+
 }

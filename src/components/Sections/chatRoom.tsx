@@ -10,7 +10,7 @@ import BrowseChannel from "@/components/Sections/browseChannel";
 import Loading from "./loading";
 
 import Image from "next/image";
-import pong from "../../public/pong.png";
+import pong from "../../../public/pong.png";
 import Avatar from "@/components/avatar";
 import { io, Socket } from "socket.io-client";
 import crone from "../../../public/crone.png";
@@ -55,7 +55,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [details, setDetails] = useState<ChatRoom | null>(null);
   const [roomId, setRoomId] = useState("");
-  const [windowPass, setWindowPass] = useState(false);
+  const [windowPass, setWindowPass] = useState(false)
   const [fadeOut, setFadeOut] = useState(false);
   const [dialog, setDialog] = useState(false);
   const [Otherdialog, setOtherDialog] = useState(false);
@@ -94,6 +94,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     }, 500);
   };
 
+
+
   const messageRef = useRef<HTMLDivElement>(null);
   const keyRef = useRef<HTMLDivElement>(null);
 
@@ -120,7 +122,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     console.log(rooms);
   };
 
-  async function handleBane(id: number) {
+  async function handleBane(id : number) {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
@@ -135,8 +137,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         requestBody,
         { headers }
       );
-      if (res.status === 201) {
-        alert("it is banned");
+      if(res.status === 201)
+      {
+        alert("it is banned")
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
@@ -149,7 +152,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     }
   }
 
-  async function handleMute(id: number) {
+  async function handleMute(id :number) {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
@@ -176,7 +179,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     }
   }
 
-  async function handleKick(id: number) {
+  async function handleKick(id : number) {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
@@ -191,8 +194,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         requestBody,
         { headers }
       );
-      if (res.status === 201) {
-        alert("kicked");
+      if (res.status === 201)
+      {
+        alert("kicked")
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
@@ -209,7 +213,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     alert("Invite");
   }
 
-  async function handleRemoveAdmin(id: number) {
+  async function handleRemoveAdmin(id : number) {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
@@ -238,7 +242,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     }
   }
 
-  async function handleAdmin(id: number) {
+  async function handleAdmin(id : number) {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
@@ -268,6 +272,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
   }
 
   async function handlePassword() {
+
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
@@ -294,6 +299,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         console.log("Error: ", e);
       }
     }
+    
   }
 
   const handleOptions = (option: string, id: number) => {
@@ -301,7 +307,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
       case "Ban":
         handleBane(id);
         setAnchorEl(null);
-        break;
+        break;  
       case "Mute":
         handleMute(id);
         setAnchorEl(null);
@@ -422,7 +428,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         message: message,
         RoomId: room.uid,
       };
-      console.log(message + " " + room.uid);
+      // console.log(message + " " + room.uid);
       const res = await axios.post(
         "http://localhost:9000/chat/send-message",
         requestBody,
@@ -521,7 +527,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     return details?.admins.some((admin) => nickname === admin.nickname);
   }
 
-  function isUserAdmin(user: User) {
+  function isUserAdmin(user : User) {
     return details?.admins.some((admin) => admin.nickname === user.nickname);
   }
 
@@ -565,11 +571,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
               <div className="flex gap-4 flex-col h-full ">
                 <div className="flex flex-col gap-1 w-full h-full items-center overflow-scroll">
                   {users.map((user, index) => (
-                    <div className="w-full flex p-3  bg-[#3c005a] rounded-lg">
+                    <div className="w-full  md:flex-row flex-col-reverse flex p-3  bg-[#3c005a] rounded-lg">
                       <div className="flex-1 w-[50%]">
-                        {user.provider === "intra" &&
-                        user.isChanged === false ? (
-                          <>
+                        
+                        {user.provider === "intra" ? (
+                          <div className="hidden sm:block">
                             <Image
                               key={index}
                               src={user.avatarUrl || "/place.png"}
@@ -578,22 +584,24 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                               width={80}
                               className="rounded-full max-w-[50px] max-h-[50px] relative "
                             />
-                          </>
+                          </div>
                         ) : (
-                          <div className="border-1 w-[50px] h-[50px] z-3">
+                          <div className="border-1 md:w-[50px] h-[50px] z-3 hidden sm:block">
                             <Avatar currentUser={user} />
                           </div>
                         )}
+                      
 
                         <div className="relative">
+                         
                           {user.state === "online" && (
-                            <div className="bg-green-500 w-2 h-2 rounded-full absolute left-10 bottom-1"></div>
+                            <div className="bg-green-500 w-2 h-2 rounded-full absolute md:left-10 md:bottom-1 sm:left-0 sm:bottom-auto"></div>
                           )}
                           {user.state === "offline" && (
-                            <div className="bg-gray-500 w-2 h-2 rounded-full absolute left-10 bottom-1"></div>
+                            <div className="bg-gray-500 w-2 h-2 rounded-full absolute md:left-10 md:bottom-1 sm:left-0 sm:bottom-auto"></div>
                           )}
                           {user.email === details?.owner.email && (
-                            <div className="absolute left-4 bottom-10">
+                            <div className="absolute left-4 bottom-10 hidden sm:block ">
                               <Image
                                 src={crone}
                                 width={20}
@@ -602,26 +610,25 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                               />
                             </div>
                           )}
-                          {/* {
-
-                          //TODO : CHANGE TO PLAYING MODE
-                          user.state === "inGame" &&
+                          {
+                          user.state === "playing" &&
                           (
-                              <div className="relative left-1 top-4"><Image src={pong} width={20} height={20} alt="crone" /></div>
+                            <div className="absolute left-4 bottom-10"><Image src={pong} width={20} height={20} alt="crone" /></div>
                           )
-
-                        } */}
+                        }
                         </div>
                       </div>
                       <div className="flex-1 w-[50%] pt-3 ">
-                        {isUserAdmin(user) ? (
-                          <div className="text-yellow-400">{user.nickname}</div>
-                        ) : (
-                          <div className="text-purple-400">{user.nickname}</div>
-                        )}
+                      {
+                            isUserAdmin(user)? 
+                            (
+                              <div className="text-yellow-400">{user.nickname}</div>
+                            ):
+                            <div className="text-purple-400">{user.nickname}</div>
+                        }
                       </div>
 
-                      <div className="flex justify-end  w-[50%] self-end">
+                      <div className="flex md:flex-row flex-col  justify-end  w-[50%] self-end">
                         {!isAdmin() ? null : isAdmin() ? (
                           nickname === user.nickname ? null : (
                             <>
@@ -634,7 +641,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                                 aria-haspopup="true"
                                 onClick={handleClick}
                                 className="bg-white"
-                              >
+                                >
                                 <MoreHorizIcon />
                               </IconButton>
                               <Menu
@@ -654,34 +661,35 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                                     // useTransition: '2sec'
                                   },
                                 }}
-                              >
-                                {!isUserAdmin(user) ? (
-                                  <div>
+                             >
+                                {
+                                  !isUserAdmin(user)?
+                                  (
+                                    <div>
                                     {optionsMember.map((option) => (
                                       <MenuItem
                                         key={option}
-                                        onClick={() =>
-                                          handleOptions(option, user.id)
-                                        }
+                                        onClick={() => handleOptions(option, user.id)}
                                       >
                                         {option}
                                       </MenuItem>
                                     ))}
-                                  </div>
-                                ) : (
-                                  <div>
+                                    </div>
+                                  )
+                                  :
+                                  (
+                                    <div>
                                     {optionsMemberAdmin.map((option) => (
                                       <MenuItem
                                         key={option}
-                                        onClick={() =>
-                                          handleOptions(option, user.id)
-                                        }
+                                        onClick={() => handleOptions(option, user.id)}
                                       >
                                         {option}
                                       </MenuItem>
                                     ))}
-                                  </div>
-                                )}
+                                    </div>
+                                  )
+                                }
                               </Menu>
                             </>
                           )
@@ -699,51 +707,62 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
           <div className="flex flex-col  p-0 m-0 justify-start w-full h-full pt-">
             <div className="flex flex-row justify-between">
               <div className="self-center w-[60%] font-bold text-xl  flex felx-row justify-end">
-                {details?.name}
+                {details?.name} 
               </div>
-              {details?.isGroup === true ? (
-                isAdmin() ? (
-                  <>
-                    <IconButton
-                      style={{ color: "white" }}
-                      aria-label="more-again"
-                      id="long-button-channel"
-                      aria-controls={openIt ? "long-menu-channel" : undefined}
-                      aria-expanded={openIt ? "true" : undefined}
-                      aria-haspopup="true"
-                      onClick={handleClickChannel}
-                    >
-                      <MoreHorizIcon />
-                    </IconButton>
-                    <Menu
-                      id="long-menu-channel"
-                      MenuListProps={{
-                        "aria-labelledby": "long-button-channel",
-                      }}
-                      anchorEl={anchorElement}
-                      open={openIt}
-                      onClose={handleCloseChannel}
-                      PaperProps={{
-                        style: {
-                          maxHeight: ITEM_HEIGHT * 4.5,
-                          width: "20ch",
-                          backgroundColor: "#3c005a",
-                          color: "white",
-                        },
-                      }}
-                    >
-                      {optionsChannel.map((optionTwo, index) => (
-                        <MenuItem
-                          key={index}
-                          onClick={() => handleOptionsChannel(optionTwo)}
-                        >
-                          {optionTwo}
-                        </MenuItem>
-                      ))}
-                    </Menu>
-                  </>
-                ) : null
-              ) : null}
+              {
+                details?.isGroup === true ? 
+                (
+                  isAdmin() ?
+                  (
+                <>
+
+              <IconButton
+                style={{ color: "white" }}
+                aria-label="more-again"
+                id="long-button-channel"
+                aria-controls={openIt ? "long-menu-channel" : undefined}
+                aria-expanded={openIt ? "true" : undefined}
+                aria-haspopup="true"
+                onClick={handleClickChannel}
+              >
+                <MoreHorizIcon />
+              </IconButton>
+              <Menu
+                id="long-menu-channel"
+                MenuListProps={{
+                  "aria-labelledby": "long-button-channel",
+                }}
+                anchorEl={anchorElement}
+                open={openIt}
+                onClose={handleCloseChannel}
+                PaperProps={{
+                  style: {
+                    maxHeight: ITEM_HEIGHT * 4.5,
+                    width: "20ch",
+                    backgroundColor: "#3c005a",
+                    color: "white",
+                  },
+                }}
+              >
+                {optionsChannel.map((optionTwo, index) => (
+                  <MenuItem
+                    key={index}
+                    onClick={() => handleOptionsChannel(optionTwo)}
+                  >
+                    {optionTwo}
+                  </MenuItem>
+                ))}
+              </Menu>
+                </>
+
+                  ):
+                  null
+
+                ):
+                (
+                  null
+                )
+              }
             </div>
 
             <div className="mb-16 overflow-auto" />
@@ -762,8 +781,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                       </div>
 
                       <div>
-                        {msg.sender.provider === "intra" &&
-                        msg.sender.isChanged === false ? (
+                        {msg.sender.provider === "intra" ? (
                           <>
                             <Image
                               src={msg.sender.avatarUrl || "/place.png"}
@@ -790,8 +808,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                   <>
                     <div className="flex self-start gap-2">
                       <div>
-                        {msg.sender.provider === "intra" &&
-                        msg.sender.isChanged === false ? (
+                        {msg.sender.provider === "intra" ? (
                           <>
                             <Image
                               src={msg.sender.avatarUrl || "/place.png"}
@@ -868,7 +885,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
             </button>
           </div>
         </div>
-        {windowPass && (
+      {
+        windowPass && (
           <div
             style={fadeOut ? fadeOutStyle : defaultStyle}
             className="w-[300px] h-[300px]] absolute top-1/2 left-1/2 flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2  border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]"
@@ -894,9 +912,12 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
               Enter
             </button>
           </div>
-        )}
+        )
+      } 
 
-        {dialog ? (
+      {
+        dialog ?
+        (
           <>
             <div
               style={fadeOut ? fadeOutStyle : defaultStyle}
@@ -909,12 +930,15 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                 X
               </button>
               <div className="flex flex-col items-center m-4">
-                A new Admin is Added!
+                  A new Admin is Added!
               </div>
             </div>
           </>
-        ) : null}
-        {Otherdialog ? (
+        ): null
+      }
+        {
+        Otherdialog ?
+        (
           <>
             <div
               style={fadeOut ? fadeOutStyle : defaultStyle}
@@ -927,12 +951,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                 X
               </button>
               <div className="flex flex-col items-center m-4">
-                The admin is removed!
+                  The admin is removed!
               </div>
             </div>
           </>
-        ) : null}
+        ): null
+      }
       </div>
+
     </>
   );
 };

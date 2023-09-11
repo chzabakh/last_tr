@@ -15,7 +15,7 @@ const Channels = () => {
   const [chat, setChat] = useState(false);
   const [channel, setChannel] = useState<Channel>();
   const [socket, setSocket] = useState<Socket | null>(null);
-
+  
   useEffect(() => {
     const socket = io("http://localhost:9000/chat");
     setSocket(socket);
@@ -29,7 +29,8 @@ const Channels = () => {
       socket?.disconnect();
     };
   }, []);
-
+  
+  
   function handleCreate() {
     setActiveComponent("create");
   }
@@ -104,53 +105,56 @@ const Channels = () => {
         </>
       ) : (
         <>
-          <div className="flex font-code font-light flex-col p-20 gap-1 border-2  justify-between h-full  w-[77%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#49126e33] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
-            <div className="text-xl font-medium">My joined channels:</div>
-            <div className="h-[60%]  overflow-scroll ">
+          <div className="flex font-code font-light flex-col p-9 gap-1 border-2  justify-between h-full  w-full sm:min-w[400px] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#49126e33] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
+            <div className="md:text-xl text-sm text-center md:text-start font-medium">My joined channels:</div>
+            <div className="h-[60%] w-full  overflow-scroll ">
               <div className="grid grid-cols6 gap-4">
-                {myRooms.map((ChannelName: Channel) => (
+              {
+                myRooms.map((ChannelName: Channel) => (
                   <>
-                    <div
-                      key={ChannelName.id}
-                      className="bg-gradient-to-r from-black to-purple-500 my-3 p-4 rounded-md text-white shadow-md"
-                    >
-                      <h3 className="text-xl font-semibold ">
-                        {ChannelName.name}
-                      </h3>
-                      <>
-                        <div className="flex justify-end  gap-3">
-                          <button
-                            className=" text-white border-4 border-black  rounded-full 
+               
+                  <div
+                    key={ChannelName.id}
+                    className="bg-gradient-to-r from-black to-purple-500 my-3 p-4 rounded-md text-white shadow-md"
+                  >
+                    <h3 className="text-xl font-semibold ">
+                      {ChannelName.name}
+                    </h3>
+                    <>
+                      <div className="flex md:flex-row flex-col  justify-end gap-3">
+                        <button
+                          className=" text-white border-4 border-black  rounded-full 
                                   py-2 px-4 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300"
-                            onClick={() => handleLeaveRoom(ChannelName)}
-                          >
-                            Leave
-                          </button>
-                          <button
-                            className=" text-white border-4 border-black  rounded-full 
+                          onClick={() => handleLeaveRoom(ChannelName)}
+                        >
+                          Leave
+                        </button>
+                        <button
+                          className=" text-white border-4 border-black  rounded-full 
                                         py-2 px-4 mt-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300"
-                            onClick={() => handleChat(ChannelName)}
-                          >
-                            Enter
-                          </button>
-                        </div>
-                      </>
-                    </div>
+                          onClick={() => 
+                          handleChat(ChannelName)}
+                        >
+                          Enter
+                        </button>
+                      </div>
+                    </>
+                  </div>
                   </>
                 ))}
               </div>
             </div>
-            <div className="flex justify-between w-full ">
+            <div className="flex flex-col gap-4 md:flex-row justify-center w-full ">
               <button
-                className="border-opacity-40  min-w-[100px] border-violet-400 hover:border-[#b564eb]
+                className="border-opacity-40  min-w-[190px] border-violet-400 hover:border-[#b564eb]
   border-[3px] p-2 rounded-full w-[150px] self-center text-xs"
                 onClick={handleCreate}
               >
                 Create a channel
               </button>
               <button
-                className="border-opacity-40  min-w-[100px] border-violet-400 hover:border-[#b564eb]
-  border-[3px] p-2 rounded-full text-xs"
+                className="border-opacity-40  min-w-[190px] border-violet-400 hover:border-[#b564eb]
+                border-[3px] p-2 rounded-full w-[150px] self-center text-xs"
                 onClick={handleBrowse}
               >
                 Browse a channel

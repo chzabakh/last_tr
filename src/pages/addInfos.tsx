@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 
 const addInfos = () => {
   useEffect(() => {
+    
     async function getAvatar() {
       try {
         const Token = Cookies.get("token");
@@ -17,7 +18,7 @@ const addInfos = () => {
           headers,
         });
 
-        if (response.data.provider === "intra" && !response.data.isChanged) {
+        if (response.data.provider === "intra") {
           setPreview(response.data.avatarUrl);
         } else {
           const res = await axios.get("http://localhost:9000/users/my-avatar", {

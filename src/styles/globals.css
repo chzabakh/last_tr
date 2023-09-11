@@ -35,7 +35,7 @@ body {
     z-index: 1;
     max-width: 100%;
     overflow-x: hidden;
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
     max-height: 100vh;
     /* overflow-y: auto; */
     color: white;
@@ -49,6 +49,7 @@ body {
       rgba(0, 0, 0, 1) 100%
     );
     background-repeat: no-repeat;
+    padding: 0;
   
 }
 

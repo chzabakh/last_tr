@@ -11,6 +11,8 @@ import Layout from "@/components/Layout/layout";
 import Router, { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import activate from "./activate";
+import { match } from "assert";
+import Stars from "@/components/Sections/stars";
 
 export const Login: React.FC = () => {
   const router = useRouter();
@@ -26,6 +28,7 @@ export const Login: React.FC = () => {
     password: "",
   });
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
       ...data,
@@ -37,6 +40,8 @@ export const Login: React.FC = () => {
     e.preventDefault();
     await postData(data);
   };
+
+
 
   const postData = async (data: { email: string; password: string }) => {
     try {
@@ -79,29 +84,36 @@ export const Login: React.FC = () => {
     if (authWindow) {
       const checkAuthComplete = setInterval(() => {
         const res = Cookies.get("token")?.replace("j:", "");
-        const pattern =
-          /"isTwoFactorEnabled":(true|false),|"isFirstLogin":(true|false),|"access_token":"(.*?)"/g;
+        const pattern = /"isTwoFactorEnabled":(true|false),|"isFirstLogin":(true|false),|"access_token":"(.*?)"/g;
         let parsed = {
           isTwoFactorEnabled: false,
           isFirstLogin: true,
-          access_token: "",
+          access_token: ""
         };
         let found;
-        if (res) {
+        if(res)
+        {
           //exec returns an array of matches or null
-          while ((found = pattern.exec(res)) !== null) {
-            if (found.index === pattern.lastIndex) {
-              pattern.lastIndex++;
-            }
-            if (found[1] !== undefined) {
-              parsed.isTwoFactorEnabled = found[1] === "true";
-            } else if (found[2] !== undefined) {
-              parsed.isFirstLogin = found[2] === "true";
-            } else if (found[3] !== undefined) {
-              parsed.access_token = found[3];
-            }
+            while((found = pattern.exec(res)) !== null)
+            {
+                if(found.index === pattern.lastIndex)
+                {
+                  pattern.lastIndex++;
+                }
+                if(found[1] !== undefined)
+                {
+                  parsed.isTwoFactorEnabled = found[1] ==='true';
+                }
+                else if(found[2] !== undefined)
+                {
+                  parsed.isFirstLogin = found[2] === 'true';
+                }
+                else if(found[3] !== undefined)
+                {
+                  parsed.access_token = found[3];
+                }
+            }            
           }
-        }
         const token = parsed.access_token;
         const isFirstLogin = parsed.isFirstLogin;
         const isTwoFactorEnabled = parsed.isTwoFactorEnabled;
@@ -112,9 +124,12 @@ export const Login: React.FC = () => {
           Cookies.set("token", token, { path: "/" });
           if (isFirstLogin) Router.push("/addInfos");
           else {
-            if (isTwoFactorEnabled === true) {
-              router.push("/activate");
-            } else {
+            if(isTwoFactorEnabled === true)
+            {
+              router.push('/activate')
+            }
+            else
+            {
               router.push("/chat");
             }
           }
@@ -127,13 +142,10 @@ export const Login: React.FC = () => {
 
   return (
     <>
-      <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
-        <div id="stars"></div>
-        <div id="stars1"></div>
-      </div>
-      <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen max-h-screen">
+      <Stars/>
+      <div className="flex flex-col  justify-between max-w-full md:mx-[6rem] h-full lg:h-screen max-h-full">
         <Layout>
-          <div className="w-full flex flex-col items-center justify-center x-auto max-h-full h-full">
+          <div className="w-full flex overflow-y-hidden flex-col items-center justify-center x-auto max-h-full h-full">
             <a className={styles.button} onClick={openNewWindow}>
               <Image className={styles.logo} alt="" src={fourty} />
               <p className="sm:text-lg">Login with Intra</p>
@@ -169,7 +181,7 @@ export const Login: React.FC = () => {
                   Login
                 </button>
               </div>
-              <Link href="register">You do not have an account ? Sign Up.</Link>
+              <Link href="register" className="text-sm">You do not have an account ? Sign Up.</Link>
             </form>
           </div>
         </Layout>

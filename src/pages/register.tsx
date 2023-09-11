@@ -9,6 +9,7 @@ import gog from "../../public/google.png";
 import Layout from "@/components/Layout/layout";
 import { Route } from "react-router-dom";
 import { useRouter } from "next/router";
+import Stars from "@/components/Sections/stars";
 
 export const Register = () => {
   const router = useRouter();
@@ -52,13 +53,10 @@ export const Register = () => {
 
   return (
     <>
-      <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
-     <div id="stars"></div>
-      <div id="stars1"></div>
-      </div>
-    <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen max-h-screen">
+    <Stars />
+    <div className="flex flex-col overflow-y-hidden justify-between max-w-full md:mx-[6rem]  h-full lg:h-screen max-h-full">
       <Layout>
-        <div className="flex w-[100%] flex-col items-center gap-4 mx-auto justify-center relative mb-5">
+        <div className="flex overflow-y-hidden w-[100%] flex-col items-center gap-4 justify-center relative mb-2">
           <div className={styles.auth}>
           </div>
           <form className={styles.formy} onSubmit={handleSubmit}>
@@ -99,11 +97,12 @@ export const Register = () => {
               {status === "1" ? <p>{message}</p> : null}
               {status === "-1" ? <p>{message}</p> : null}
 
-              <button type="submit" className={styles.logIn}>
+              <button type="submit" className={styles.register}>
                 Register
               </button>
+              
+            <Link href="login" className="text-xs">Already have an account ? Log In.</Link>
             </div>
-            <Link href="login">Already have an account ? Log In.</Link>
           </form>
         </div>
       </Layout>

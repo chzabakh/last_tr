@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import Homepage from "./homepage";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Stars from "@/components/Sections/stars";
 
 export default function Home() {
   const router = useRouter();
@@ -19,13 +20,10 @@ export default function Home() {
 
   return (
     <>
-      <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
-        <div id="stars"></div>
-        <div id="stars1"></div>
-      </div>
-      <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen  max-h-screen">
-        <Homepage />
-      </div>
-    </>
+    <Stars />
+ <div className="flex flex-col justify-between max-w-screen md:mx-[6rem] h-screen  max-h-screen">
+   <Homepage />
+ </div>
+ </>
   );
 }

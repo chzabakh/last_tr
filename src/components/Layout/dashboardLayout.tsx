@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { SocketProvider, useSocket } from "../socket_context";
+import { useEffect, useState } from "react";
+import { SocketProvider } from "../socket_context";
 import Router, { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
@@ -10,8 +10,7 @@ import Card from "@/tools/card";
 import Loading from "@/components/Sections/loading";
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import Avatar from "../avatar";
-import { User } from "../Sections/types";
+import Stars from "../Sections/stars";
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -24,7 +23,6 @@ type Me = {
   provider: string;
   state: string;
   updatedAt: string;
-  isChanged: boolean;
 };
 
 interface LayoutProps {
@@ -39,38 +37,28 @@ export default function DashboardLayout({ children }: LayoutProps) {
   const [token, setToken] = useState("");
   const [provider, setProvider] = useState("");
   const [menu, setMenu] = useState("off");
-  const [me, setMe] = useState<User>();
+  const [me, setMe] = useState<Me>({
+    TwofaAutEnabled: false,
+    avatarUrl: "none",
+    createdAt: "none",
+    email: "none",
+    friendStatus: "none",
+    id: -1,
+    nickname: "none",
+    provider: "none",
+    state: "none",
+    updatedAt: "none",
+  });
   const [delayedLoading, setDelayedLoading] = useState(true);
   const [isLoading, setLoading] = useState(true);
   const [isIn, setIn] = useState(false);
-  const [invites, setInvites] = useState<string[]>([]);
+  const [invites, setInvites] = useState<string[]>([
+    "player1",
+    "player2",
+    "player3",
+  ]);
   const router = useRouter();
   const pathname = usePathname();
-  const { socket } = useSocket();
-
-  useEffect(() => {
-    const inviteHandler = (data: any) => {
-      const { sender } = data;
-      setInvites((current) => [...current, sender]);
-
-      setTimeout(() => {
-        setInvites([]);
-      }, 10000);
-    };
-
-    socket?.on("IncomingInvite", inviteHandler);
-  }, [socket]);
-
-  const redirectHandler = useCallback(
-    (roomName: string) => {
-      router.push(`/private-game/${roomName}`);
-    },
-    [router]
-  );
-
-  useEffect(() => {
-    socket?.on("game:redirect", redirectHandler);
-  }, [socket]);
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -110,11 +98,9 @@ export default function DashboardLayout({ children }: LayoutProps) {
         const res = await axios.get("http://localhost:9000/users/me", {
           headers,
         });
-
         setUser(res.data.nickname);
-        setMe(res.data);
 
-        if (!res.data.isChanged && res.data.provider === "intra") {
+        if (res.data.provider === "intra") {
           setPreview(res.data.avatarUrl);
         } else {
           const avatarRes = await axios.get(
@@ -154,64 +140,16 @@ export default function DashboardLayout({ children }: LayoutProps) {
     return <Loading />;
   }
 
-  const onAcceptClick = async (toAccpetUser: string) => {
-    try {
-      const token = Cookies.get("token");
-      const headers = { Authorization: `Bearer ${token}` };
-      console.log(toAccpetUser);
-      const response = await axios.get(
-        `http://localhost:9000/users/${toAccpetUser}/other`,
-        {
-          headers,
-        }
-      );
 
-      const userID = response.data.id;
-
-      setInvites((current) => {
-        return [...current.filter((user) => user !== toAccpetUser)];
-      });
-
-      socket?.emit("accept-invite", {
-        player2: userID,
-        player1: me?.id,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const onDeclineClick = (decline: string) => {
-    setInvites((current) => {
-      return [...current.filter((user) => user !== decline)];
-    });
+  const addInvite = (user: string) => {
+    setInvites((prevInvites) => [...prevInvites, user]);
   };
 
   return (
     <>
-      <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
-        <div id="stars"></div>
-        <div id="stars1"></div>
-      </div>
-      {/* <SocketProvider> */}
+      <Stars />
+
       <div className="flex flex-row h-full">
-        {invites.map((user, index) => (
-          <div
-            key={index}
-            style={{ bottom: `${index * 64}px` }}
-            className="px-5 justify-between items-center flex flex-row border-2 border-slate-700 z-50 absolute h-16 w-[400px] bottom-0 right-0 card bg-purple-700 text-primary-content"
-          >
-            <Card
-              onDeclineClick={() => {
-                onDeclineClick(user);
-              }}
-              onAcceptClick={() => {
-                onAcceptClick(user);
-              }}
-              user={user}
-            />
-          </div>
-        ))}
         {windowWidth > 768 ? (
           <>
             <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
@@ -219,12 +157,12 @@ export default function DashboardLayout({ children }: LayoutProps) {
                 <Image
                   className="object-cover flex-auto mx-auto rounded-[30px]"
                   src={Preview || Place}
-                  alt={"Jello"}
+                  alt={me.avatarUrl}
                   height={200}
                   width={200}
                   priority={true}
                 />
-                <p className="font-serif text-center py-5 text-xl">
+                <p className="font-inter tracking-widest  text-center py-5 text-xl">
                   {username}
                 </p>
               </div>
@@ -303,7 +241,6 @@ export default function DashboardLayout({ children }: LayoutProps) {
                 </button>
                 <button
                   onClick={() => {
-                    socket?.disconnect();
                     Cookies.remove("token", { path: "/" });
                     router.push("/login");
                   }}
@@ -312,6 +249,9 @@ export default function DashboardLayout({ children }: LayoutProps) {
               `}
                 >
                   Logout
+                </button>
+                <button onClick={() => addInvite("New Player")}>
+                  Add New Card
                 </button>
               </div>
             </div>
@@ -325,7 +265,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
               <HiBars4 />
             </button>
             <div
-              className={`absolute z-50 bg-purple-800 h-screen w-screen ${
+              className={`absolute z-50 bg-gradient-to-r from-black to-purple-900 h-screen w-screen ${
                 menu === "off" ? "-translate-x-full" : ""
               } transition-transform duration-700`}
             >
@@ -341,12 +281,12 @@ export default function DashboardLayout({ children }: LayoutProps) {
                   <Image
                     className="object-cover flex-auto mx-auto rounded-[30px]"
                     src={Preview || Place}
-                    alt={"asd"}
+                    alt={me.avatarUrl}
                     height={200}
                     width={200}
                     priority={true}
                   />
-                  <p className="font-serif text-center py-5 text-xl">
+                  <p className="font-inter tracking-widest text-center py-5 text-xl">
                     {username}
                   </p>
                 </div>
@@ -413,7 +353,6 @@ export default function DashboardLayout({ children }: LayoutProps) {
                   </button>
                   <button
                     onClick={() => {
-                      socket?.disconnect();
                       Cookies.remove("token", { path: "/" });
                       router.push("/login");
                     }}
@@ -432,7 +371,6 @@ export default function DashboardLayout({ children }: LayoutProps) {
           {children}
         </div>
       </div>
-      {/* </SocketProvider> */}
     </>
   );
 }

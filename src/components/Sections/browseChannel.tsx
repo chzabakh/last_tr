@@ -32,7 +32,6 @@ const BrowseChannel = () => {
   // const [joinedRooms, setJoinedRooms] = useState<JoinedRoom[]>([]);
   const [email, setUserEmail] = useState("");
   const [hide, setHide] = useState<boolean>(false);
-  const [hideAgain, setHideAgain] = useState<boolean>(false);
   const [enterPass, setEnterPass] = useState(false);
   const [roomPass, setRoomPass] = useState("");
   const [entered, setEntered] = useState<boolean>(false);
@@ -132,7 +131,8 @@ const BrowseChannel = () => {
       );
 
       if (res.status === 201) {
-        setHideAgain(true);
+        // setHideAgain(true);
+        setEnterPass(false);
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
@@ -305,7 +305,7 @@ const BrowseChannel = () => {
                       </div>
                       <button
                         className="rounded-lg border-4 border-[#3b0764] w-[40%] self-center"
-                        onClick={joinPrivate}
+                        onClick={() => {joinPrivate(); setPrivate(false)}}
                       >
                         Enter
                       </button>
