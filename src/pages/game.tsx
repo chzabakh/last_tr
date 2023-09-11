@@ -438,7 +438,7 @@ const Options = () => {
                         {gameEnded ? (
                           <div className="flex flex-col w-full h-full gap-9 justify-center">
                             <Stars/>
-                            <div className="text-6xl w-full  text-center">Game Ended</div>
+                            <div className="text-6xl w-full bg-black text-center">Game Ended</div>
                             <div className="flex flex-row">
                               <div className=" w-full text-2xl  text-center " >The Winner is: <span className="text-purple-700">{winner}</span> </div>
                             </div>
