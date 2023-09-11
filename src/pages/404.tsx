@@ -4,12 +4,28 @@ import Image from 'next/image'
 import Stars from '@/components/Sections/stars'
 const Error = () => {
   return (
-    <div className='relative'>
-      <div className='bg-black/80 absolute inset-0 z-1'></div>
-      <div className="absolute left-0 z-[-1] w-[50%] h-screen max-h-screen max-w-screen overflow-hidden">
-      <div id="stars"></div>
+<div className='relative w-screen h-screen'>
+      <div
+        className='absolute inset-0 bg-black/70 z-1'
+        style={{ zIndex: 1 }}
+      ></div>
+
+      <div
+        className='absolute inset-0 w-full h-full z-0'
+        style={{
+          backgroundImage: `url(${error.src})`, 
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          zIndex: 0,
+        }}
+      ></div>
+
+      <div className="absolute text-white inset-0 z-2"  style={{ zIndex: 2 }}>
+       <Stars/>
       </div>
-      <Image src={error} alt="boobker" className='w-screen h-screen z-0' />
+      <div className="absolute text-white inset-0 z-2 left-[47%] top-[50%]"  style={{ zIndex: 3 }}>
+       404 |  Page not found...
+      </div>
     </div>
   )
 }
