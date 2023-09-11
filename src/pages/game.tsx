@@ -13,6 +13,9 @@ import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import { useSocket } from "@/components/socket_context";
 import { useRouter } from "next/navigation";
+import Stars from "@/components/Sections/stars";
+import Loading from "@/components/Sections/loading";
+import LoadingGame from "@/components/Sections/loadingGame";
 
 const CustomSwitch = styled(Switch)(({ checked }) => ({
   "& .MuiSwitch-thumb": {
@@ -328,9 +331,11 @@ const Options = () => {
 
   return (
     <>
+    <Stars/>
       {/* <DashboardLayout> */}
       <div className="my-6 h-[95%] gap-3 flex justify-center items-center flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
         <div className="flex w-full h-full justify-center items-center">
+        <Stars/>
           {gameStart ? (
             <>
               {countdown !== null ? (
@@ -339,7 +344,7 @@ const Options = () => {
                 <>
                   <div className="flex h-full w-full justify-center items-center">
                     <div className="my-6 bg-black h-[94%] gap-3 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20  bg-blur-lg backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-                      <div className="border-2 h-[10%] flex justify-between border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#45167233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+                      <div className="border-2 h-[14%] flex justify-between border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#45167233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                         <div className="flex justify-between w-[30%]">
                           {player1?.provider === "intra" &&
                           !player1.isChanged ? (
@@ -349,7 +354,7 @@ const Options = () => {
                                 width={100}
                                 height={100}
                                 alt=""
-                                className="rounded-full"
+                                className="rounded-full w-[50px] h-[50px]"
                               />
                             </>
                           ) : (
@@ -357,35 +362,35 @@ const Options = () => {
                               <Avatar currentUser={player1!} />
                             </>
                           )}
-                          <div>
-                            <div>{user?.nickname}</div>
-                            <div>
+                          <div className="flex flex-col justify-center items-center">
+                            <div className="font-inter tracking-wider text-purple-500">{user?.nickname}</div>
+                            <div >
                               {gameTable?.player1?.nickname ===
                               user?.nickname ? (
-                                <>{player1Score}</>
+                                <div className="text-xl">{player1Score}</div>
                               ) : (
-                                <>{player2Score}</>
+                                <div className="text-xl">{player2Score}</div>
                               )}
                             </div>
                           </div>
                         </div>
                         <div className="flex justify-between w-[30%]">
-                          <div>
+                          <div className=" tracking-wider ">
                             {gameTable?.player1?.nickname === user?.nickname ? (
                               <>
-                                <div>{gameTable?.player2?.nickname}</div>
+                                <div className="font-inter text-purple-500">{gameTable?.player2?.nickname}</div>
                               </>
                             ) : (
                               <>
-                                <div>{gameTable?.player1?.nickname}</div>
+                                <div className="font-inter text-purple-500">{gameTable?.player1?.nickname}</div>
                               </>
                             )}
-                            <div>
+                            <div className="flex flex-col justify-center items-center">
                               {gameTable?.player1?.nickname ===
                               user?.nickname ? (
-                                <>{player2Score}</>
+                                <div className="text-md font-bold">{player2Score}</div>
                               ) : (
-                                <>{player1Score}</>
+                                <div className="text-md font-bold">{player1Score}</div>
                               )}
                             </div>
                           </div>
@@ -399,7 +404,7 @@ const Options = () => {
                                     width={100}
                                     height={100}
                                     alt=""
-                                    className="rounded-full"
+                                    className="rounded-full  w-[50px] h-[50px]"
                                   />
                                 </>
                               ) : (
@@ -430,12 +435,15 @@ const Options = () => {
                           )}
                         </div>
                       </div>
-                      <div className="Game border-2 flex h-[90%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#53139233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+                      <div className="Game border-2 flex flex-col h-[90%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#53139233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                         {gameEnded ? (
-                          <>
-                            <div className="text-7xl w-full">Game Ended</div>
-                            <div className="text-7xl">The Winner {winner}</div>
-                          </>
+                          <div className="flex flex-col w-full h-full gap-9 justify-center">
+                            <Stars/>
+                            <div className="text-6xl w-full bg-black text-center">Game Ended</div>
+                            <div className="flex flex-row">
+                              <div className=" w-full text-2xl  text-center " >The Winner is: <span className="text-purple-700">{winner}</span> </div>
+                            </div>
+                          </div>
                         ) : (
                           <>
                             <canvas
@@ -467,7 +475,7 @@ const Options = () => {
             <>
               {inQueue ? (
                 <>
-                  <p className="text-green-500 mt-2">In Queue...</p>
+                  <p className="text-purple-400 tracking-widest text-xl mt-2">In Queue...</p>
                 </>
               ) : (
                 <div className="flex flex-col justify-center items-center">
@@ -499,7 +507,7 @@ const Options = () => {
                 </div>
               )}
 
-              {invite ? (
+             {invite ? (
                 <div
                   style={fadeOut ? fadeOutStyle : defaultStyle}
                   className="w-[300px] h-[300px] absolute top-1/2 left-[50%] flex flex-col gap-5 transform -translate-x-1/2 -translate-y-1/2   bg-[#46126d] bg-opacity-6 rounded-[30px]"
@@ -511,7 +519,7 @@ const Options = () => {
                     X
                   </button>
                   <div className="flex flex-col gap-7 items-center">
-                    <h2>Invite friends:</h2>
+                    <h2> Invite friends:</h2>
                   </div>
                   <div className="flex flex-col gap-2 ">
                     {friends.map((friend) => (

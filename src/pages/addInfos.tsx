@@ -51,7 +51,7 @@ const addInfos = () => {
       setIsAvatarChanged(true);
       setAvatar(file); // Save the file in the state for later submission
     } else {
-      alert("Upload the file you MF!");
+      seterror("No file Upladed");
     }
   }
 
@@ -116,7 +116,6 @@ const addInfos = () => {
       const confirmation = window.confirm(
         "You have not changed the username or password. Are you sure you want to continue without making changes?"
       );
-      // If the user clicks "Cancel" in the confirmation dialog, exit the function
       if (!confirmation) {
         return;
       }

@@ -28,7 +28,7 @@ const BrowseChannel = () => {
   const [fadeOut, setFadeOut] = useState(false);
   const [roomId, setRoomId] = useState("");
   const [chat, setChat] = useState(false);
-  const [channel, setChannel] = useState<Channel>();
+  const [channel, setChannel] = useState<Channel | undefined>();
   // const [joinedRooms, setJoinedRooms] = useState<JoinedRoom[]>([]);
   const [email, setUserEmail] = useState("");
   const [hide, setHide] = useState<boolean>(false);
@@ -37,7 +37,7 @@ const BrowseChannel = () => {
   const [entered, setEntered] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [myRooms, setMyRooms] = useState<Channel[]>([]);
-
+  const [error, setError] = useState("");
   //this is not a good way but yeah we should do this in sockets
 
   useEffect(() => {
@@ -61,6 +61,7 @@ const BrowseChannel = () => {
     setTimeout(() => {
       setPrivate(false);
       setEnterPass(false);
+      setError("");
       setFadeOut(false);
     }, 500);
   };
@@ -115,6 +116,7 @@ const BrowseChannel = () => {
 
   async function joinProtectRoom(channel: Channel) {
     try {
+      console.log("This is the channe:" , channel)
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
 
@@ -124,21 +126,22 @@ const BrowseChannel = () => {
         password: roomPass,
       };
 
+      console.log(roomPass)
+      console.log(requestBody)
       const res = await axios.post(
         "http://localhost:9000/chat/join-room",
         requestBody,
         { headers }
       );
+      console.log(res)
 
       if (res.status === 201) {
-        // setHideAgain(true);
         setEnterPass(false);
+        
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) console.log("No response received!", e.request);
-        else if (e.response) console.log("Error status: ", e.response?.status);
-        alert(e.response?.data);
+        setError("Invalid room password, try again!");
       } else {
         alert(e);
       }
@@ -161,15 +164,16 @@ const BrowseChannel = () => {
         { headers }
       );
       if (res.status === 201) {
+        setPrivate(false)
         setChat(true);
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
         if (e.request) console.log("No response received!", e.request);
-        else if (e.response) console.log("Error status: ", e.response?.status);
-        console.log("Error data: ", e.response?.data);
+        else if (e.response?.data) console.log("Error status: ", e.response?.status);
+        setError("Invalid room ID , try again!");
       } else {
-        console.log("Error: ", e);
+        // setError(error);
       }
     }
   }
@@ -179,9 +183,9 @@ const BrowseChannel = () => {
   }
 
   async function handleProtectRoom(Channel: Channel | undefined) {
-    if (Channel) {
+    if(Channel)
       await joinProtectRoom(Channel);
-    }
+
   }
 
   async function getPublicChannels() {
@@ -225,11 +229,11 @@ const BrowseChannel = () => {
     }
   }
 
-  function handleChat(Channel: Channel) {
-    console.log("Hhia channel", Channel);
-    setChannel(Channel);
-    setChat(true);
-  }
+  // function handleChat(Channel: Channel) {
+  //   console.log("Hhia channel", Channel);
+  //   setChannel(Channel);
+  //   setChat(true);
+  // }
 
   async function getProtectedChannels() {
     try {
@@ -279,7 +283,7 @@ const BrowseChannel = () => {
                   </button>
                   <button
                     className="hover:border-[#b564eb] hover:transition  w-[200px] border-[3px] border-opacity-40 border-violet-400 rounded-full"
-                    onClick={() => setPrivate(true)}
+                    onClick={() => setPrivate(true) }
                   >
                     Join Private
                   </button>
@@ -291,7 +295,7 @@ const BrowseChannel = () => {
                     >
                       <button
                         onClick={handleDelete}
-                        className=" self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg"
+                        className="self-start bg-purple-500 m-3 text-white py-1 w-[40px] h-[40px] px-4 rounded-lg"
                       >
                         X
                       </button>
@@ -303,9 +307,10 @@ const BrowseChannel = () => {
                           onChange={(e) => setRoomId(e.target.value)}
                         ></input>
                       </div>
+                      {error && (<div className="text-red-500 text-xs self-center">{error}</div>)}
                       <button
                         className="rounded-lg border-4 border-[#3b0764] w-[40%] self-center"
-                        onClick={() => {joinPrivate(); setPrivate(false)}}
+                        onClick={() => {joinPrivate(); }}
                       >
                         Enter
                       </button>
@@ -331,11 +336,12 @@ const BrowseChannel = () => {
                           onChange={(e) => setRoomPass(e.target.value)}
                         ></input>
                       </div>
+                      {error && (<div className="text-red-500 text-xs self-center">{error}</div>)}
                       <button
                         className="rounded-lg border-4 border-[#3b0764] w-[40%] self-center"
                         onClick={() => {
                           handleProtectRoom(channel);
-                          setEnterPass(false);
+                         
                         }}
                       >
                         Enter
