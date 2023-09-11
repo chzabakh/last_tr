@@ -346,8 +346,8 @@ const Options = () => {
                             <>
                               <Image
                                 src={player1?.avatarUrl || place}
-                                width={50}
-                                height={50}
+                                width={100}
+                                height={100}
                                 alt=""
                                 className="rounded-full"
                               />
@@ -396,8 +396,8 @@ const Options = () => {
                                 <>
                                   <Image
                                     src={player2?.avatarUrl || place}
-                                    width={50}
-                                    height={50}
+                                    width={100}
+                                    height={100}
                                     alt=""
                                     className="rounded-full"
                                   />
@@ -415,8 +415,8 @@ const Options = () => {
                                 <>
                                   <Image
                                     src={player2?.avatarUrl || place}
-                                    width={50}
-                                    height={50}
+                                    width={100}
+                                    height={100}
                                     alt=""
                                     className="rounded-full"
                                   />
@@ -536,7 +536,6 @@ const Options = () => {
           )}
         </div>
       </div>
-      {/* </DashboardLayout> */}
     </>
   );
 };

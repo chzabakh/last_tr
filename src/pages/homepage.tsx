@@ -32,7 +32,7 @@ export default function Homepage() {
           </div>
         </div>
         <div className={`w-[50%] flex justify-items-end justify-end  ${styles['item2']}`}>
-          <Image alt="" src={bg} className="h-[650px] w-[700px] hidden md:block" />
+          <Image alt="" src={bg} className="h-[650px] w-[700px] hidden md:block " />
         </div>
       </div>
     </Layout>

@@ -472,7 +472,6 @@ const Dms: React.FC<DmProps> = ({
         <div className="absolute z-2 flex border-2  border-opacity-30 w-[100%] h-[100%] border-violet-400  bg-[#571d86]  backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <div className="w-[40%]">
             {other.provider === "intra" &&
-            otherpdp &&
             other.isChanged === false ? (
               <>
                 <Image
@@ -492,7 +491,8 @@ const Dms: React.FC<DmProps> = ({
                   height={100}
                   width={100}
                 /> */}
-                <Avatar currentUser={other} />
+              <PublicAvatar currentUser={other}/>
+                {/* <Avatar currentUser={other} /> */}
               </>
             )}
             <p className="font-serif text-center py-5 text-xs">

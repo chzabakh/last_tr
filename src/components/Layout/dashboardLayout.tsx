@@ -12,6 +12,7 @@ import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Avatar from "../avatar";
 import { User } from "../Sections/types";
+import Stars from "../Sections/stars";
 
 type Me = {
   TwofaAutEnabled: boolean;
@@ -186,16 +187,12 @@ export default function DashboardLayout({ children }: LayoutProps) {
       return [...current.filter((user) => user !== decline)];
     });
   };
-
   return (
     <>
-      <div className="absolute z-[-1] w-full h-screen max-h-screen max-w-screen overflow-hidden">
-        <div id="stars"></div>
-        <div id="stars1"></div>
-      </div>
-      {/* <SocketProvider> */}
+      <Stars />
+
       <div className="flex flex-row h-full">
-        {invites.map((user, index) => (
+      {invites.map((user, index) => (
           <div
             key={index}
             style={{ bottom: `${index * 64}px` }}
@@ -216,7 +213,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
           <>
             <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
               <div>
-                <Image
+              <Image
                   className="object-cover flex-auto mx-auto rounded-[30px]"
                   src={Preview || Place}
                   alt={"Jello"}
@@ -224,7 +221,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                   width={200}
                   priority={true}
                 />
-                <p className="font-serif text-center py-5 text-xl">
+                <p className="font-inter tracking-widest  text-center py-5 text-xl">
                   {username}
                 </p>
               </div>
@@ -303,7 +300,6 @@ export default function DashboardLayout({ children }: LayoutProps) {
                 </button>
                 <button
                   onClick={() => {
-                    socket?.disconnect();
                     Cookies.remove("token", { path: "/" });
                     router.push("/login");
                   }}
@@ -325,7 +321,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
               <HiBars4 />
             </button>
             <div
-              className={`absolute z-50 bg-purple-800 h-screen w-screen ${
+              className={`absolute z-50 bg-gradient-to-r from-black to-purple-900 h-screen w-screen ${
                 menu === "off" ? "-translate-x-full" : ""
               } transition-transform duration-700`}
             >
@@ -338,7 +334,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
 
               <>
                 <div className="mt-20">
-                  <Image
+                <Image
                     className="object-cover flex-auto mx-auto rounded-[30px]"
                     src={Preview || Place}
                     alt={"asd"}
@@ -346,7 +342,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                     width={200}
                     priority={true}
                   />
-                  <p className="font-serif text-center py-5 text-xl">
+                  <p className="font-inter tracking-widest text-center py-5 text-xl">
                     {username}
                   </p>
                 </div>
@@ -413,7 +409,6 @@ export default function DashboardLayout({ children }: LayoutProps) {
                   </button>
                   <button
                     onClick={() => {
-                      socket?.disconnect();
                       Cookies.remove("token", { path: "/" });
                       router.push("/login");
                     }}
@@ -432,7 +427,6 @@ export default function DashboardLayout({ children }: LayoutProps) {
           {children}
         </div>
       </div>
-      {/* </SocketProvider> */}
     </>
   );
 }

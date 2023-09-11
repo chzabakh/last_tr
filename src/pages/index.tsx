@@ -7,16 +7,16 @@ import Stars from "@/components/Sections/stars";
 export default function Home() {
   const router = useRouter();
 
-  useEffect(() => {
-    Cookies.set("check", "passed", { path: "/" });
-    if (Cookies.get("check") !== "passed") {
-      alert("please enable cookies!");
-      router.push("/login");
-      if (Cookies.get("token")) {
-        Cookies.set("token", "", { path: "/" });
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   Cookies.set("check", "passed", { path: "/" });
+  //   if (Cookies.get("check") !== "passed") {
+  //     alert("please enable cookies!");
+  //     router.push("/login");
+  //     if (Cookies.get("token")) {
+  //       Cookies.set("token", "", { path: "/" });
+  //     }
+  //   }
+  // }, []);
 
   return (
     <>
