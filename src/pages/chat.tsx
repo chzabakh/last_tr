@@ -22,7 +22,7 @@ const Chat = () => {
         <div className="sm:h-1/2 h-[10%] sm:flex-col overflow-auto sm:py-20 flex flex-row sm:space-y-10 border-2  border-opacity-30 w-full sm:w-[15%] flex-auto border-violet-400 bg-opacity-5 bg-gradient-to-l from-[rgba(255,255,255,0.20)] bg-transparent bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <button
             onClick={() => setItem("6")}
-            className={`hidden sm:block p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
+            className={`hidden lg:block p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
               item === "6" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
             }`}
           >
@@ -30,7 +30,7 @@ const Chat = () => {
           </button>
           <button
             onClick={() => setItem("6")}
-            className={`mx-auto sm:hidden p-0 hover:text-[#D6B3F1] text-left text-2xl xl:text-xl transition-all duration-300 ease-in ${
+            className={`mx-auto lg:hidden p-0 hover:text-[#D6B3F1] text-left text-2xl xl:text-xl transition-all duration-300 ease-in ${
               item === "6" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
             }`}
           >
@@ -38,7 +38,7 @@ const Chat = () => {
           </button>
           <button
             onClick={() => setItem("7")}
-            className={`hidden sm:block p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
+            className={`hidden lg:block p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
               item === "7" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
             }`}
           >
@@ -46,7 +46,7 @@ const Chat = () => {
           </button>
           <button
             onClick={() => setItem("7")}
-            className={`mx-auto sm:hidden p-0 hover:text-[#D6B3F1] text-left text-2xl xl:text-xl transition-all duration-300 ease-in ${
+            className={`mx-auto lg:hidden p-0 hover:text-[#D6B3F1] text-left text-2xl xl:text-xl transition-all duration-300 ease-in ${
               item === "7" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
             }`}
           >
@@ -65,7 +65,7 @@ const Chat = () => {
           </button> */}
           <button
             onClick={() => setItem("8")}
-            className={`hidden sm:block p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
+            className={`hidden lg:block p-0 hover:text-[#D6B3F1] text-left text-xs xl:text-xl transition-all duration-300 ease-in ${
               item === "8" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
             }`}
           >
@@ -73,7 +73,7 @@ const Chat = () => {
           </button>
           <button
             onClick={() => setItem("8")}
-            className={` mx-auto sm:hidden p-0 hover:text-[#D6B3F1] text-left text-2xl xl:text-xl transition-all duration-300 ease-in ${
+            className={` mx-auto lg:hidden p-0 hover:text-[#D6B3F1] text-left text-2xl xl:text-xl transition-all duration-300 ease-in ${
               item === "8" ? "text-[#bd68dc] hover:text-[#bd68dc]" : ""
             }`}
           >
