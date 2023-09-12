@@ -11,7 +11,7 @@ interface AvatarProps {
 
 const Avatar: React.FC<AvatarProps> = ({ currentUser, custom }) => {
   const [imageURL, setImageURL] = useState<string>();
-  console.log(currentUser);
+  currentUser;
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -26,7 +26,7 @@ const Avatar: React.FC<AvatarProps> = ({ currentUser, custom }) => {
         setImageURL(url);
       })
       .catch((err) => {
-        console.log(err);
+        err;
       });
   }, []);
 

@@ -52,11 +52,11 @@ const Channels = () => {
       setmyRooms(res.data);
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) console.log("No response received!", e.request);
-        else if (e.response) console.log("Error status: ", e.response?.status);
-        console.log("Error data: ", e.response?.data);
+        if (e.request) "No response received!", e.request;
+        else if (e.response) "Error status: ", e.response?.status;
+        "Error data: ", e.response?.data;
       } else {
-        console.log("Error: ", e);
+        "Error: ", e;
       }
     }
   }
@@ -75,20 +75,20 @@ const Channels = () => {
         requestBody,
         { headers }
       );
-      console.log(res.data);
+      res.data;
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) console.log("No response received!", e.request);
-        else if (e.response) console.log("Error status: ", e.response?.status);
-        console.log("Error data: ", e.response?.data);
+        if (e.request) "No response received!", e.request;
+        else if (e.response) "Error status: ", e.response?.status;
+        "Error data: ", e.response?.data;
       } else {
-        console.log("Error: ", e);
+        "Error: ", e;
       }
     }
   }
 
   function handleChat(Channel: Channel) {
-    console.log("Hhia channel", Channel);
+    "Hhia channel", Channel;
     setChannel(Channel);
     setChat(true);
   }

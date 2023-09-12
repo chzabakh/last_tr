@@ -10,6 +10,7 @@ import Image from "next/image";
 import place from "../../../public/place.png";
 import Avatar from "@/components/avatar";
 import { useSocket } from "@/components/socket_context";
+import Stars from "@/components/Sections/stars";
 
 const roomName = () => {
   const [gameSocket, setGameSocket] = useState<Socket>();
@@ -29,6 +30,7 @@ const roomName = () => {
   const [player2, setPlayer2] = useState<User>();
   const [player1Score, setPlayer1Score] = useState<number>(0);
   const [player2Score, setPlayer2Score] = useState<number>(0);
+  const [checked, setChecked] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
   const { socket } = useSocket();
@@ -51,7 +53,7 @@ const roomName = () => {
         setUser(response.data);
       })
       .catch((error) => {
-        console.log(error);
+        error;
       });
 
     return () => {
@@ -70,7 +72,7 @@ const roomName = () => {
             setPlayer1(response.data);
           })
           .catch((error) => {
-            console.log(error);
+            error;
           });
       } else {
         axios
@@ -82,7 +84,7 @@ const roomName = () => {
             setPlayer1(response.data);
           })
           .catch((error) => {
-            console.log(error);
+            error;
           });
       }
       if (gameTable?.player1?.nickname === user?.nickname) {
@@ -94,11 +96,11 @@ const roomName = () => {
             }
           )
           .then((response) => {
-            // console.log(response.data);
+            // (response.data);
             setPlayer2(response.data);
           })
           .catch((error) => {
-            console.log(error);
+            error;
           });
       } else {
         axios
@@ -109,11 +111,11 @@ const roomName = () => {
             }
           )
           .then((response) => {
-            // console.log(response.data);
+            // (response.data);
             setPlayer2(response.data);
           })
           .catch((error) => {
-            console.log(error);
+            error;
           });
       }
     }
@@ -140,13 +142,13 @@ const roomName = () => {
   // useEffect(() => {
   //   if (gameSocket) {
   const playerScored = (data: any) => {
-    // console.log(data);
+    // (data);
 
     const { player1Score, player2Score } = data;
     // playerNickname !== user?.nickname
     //   ? setPlayer1Score(player1Score + 1)
     //   : setPlayer2Score(player2Score + 1);
-    // console.log("Player1 Scored");
+    // ("Player1 Scored");
 
     setPlayer1Score(player1Score);
     setPlayer2Score(player2Score);
@@ -156,7 +158,7 @@ const roomName = () => {
   // gameTable?.player1?.nickname === user?.nickname
   //   ? setPlayer1Score(player1Score + 1)
   //   : setPlayer2Score(player2Score + 1);
-  //   console.log("Player2 Scored");
+  //   ("Player2 Scored");
 
   //   gameSocket.off("player2Scored", player2ScoredHandler);
   // };
@@ -180,7 +182,7 @@ const roomName = () => {
       };
 
       const gameStarted = (gameTable: GameTable) => {
-        // console.log(gameTable);
+        // (gameTable);
         setGameTable(gameTable);
         setGamestart(true);
 
@@ -189,12 +191,9 @@ const roomName = () => {
 
       const gameEnded = (data: { winner: string; result: Result }) => {
         const { winner, result } = data;
-        // console.log(winner);
+        // (winner);
         setWinner(winner);
         setGameEnded(true);
-        setInterval(() => {
-          router.push("/history");
-        }, 3000);
         // setGamestart(false);
         setInQueue(false);
       };
@@ -327,13 +326,25 @@ const roomName = () => {
                   <div className="Game border-2 flex h-[90%] border-opacity-30 border-violet-400 bg-opacity-5 bg-gradient-to-l from-[#53139233] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                     {gameEnded ? (
                       <>
-                        <div className="text-7xl w-full">Game Ended</div>
-                        <div className="text-7xl">The Winner {winner}</div>
+                        <div className="flex flex-col w-full h-full gap-9 justify-center">
+                          <Stars />
+                          <div className="text-6xl w-full text-center">
+                            Game Ended
+                          </div>
+                          <div className="flex flex-row">
+                            <div className=" w-full text-2xl  text-center ">
+                              The Winner is:{" "}
+                              <span className="text-purple-700">{winner}</span>{" "}
+                            </div>
+                          </div>
+                        </div>
                       </>
                     ) : (
                       <>
                         <canvas
-                          className="bg-black lg:w-full lg:h-full lg:flex lg:justify-center lg:top-[25%] lg:left-[25%] lg:rotate-0 -rotate-90"
+                          className={`${checked ? "bg-black" : ""} h-1/2 mt-20 
+                               sm:w-full sm:h-2/3 sm:mt-20
+                               lg:w-full lg:h-full lg:flex lg:justify-center lg:top-[25%] lg:left-[25%] lg:rotate-0 -rotate-90`}
                           width={700}
                           height={400}
                           ref={canvasRef}

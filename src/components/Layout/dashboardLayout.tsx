@@ -14,20 +14,6 @@ import Avatar from "../avatar";
 import { User } from "../Sections/types";
 import Stars from "../Sections/stars";
 
-type Me = {
-  TwofaAutEnabled: boolean;
-  avatarUrl: string;
-  createdAt: string;
-  email: string;
-  friendStatus: string;
-  id: number;
-  nickname: string;
-  provider: string;
-  state: string;
-  updatedAt: string;
-  isChanged: boolean;
-};
-
 interface LayoutProps {
   children: ReactNode;
 }
@@ -49,18 +35,21 @@ export default function DashboardLayout({ children }: LayoutProps) {
   const pathname = usePathname();
   const { socket } = useSocket();
 
-  useEffect(() => {
-    const inviteHandler = (data: any) => {
-      const { sender } = data;
+  const inviteHandler = (data: any) => {
+    const { sender } = data;
+
+    if (!invites.includes(sender)) {
       setInvites((current) => [...current, sender]);
 
       setTimeout(() => {
         setInvites([]);
       }, 10000);
-    };
+    }
+  };
 
-    socket?.on("IncomingInvite", inviteHandler);
-  }, [socket]);
+  socket?.removeAllListeners("IncomingInvite");
+
+  socket?.on("IncomingInvite", inviteHandler);
 
   const redirectHandler = useCallback(
     (roomName: string) => {
@@ -159,7 +148,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
     try {
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
-      console.log(toAccpetUser);
+
       const response = await axios.get(
         `http://localhost:9000/users/${toAccpetUser}/other`,
         {
@@ -178,7 +167,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
         player1: me?.id,
       });
     } catch (error) {
-      console.log(error);
+      error;
     }
   };
 
@@ -192,7 +181,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
       <Stars />
 
       <div className="flex flex-row h-full">
-      {invites.map((user, index) => (
+        {invites.map((user, index) => (
           <div
             key={index}
             style={{ bottom: `${index * 64}px` }}
@@ -213,7 +202,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
           <>
             <div className=" flex flex-col border-2  border-opacity-30 border-violet-400 min-h-screen h-full w-[30%] lg:w-[20%] bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-lg">
               <div>
-              <Image
+                <Image
                   className="object-cover flex-auto mx-auto rounded-[30px]"
                   src={Preview || Place}
                   alt={"Jello"}
@@ -300,6 +289,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                 </button>
                 <button
                   onClick={() => {
+                    socket?.disconnect();
                     Cookies.remove("token", { path: "/" });
                     router.push("/login");
                   }}
@@ -334,7 +324,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
 
               <>
                 <div className="mt-20">
-                <Image
+                  <Image
                     className="object-cover flex-auto mx-auto rounded-[30px]"
                     src={Preview || Place}
                     alt={"asd"}
@@ -409,6 +399,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
                   </button>
                   <button
                     onClick={() => {
+                      socket?.disconnect();
                       Cookies.remove("token", { path: "/" });
                       router.push("/login");
                     }}

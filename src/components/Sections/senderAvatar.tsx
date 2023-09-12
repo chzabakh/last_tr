@@ -12,7 +12,7 @@ interface SenderAvatarProps {
 const SenderAvatar: React.FC<SenderAvatarProps> = ({ currentUser }) => {
   const [imageURL, setImageURL] = useState<string>();
 
-  console.log(currentUser);
+  currentUser;
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -27,7 +27,7 @@ const SenderAvatar: React.FC<SenderAvatarProps> = ({ currentUser }) => {
         setImageURL(url);
       })
       .catch((err) => {
-        console.log(err);
+        err;
       });
   }, []);
 

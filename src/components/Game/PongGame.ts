@@ -47,7 +47,7 @@ class Paddle {
 
   move(direction: Direction) {
     this.dy = PaddleSpeed * direction;
-    // console.log(this.dy);
+    // (this.dy);
   }
 
   stop() {
@@ -304,7 +304,7 @@ export default class PongGame {
   // }
 
   drawBall(x: number, y: number) {
-    // console.log(x, y);
+    // (x, y);
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     // this.paddle1.draw();
     // this.paddle2.draw();
@@ -318,16 +318,14 @@ export default class PongGame {
   private renderGame() {
     // this.paddle1.draw();
     // this.paddle2.draw();
-
     // this.context.fillStyle = "#ffffff";
     // this.context.fillRect(150, 150, 10, 100);
     // this.ball.draw();
     // this.drawBall(100, 100);
-
-  //   this.context.fillStyle = "#ffffff";
-  //   this.context.font = "20px Arial";
-  //   this.context.fillText(`${this.player1Score}`, this.canvas.width * 0.25, 30);
-  //   this.context.fillText(`${this.player2Score}`, this.canvas.width * 0.75, 30);
+    //   this.context.fillStyle = "#ffffff";
+    //   this.context.font = "20px Arial";
+    //   this.context.fillText(`${this.player1Score}`, this.canvas.width * 0.25, 30);
+    //   this.context.fillText(`${this.player2Score}`, this.canvas.width * 0.75, 30);
   }
 
   update(): void {

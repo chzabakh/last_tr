@@ -64,11 +64,11 @@ const TwoFac: React.FC<TwoFacProps> = ({ handle }) => {
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) console.log("No response received!", e.request);
-        else if (e.response) console.log("Error status: ", e.response?.status);
-        console.log("Error data: ", e.response?.data);
+        if (e.request) "No response received!", e.request;
+        else if (e.response) "Error status: ", e.response?.status;
+        "Error data: ", e.response?.data;
       } else {
-        console.log("Error: ", e);
+        "Error: ", e;
       }
     }
   };
@@ -91,19 +91,17 @@ const TwoFac: React.FC<TwoFacProps> = ({ handle }) => {
         </div>
       ) : (
         <>
-        {/* my-20 h-[80%] gap-3 overflow-scroll justify-between flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px] */}
+          {/* my-20 h-[80%] gap-3 overflow-scroll justify-between flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px] */}
           {/* <div className="my-20 h-[70%] gap-3 flex justify-center items-center flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"> */}
-            <div className="my-20  h-[70%] gap-20 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
-       
+          <div className="my-20  h-[70%] gap-20 flex flex-col w-full mx-[2rem]  border-2 border-opacity-30 border-violet-400 bg-opacity-20 bg-black bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
             <button
               onClick={handle}
               className=" text-xs self-start bg-purple-500 m-3 text-white p-2 h-[30px]  rounded-lg"
             >
               X
             </button>
-       
-            <div className="m-3 gap-10 md:gap-0 items-center h-[60%] w-[90%] flex lg:flex-row  flex-col-reverse justify-between p-4 ">
 
+            <div className="m-3 gap-10 md:gap-0 items-center h-[60%] w-[90%] flex lg:flex-row  flex-col-reverse justify-between p-4 ">
               <Image
                 src={qr || Place}
                 alt="qr"

@@ -25,7 +25,7 @@ const PublicAvatar: React.FC<PublicAvatarProps> = ({ currentUser }) => {
         setImageURL(url);
       })
       .catch((err) => {
-        console.log(err);
+        err;
       });
   }, []);
 

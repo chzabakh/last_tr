@@ -28,7 +28,6 @@ export const Login: React.FC = () => {
     password: "",
   });
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
       ...data,
@@ -40,8 +39,6 @@ export const Login: React.FC = () => {
     e.preventDefault();
     await postData(data);
   };
-
-
 
   const postData = async (data: { email: string; password: string }) => {
     try {
@@ -65,12 +62,12 @@ export const Login: React.FC = () => {
       }
     } catch (err) {
       if (err instanceof AxiosError) {
-        console.log(err.response?.data.message);
+        err.response?.data.message;
 
         setStatus("-1");
         setMessage(err.response?.data.message);
       } else {
-        console.log("Unexpected error", err);
+        "Unexpected error", err;
       }
     }
   };
@@ -84,36 +81,29 @@ export const Login: React.FC = () => {
     if (authWindow) {
       const checkAuthComplete = setInterval(() => {
         const res = Cookies.get("token")?.replace("j:", "");
-        const pattern = /"isTwoFactorEnabled":(true|false),|"isFirstLogin":(true|false),|"access_token":"(.*?)"/g;
+        const pattern =
+          /"isTwoFactorEnabled":(true|false),|"isFirstLogin":(true|false),|"access_token":"(.*?)"/g;
         let parsed = {
           isTwoFactorEnabled: false,
           isFirstLogin: true,
-          access_token: ""
+          access_token: "",
         };
         let found;
-        if(res)
-        {
+        if (res) {
           //exec returns an array of matches or null
-            while((found = pattern.exec(res)) !== null)
-            {
-                if(found.index === pattern.lastIndex)
-                {
-                  pattern.lastIndex++;
-                }
-                if(found[1] !== undefined)
-                {
-                  parsed.isTwoFactorEnabled = found[1] ==='true';
-                }
-                else if(found[2] !== undefined)
-                {
-                  parsed.isFirstLogin = found[2] === 'true';
-                }
-                else if(found[3] !== undefined)
-                {
-                  parsed.access_token = found[3];
-                }
-            }            
+          while ((found = pattern.exec(res)) !== null) {
+            if (found.index === pattern.lastIndex) {
+              pattern.lastIndex++;
+            }
+            if (found[1] !== undefined) {
+              parsed.isTwoFactorEnabled = found[1] === "true";
+            } else if (found[2] !== undefined) {
+              parsed.isFirstLogin = found[2] === "true";
+            } else if (found[3] !== undefined) {
+              parsed.access_token = found[3];
+            }
           }
+        }
         const token = parsed.access_token;
         const isFirstLogin = parsed.isFirstLogin;
         const isTwoFactorEnabled = parsed.isTwoFactorEnabled;
@@ -124,12 +114,9 @@ export const Login: React.FC = () => {
           Cookies.set("token", token, { path: "/" });
           if (isFirstLogin) Router.push("/addInfos");
           else {
-            if(isTwoFactorEnabled === true)
-            {
-              router.push('/activate')
-            }
-            else
-            {
+            if (isTwoFactorEnabled === true) {
+              router.push("/activate");
+            } else {
               router.push("/chat");
             }
           }
@@ -142,7 +129,7 @@ export const Login: React.FC = () => {
 
   return (
     <>
-      <Stars/>
+      <Stars />
       <div className="flex flex-col  justify-between max-w-full md:mx-[6rem] h-full lg:h-screen max-h-full">
         <Layout>
           <div className="w-full flex overflow-y-hidden flex-col items-center justify-center x-auto max-h-full h-full">
@@ -181,7 +168,9 @@ export const Login: React.FC = () => {
                   Login
                 </button>
               </div>
-              <Link href="register" className="text-sm">You do not have an account ? Sign Up.</Link>
+              <Link href="register" className="text-sm">
+                You do not have an account ? Sign Up.
+              </Link>
             </form>
           </div>
         </Layout>

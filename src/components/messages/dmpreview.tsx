@@ -127,9 +127,8 @@ const Dmpreview: React.FC<MessageProps> = ({
         setPdp(URL.createObjectURL(response.data));
       } catch (err) {
         if (err instanceof AxiosError) {
-          console.log(err.response?.data.message);
+          err.response?.data.message;
         } else {
-          console.log("Unexpected error", err);
         }
       }
     };
@@ -182,14 +181,18 @@ const Dmpreview: React.FC<MessageProps> = ({
           </div>
           {!chat.messages[chat.messages.length - 1]?.content ? (
             <div className="flex flex-col flex-grow">
-              <p className="italic text-xs xs:lg lg:text-xl text-left">{other?.nickname}</p>
+              <p className="italic text-xs xs:lg lg:text-xl text-left">
+                {other?.nickname}
+              </p>
               <p className="text-xs italic text-left">
                 You are new friends, Start chatting now!
               </p>
             </div>
           ) : (
             <div className="flex flex-col flex-grow">
-              <p className="italic text-xs xs:lg lg:text-xl text-left">{other?.nickname}</p>
+              <p className="italic text-xs xs:lg lg:text-xl text-left">
+                {other?.nickname}
+              </p>
               <p className="text-xs italic text-left">
                 {/* {chat.messages[chat.messages.length - 1]?.content} */}
                 {lastmsg}

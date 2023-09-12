@@ -7,7 +7,6 @@ import Cookies from "js-cookie";
 
 const addInfos = () => {
   useEffect(() => {
-    
     async function getAvatar() {
       try {
         const Token = Cookies.get("token");
@@ -29,7 +28,7 @@ const addInfos = () => {
           setPreview(previewUrl);
         }
       } catch (err) {
-        console.log(err);
+        err;
       }
     }
     getAvatar();

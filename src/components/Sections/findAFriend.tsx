@@ -108,6 +108,12 @@ export interface Chat {
   isPrivate: boolean | null;
 }
 
+interface userData {
+  matches: string;
+  wins: string;
+  loses: string;
+}
+
 const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [item, setItem] = useState("6");
   const [reload, setReload] = useState(false);
@@ -128,6 +134,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [plus, setPlus] = useState(1);
   const [resetFriends, setResetFriends] = useState<boolean>(false);
   const [blocked, setBlocked] = useState("free");
+  const [userData, setUserData] = useState<userData>();
 
   const [chat, setChat] = useState<Chat>({
     id: 0,
@@ -210,6 +217,21 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   const [invitesimages, setInvitesimages] = useState<(string | undefined)[]>();
   const [searchimage, setSearchimage] = useState<string | undefined>();
   const [i, setI] = useState("0");
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:9000/users/${friend.id}/other-games`, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      })
+      .then((res) => {
+        setUserData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   // console.log(invites);
 
@@ -839,7 +861,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
   return (
     <>
       {dm == "1" && chat && other ? (
-        <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+        <div className="absolute top-0 z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-full border-violet-400 dbg-opacity-5 bg-[#47365ad6] bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md rounded-[30px]">
           <Dms
             dm={dm}
             updateItem={updateItem}
@@ -1129,7 +1151,7 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
           </div>
           {item == "9" ? (
             <>
-              <div className="absolute z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-[100%] border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.27)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+              <div className="absolute z-2 flex justify-evenly border-2  border-opacity-30 w-[100%] h-[100%] border-violet-400 bg-[#571d86] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
                 <div className="w-[40%]">
                   {friend.provider === "intra" && !friend.isChanged ? (
                     <Image
@@ -1191,9 +1213,9 @@ const FindAFriend: React.FC<ChatProps> = ({ dmm, updateItemm }) => {
                   </div>
                 </div>
                 <div className="py-20 pl-40 w-[60%] flex flex-col gap-10">
-                  <p>Number of matches:</p>
-                  <p>Win:</p>
-                  <p>Loss:</p>
+                  <p>Number of matches: {userData?.matches}</p>
+                  <p>Win: {userData?.wins}</p>
+                  <p>Loss: {userData?.loses}</p>
                 </div>
               </div>
             </>

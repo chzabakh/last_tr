@@ -41,9 +41,9 @@ const MatchHistory = () => {
         setMe(me.data);
       } catch (err) {
         if (err instanceof AxiosError) {
-          console.log(err.response?.data.message);
+          err.response?.data.message;
         } else {
-          console.log("Unexpected error", err);
+          "Unexpected error", err;
         }
       }
     };
@@ -60,9 +60,9 @@ const MatchHistory = () => {
         setGames(gamesres.data);
       } catch (err) {
         if (err instanceof AxiosError) {
-          console.log(err.response?.data.message);
+          err.response?.data.message;
         } else {
-          console.log("Unexpected error", err);
+          "Unexpected error", err;
         }
       }
     };
@@ -70,7 +70,7 @@ const MatchHistory = () => {
     getUser();
     getGames();
   }, []);
-  console.log(games);
+  games;
 
   return (
     <>

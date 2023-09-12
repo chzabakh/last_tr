@@ -21,6 +21,7 @@ import {
   ChatRoom,
 } from "@/components/Sections/types/index";
 import Channels from "@/components/Sections/channels";
+import { useSocket } from "../socket_context";
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
   const optionsMember = [
@@ -38,6 +39,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     "Invite to Game",
     "Remove Admin",
   ];
+
+  const optionRegularUsers = ["Invite to Game"];
 
   const optionsChannel = ["Add password"];
 
@@ -59,6 +62,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
   const [fadeOut, setFadeOut] = useState(false);
   const [dialog, setDialog] = useState(false);
   const [Otherdialog, setOtherDialog] = useState(false);
+  const { socket } = useSocket();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -205,10 +209,6 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     }
   }
 
-  async function handleInvite() {
-    alert("Invite");
-  }
-
   async function handleRemoveAdmin(id: number) {
     try {
       const token = Cookies.get("token");
@@ -296,6 +296,14 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     }
   }
 
+  const handleSendInvite = (friendID: number, friendNickname: string) => {
+    socket?.emit("send-invite", {
+      recipientId: friendID,
+      sender: friendNickname,
+    });
+    setAnchorEl(null);
+  };
+
   const handleOptions = (option: string, id: number) => {
     switch (option) {
       case "Ban":
@@ -311,7 +319,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
         setAnchorEl(null);
         break;
       case "Invite to Game":
-        handleInvite();
+        handleSendInvite(id, nickname);
         setAnchorEl(null);
         break;
 
@@ -326,11 +334,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
     }
   };
 
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const [chatSocket, setChatSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
     const socket = io("http://localhost:9000/chat");
-    setSocket(socket);
+    setChatSocket(socket);
 
     const conversationId = room.uid;
 
@@ -343,18 +351,18 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
   }, []);
 
   useEffect(() => {
-    if (socket) {
+    if (chatSocket) {
       const newMessageHandler = (message: Message) => {
         console.log(message);
         setChatMessages((cur) => [...cur, message]);
       };
 
-      socket.on("message:new", newMessageHandler);
+      chatSocket.on("message:new", newMessageHandler);
       return () => {
-        socket.off("message:new");
+        chatSocket.off("message:new");
       };
     }
-  }, [socket]);
+  }, [chatSocket]);
 
   const handleOptionsChannel = (option: string) => {
     switch (option) {
@@ -623,7 +631,53 @@ const ChatRoom: React.FC<ChatRoomProps> = ({ room }) => {
                       </div>
 
                       <div className="flex md:flex-row flex-col  justify-end  w-[50%] self-end">
-                        {!isAdmin() ? null : isAdmin() ? (
+                        {!isAdmin() ? (
+                          nickname === user.nickname ? null : (
+                            <>
+                              <IconButton
+                                style={{ color: "white" }}
+                                aria-label="more-again"
+                                id="long-button-channel"
+                                aria-controls={
+                                  open ? "long-menu-channel" : undefined
+                                }
+                                aria-expanded={open ? "true" : undefined}
+                                aria-haspopup="true"
+                                onClick={handleClick}
+                              >
+                                <MoreHorizIcon />
+                              </IconButton>
+                              <Menu
+                                id="long-menu-channel"
+                                MenuListProps={{
+                                  "aria-labelledby": "long-button-channel",
+                                }}
+                                anchorEl={anchorEl}
+                                open={open}
+                                onClose={handleClose}
+                                PaperProps={{
+                                  style: {
+                                    maxHeight: ITEM_HEIGHT * 4.5,
+                                    width: "20ch",
+                                    backgroundColor: "#3c005a",
+                                    color: "white",
+                                  },
+                                }}
+                              >
+                                {optionRegularUsers.map((optiontwo, index) => (
+                                  <MenuItem
+                                    key={index}
+                                    onClick={() => {
+                                      handleOptions(optiontwo, user.id);
+                                    }}
+                                  >
+                                    {optiontwo}
+                                  </MenuItem>
+                                ))}
+                              </Menu>
+                            </>
+                          )
+                        ) : isAdmin() ? (
                           nickname === user.nickname ? null : (
                             <>
                               <IconButton

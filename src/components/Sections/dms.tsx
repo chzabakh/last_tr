@@ -7,6 +7,13 @@ import { Blockedpoeple, Chat } from "./findAFriend";
 import { HiRocketLaunch, HiUser } from "react-icons/hi2";
 import Avatar from "../avatar";
 import PublicAvatar from "../FriendAvatar";
+import { useSocket } from "../socket_context";
+
+interface userData {
+  matches: string;
+  wins: string;
+  loses: string;
+}
 
 interface User {
   id: number;
@@ -120,7 +127,7 @@ const Dms: React.FC<DmProps> = ({
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [newmsg, setNewmsg] = useState<Message[]>([]);
   const [profile, setProfile] = useState(false);
-  const [socket, setSocket] = useState<Socket>();
+  const [chatSocket, setChatSocket] = useState<Socket>();
   const [con, setCon] = useState(false);
   const [pdp, setPdp] = useState<string>();
   const [otherpdp, setOtherpdp] = useState<string>();
@@ -130,7 +137,6 @@ const Dms: React.FC<DmProps> = ({
   const [user1, setUser1] = useState("");
   const [user2, setUser2] = useState("");
   const [blockedlist, setBlockedlist] = useState<Blockedpoeple[]>([]);
-  // const [myinput, setMyinput] = useState("");
   const [friend, setFriend] = useState<Friend>({
     avatarUrl: "null",
     id: "null",
@@ -141,8 +147,23 @@ const Dms: React.FC<DmProps> = ({
     provider: "null",
   });
   const bottomRef = useRef<HTMLDivElement>(null);
+  const { socket } = useSocket();
+  const [userData, setUserData] = useState<userData>();
 
-  // console.log("tocheck",chat);
+  useEffect(() => {
+    axios
+      .get(`http://localhost:9000/users/${other.id}/other-games`, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      })
+      .then((res) => {
+        setUserData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInput(e.target.value);
@@ -183,7 +204,7 @@ const Dms: React.FC<DmProps> = ({
     // if (!con) {
     // setCon(true);
     const socket = io("http://localhost:9000/chat");
-    setSocket(socket);
+    setChatSocket(socket);
     const conversationId = chat.uid;
     socket?.emit("joinRoom", { conversationId });
     // }
@@ -195,19 +216,19 @@ const Dms: React.FC<DmProps> = ({
   }, []);
 
   useEffect(() => {
-    if (socket) {
+    if (chatSocket) {
       const newMessageHandler = (message: Message) => {
         setNewmsg((cur) => [...cur, message]);
         bottomRef?.current?.scrollIntoView();
       };
 
-      socket.on("message:new", newMessageHandler);
+      chatSocket.on("message:new", newMessageHandler);
       return () => {
-        socket.off("message:new");
+        chatSocket.off("message:new");
         // socket?.disconnect();
       };
     }
-  }, [socket]);
+  }, [chatSocket]);
 
   useEffect(() => {
     // console.log(socket);
@@ -366,8 +387,6 @@ const Dms: React.FC<DmProps> = ({
     await unblockUser();
   };
 
-  useEffect(() => {}, []);
-
   // useEffect(() => {
   //   // if (!other){
 
@@ -394,6 +413,13 @@ const Dms: React.FC<DmProps> = ({
   //     getOther();
   //   // }
   // }, []);
+
+  const handleSendInvite = (friendID: number, friendNickname: string) => {
+    socket?.emit("send-invite", {
+      recipientId: friendID,
+      sender: friendNickname,
+    });
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -471,8 +497,7 @@ const Dms: React.FC<DmProps> = ({
       {profile ? (
         <div className="absolute z-2 flex border-2  border-opacity-30 w-[100%] h-[100%] border-violet-400  bg-[#571d86]  backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
           <div className="w-[40%]">
-            {other.provider === "intra" &&
-            other.isChanged === false ? (
+            {other.provider === "intra" && other.isChanged === false ? (
               <>
                 <Image
                   className="object-cover mx-auto rounded-[20px]"
@@ -491,7 +516,7 @@ const Dms: React.FC<DmProps> = ({
                   height={100}
                   width={100}
                 /> */}
-              <PublicAvatar currentUser={other}/>
+                <PublicAvatar currentUser={other} />
                 {/* <Avatar currentUser={other} /> */}
               </>
             )}
@@ -526,9 +551,9 @@ const Dms: React.FC<DmProps> = ({
             </div>
           </div>
           <div className="py-20 ml-10 w-[60%] flex flex-col gap-10">
-            <p>Number of matches:</p>
-            <p>Win:</p>
-            <p>Loss:</p>
+            <p>Number of matches: {userData?.matches}</p>
+            <p>Wins: {userData?.wins}</p>
+            <p>Loses: {userData?.loses}</p>
           </div>
         </div>
       ) : (
@@ -563,7 +588,12 @@ const Dms: React.FC<DmProps> = ({
                       </p>
                     ) : null}
                     <div className="flex flex-col">
-                      <button className=" hover:bg-white hover:bg-opacity-10 w-full py-1 my-3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]">
+                      <button
+                        onClick={() => {
+                          handleSendInvite(other.id, nickname);
+                        }}
+                        className=" hover:bg-white hover:bg-opacity-10 w-full py-1 my-3 text-xs border-2  border-opacity-30 border-violet-400 bg-opacity-5 bg-black bg-gradient-to-l from-[rgba(255,255,255,0.15)] bg-blur-md backdrop-filter backdrop-blur-md p-4 rounded-[30px]"
+                      >
                         Invite to a game
                       </button>
                       <button
