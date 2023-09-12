@@ -448,7 +448,7 @@ const Options = () => {
                             <canvas
                               className={`${
                                 checked ? "bg-black" : ""
-                              } w-full h-1/2 mt-20
+                              } h-1/2 mt-20 
                                sm:w-full sm:h-2/3 sm:mt-20
                                lg:w-full lg:h-full lg:flex lg:justify-center lg:top-[25%] lg:left-[25%] lg:rotate-0 -rotate-90`}
                               width={700}
