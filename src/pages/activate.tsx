@@ -40,11 +40,11 @@ const activate = () => {
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) "No response received!", e.request;
-        else if (e.response) "Error status: ", e.response?.status;
-        "Error data: ", e.response?.data;
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
       } else {
-        "Error: ", e;
+        console.log("Error: ", e);
       }
     }
   };

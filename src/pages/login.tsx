@@ -62,12 +62,12 @@ export const Login: React.FC = () => {
       }
     } catch (err) {
       if (err instanceof AxiosError) {
-        err.response?.data.message;
+        console.log(err.response?.data.message);
 
         setStatus("-1");
         setMessage(err.response?.data.message);
       } else {
-        "Unexpected error", err;
+        console.log("Unexpected error", err);
       }
     }
   };

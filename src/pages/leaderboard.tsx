@@ -50,9 +50,9 @@ const Leaderboard = () => {
         setMe(me.data);
       } catch (err) {
         if (err instanceof AxiosError) {
-          err.response?.data.message;
+          console.log(err.response?.data.message);
         } else {
-          "Unexpected error", err;
+          console.log("Unexpected error", err);
         }
       }
     };
@@ -69,9 +69,9 @@ const Leaderboard = () => {
         setUsers(users.data);
       } catch (err) {
         if (err instanceof AxiosError) {
-          err.response?.data.message;
+          console.log(err.response?.data.message);
         } else {
-          "Unexpected error", err;
+          console.log("Unexpected error", err);
         }
       }
     };
@@ -87,7 +87,7 @@ const Leaderboard = () => {
     }
   }, [users, me]);
 
-  "theusers:", users;
+  console.log("theusers:", users);
   return (
     <>
       {/* <DashboardLayout> */}
@@ -108,15 +108,11 @@ const Leaderboard = () => {
               ) : (
                 <>{me ? <Avatar currentUser={me} /> : null}</>
               )}
-              <p className="text-sm sm:text-lg md:text-3xl text-purple-700">
-                {me?.nickname}
-              </p>
+              <p className="text-sm sm:text-lg md:text-3xl text-purple-700">{me?.nickname}</p>
             </div>
             <div className="flex flex-row my-auto w-[65%] justify-end sm:justify-center">
               <p className="text-sm sm:text-lg md:text-3xl mr-2">Your Rank:</p>
-              <p className="text-sm sm:text-lg text-purple-700 md:text-3xl">
-                #{rank}
-              </p>
+              <p className="text-sm sm:text-lg text-purple-700 md:text-3xl">#{rank}</p>
             </div>
           </div>
         </div>

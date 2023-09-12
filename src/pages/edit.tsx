@@ -34,7 +34,7 @@ const Edit = () => {
   }, []);
 
   useEffect(() => {
-    "The satatus", status;
+    console.log("The satatus", status);
     getStatus();
   });
 
@@ -51,15 +51,15 @@ const Edit = () => {
       });
       // setUserEmail(res.data.email);
       setProvider(res.data.provider);
-      // (email);
-      // (res.data.email)
+      // console.log(email);
+      // console.log(res.data.email)
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) "No response received!", e.request;
-        else if (e.response) "Error status: ", e.response?.status;
-        "Error data: ", e.response?.data;
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
       } else {
-        "Error: ", e;
+        console.log("Error: ", e);
       }
     }
   }
@@ -208,15 +208,15 @@ const Edit = () => {
       const auth = await axios.get("http://localhost:9000/2fa/status", {
         headers,
       });
-      "STATUS  DATA", auth.data;
+      console.log("STATUS  DATA", auth.data);
       auth.data === true ? setStatus("enabled") : setStatus("disabled");
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) "No response received!", e.request;
-        else if (e.response) "Error status: ", e.response?.status;
-        "Error data: ", e.response?.data;
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
       } else {
-        "Error: ", e;
+        console.log("Error: ", e);
       }
     }
   };
@@ -233,11 +233,11 @@ const Edit = () => {
       alert("auth disabaled, refrech the page!");
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) "No response received!", e.request;
-        else if (e.response) "Error status: ", e.response?.status;
-        "Error data: ", e.response?.data;
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
       } else {
-        "Error: ", e;
+        console.log("Error: ", e);
       }
     }
   };

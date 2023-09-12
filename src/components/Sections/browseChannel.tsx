@@ -76,11 +76,11 @@ const BrowseChannel = () => {
       setMyRooms(res.data);
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) "No response received!", e.request;
-        else if (e.response) "Error status: ", e.response?.status;
-        "Error data: ", e.response?.data;
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
       } else {
-        "Error: ", e;
+        console.log("Error: ", e);
       }
     }
   }
@@ -101,22 +101,22 @@ const BrowseChannel = () => {
       );
       if (res.status === 201) {
         setHide(true);
-        res.data; // Assuming the backend sends the created room details
+        console.log(res.data); // Assuming the backend sends the created room details
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) "No response received!", e.request;
-        else if (e.response) "Error status: ", e.response?.status;
-        "Error data: ", e.response?.data;
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
       } else {
-        "Error: ", e;
+        console.log("Error: ", e);
       }
     }
   }
 
   async function joinProtectRoom(channel: Channel) {
     try {
-      "This is the channe:", channel;
+      console.log("This is the channe:" , channel)
       const token = Cookies.get("token");
       const headers = { Authorization: `Bearer ${token}` };
 
@@ -126,16 +126,18 @@ const BrowseChannel = () => {
         password: roomPass,
       };
 
-      roomPass(requestBody);
+      console.log(roomPass)
+      console.log(requestBody)
       const res = await axios.post(
         "http://localhost:9000/chat/join-room",
         requestBody,
         { headers }
       );
-      res;
+      console.log(res)
 
       if (res.status === 201) {
         setEnterPass(false);
+        
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
@@ -162,13 +164,13 @@ const BrowseChannel = () => {
         { headers }
       );
       if (res.status === 201) {
-        setPrivate(false);
+        setPrivate(false)
         setChat(true);
       }
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) "No response received!", e.request;
-        else if (e.response?.data) "Error status: ", e.response?.status;
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response?.data) console.log("Error status: ", e.response?.status);
         setError("Invalid room ID , try again!");
       } else {
         // setError(error);
@@ -181,7 +183,9 @@ const BrowseChannel = () => {
   }
 
   async function handleProtectRoom(Channel: Channel | undefined) {
-    if (Channel) await joinProtectRoom(Channel);
+    if(Channel)
+      await joinProtectRoom(Channel);
+
   }
 
   async function getPublicChannels() {
@@ -191,15 +195,15 @@ const BrowseChannel = () => {
       const res = await axios.get("http://localhost:9000/chat/isGroup/all", {
         headers,
       });
-      // (res.data)
+      // console.log(res.data)
       setPublicRooms(res.data);
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) "No response received!", e.request;
-        else if (e.response) "Error status: ", e.response?.status;
-        "Error data: ", e.response?.data;
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
       } else {
-        "Error: ", e;
+        console.log("Error: ", e);
       }
     }
   }
@@ -212,21 +216,21 @@ const BrowseChannel = () => {
         headers,
       });
       setUserEmail(res.data.email);
-      email;
-      res.data.email;
+      console.log(email);
+      console.log(res.data.email);
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) "No response received!", e.request;
-        else if (e.response) "Error status: ", e.response?.status;
-        "Error data: ", e.response?.data;
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
       } else {
-        "Error: ", e;
+        console.log("Error: ", e);
       }
     }
   }
 
   // function handleChat(Channel: Channel) {
-  //   ("Hhia channel", Channel);
+  //   console.log("Hhia channel", Channel);
   //   setChannel(Channel);
   //   setChat(true);
   // }
@@ -242,11 +246,11 @@ const BrowseChannel = () => {
       setProtectedRooms(res.data);
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.request) "No response received!", e.request;
-        else if (e.response) "Error status: ", e.response?.status;
-        "Error data: ", e.response?.data;
+        if (e.request) console.log("No response received!", e.request);
+        else if (e.response) console.log("Error status: ", e.response?.status);
+        console.log("Error data: ", e.response?.data);
       } else {
-        "Error: ", e;
+        console.log("Error: ", e);
       }
     }
   }
@@ -279,7 +283,7 @@ const BrowseChannel = () => {
                   </button>
                   <button
                     className="hover:border-[#b564eb] hover:transition  w-[200px] border-[3px] border-opacity-40 border-violet-400 rounded-full"
-                    onClick={() => setPrivate(true)}
+                    onClick={() => setPrivate(true) }
                   >
                     Join Private
                   </button>
@@ -303,16 +307,10 @@ const BrowseChannel = () => {
                           onChange={(e) => setRoomId(e.target.value)}
                         ></input>
                       </div>
-                      {error && (
-                        <div className="text-red-500 text-xs self-center">
-                          {error}
-                        </div>
-                      )}
+                      {error && (<div className="text-red-500 text-xs self-center">{error}</div>)}
                       <button
                         className="rounded-lg border-4 border-[#3b0764] w-[40%] self-center"
-                        onClick={() => {
-                          joinPrivate();
-                        }}
+                        onClick={() => {joinPrivate(); }}
                       >
                         Enter
                       </button>
@@ -338,15 +336,12 @@ const BrowseChannel = () => {
                           onChange={(e) => setRoomPass(e.target.value)}
                         ></input>
                       </div>
-                      {error && (
-                        <div className="text-red-500 text-xs self-center">
-                          {error}
-                        </div>
-                      )}
+                      {error && (<div className="text-red-500 text-xs self-center">{error}</div>)}
                       <button
                         className="rounded-lg border-4 border-[#3b0764] w-[40%] self-center"
                         onClick={() => {
                           handleProtectRoom(channel);
+                         
                         }}
                       >
                         Enter
@@ -360,7 +355,7 @@ const BrowseChannel = () => {
                     {PublicRooms.map((ChannelName: Channel) =>
                       ChannelName.owner.email !== email ? (
                         findRoom(ChannelName) ? null : (
-                          <div
+                          <div    
                             key={ChannelName.id}
                             className="bg-gradient-to-r  from-black to-purple-500 p-4 rounded-md text-white shadow-md"
                           >
